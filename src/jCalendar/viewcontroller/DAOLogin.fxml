@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.DAOLoginController">
+   <children>
+      <TableView fx:id="UserTable" layoutX="14.0" layoutY="30.0" prefHeight="74.0" prefWidth="303.0">
+        <columns>
+          <TableColumn fx:id="ID" prefWidth="91.0" text="ID" />
+          <TableColumn fx:id="UserName" prefWidth="78.0" text="UserName" />
+            <TableColumn fx:id="Password" prefWidth="117.0" text="Password" />
+        </columns>
+      </TableView>
+      <Button layoutX="300.0" layoutY="255.0" mnemonicParsing="false" text="Button" />
+      <Button layoutX="202.0" layoutY="255.0" mnemonicParsing="false" text="Button" />
+      <Label fx:id="labelUserId" layoutX="137.0" layoutY="139.0" text="User Name" />
+      <Label fx:id="labelUserPw" layoutX="141.0" layoutY="192.0" text="Password" />
+      <TextField fx:id="textUserId" layoutX="202.0" layoutY="135.0" />
+      <TextField fx:id="textUserPw" layoutX="202.0" layoutY="188.0" />
+   </children>
+</AnchorPane>
