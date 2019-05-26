@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="832.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.DAOCustomerController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -18,7 +17,7 @@
       </ToolBar>
    </top>
    <center>
-      <TableView BorderPane.alignment="CENTER">
+      <TableView fx:id="CustomerTable" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="txtCustomerID" prefWidth="75.0" text="ID" />
           <TableColumn fx:id="txtCustomerName" prefWidth="75.0" text="Name" />

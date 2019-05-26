@@ -7,6 +7,7 @@ package jCalendar.viewcontroller;
 
 import jCalendar.DAO.UserDaoImpl;
 import jCalendar.model.User;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -16,7 +17,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -32,15 +37,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class DAOLoginController implements Initializable {
 
-    @FXML    private TableColumn<?, ?> UserName;
+    @FXML    private TableColumn<User, String> UserName;
     @FXML    private Label labelUserId;
     @FXML    private Button buttonLogin;
     @FXML    private Button buttonCancel;
     @FXML    private TextField textUserId;
     @FXML    private TableView<User> UserTable;
     @FXML    private TextField textUserPw;
-    @FXML    private TableColumn<?, ?> ID;
-    @FXML    private TableColumn<?, ?> Password;
+    @FXML    private TableColumn<User, Integer> ID;
+    @FXML    private TableColumn<User, String> Password;
     @FXML    private Label labelUserPw;
     ObservableList<User> Users= FXCollections.observableArrayList();
     
@@ -77,6 +82,35 @@ public class DAOLoginController implements Initializable {
 		alert.setHeaderText(null);
 		alert.setContentText(rb.getString("LOGIN WAS SUCCESSFUL."));
 		alert.showAndWait();
+
+// LOAD NEXT CUSTOMER SCREEN
+		Parent main = null;
+		Stage stage;
+
+
+		try {
+		    FXMLLoader loader = new FXMLLoader(getClass().getResource("viewcontroller/DAOCustomer.fxml"));
+		    stage = (Stage) buttonLogin.getScene().getWindow();
+		    loader.setResources(rb);
+		    main = loader.load();
+
+		    Scene scene = new Scene(main);
+
+		    stage.setScene(scene);
+		    stage.show();
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	    } else {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle(rb.getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));

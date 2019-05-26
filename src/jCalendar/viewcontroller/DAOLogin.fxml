@@ -22,7 +22,5 @@
       <TextField fx:id="textUserId" layoutX="202.0" layoutY="135.0" />
       <TextField fx:id="textUserPw" layoutX="202.0" layoutY="188.0" />
       <Button fx:id="buttonCancel" layoutX="291.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleActionCancel" text="Cancel" />
-      <Button fx:id="buttonEnglish" layoutX="497.0" layoutY="30.0" mnemonicParsing="false" text="English" />
-      <Button fx:id="buttonJapanese" layoutX="497.0" layoutY="67.0" mnemonicParsing="false" text="Japanese" />
    </children>
 </AnchorPane>
