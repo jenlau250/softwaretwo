@@ -7,7 +7,6 @@ package jCalendar.viewcontroller;
 
 import jCalendar.DAO.UserDaoImpl;
 import jCalendar.model.User;
-import jCalendar.utilities.I18N;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
