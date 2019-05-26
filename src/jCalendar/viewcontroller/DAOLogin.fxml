@@ -16,8 +16,7 @@
             <TableColumn fx:id="Password" prefWidth="117.0" text="Password" />
         </columns>
       </TableView>
-      <Button layoutX="300.0" layoutY="255.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="202.0" layoutY="255.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="buttonLogin" layoutX="202.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleActionLogin" text="Button" />
       <Label fx:id="labelUserId" layoutX="137.0" layoutY="139.0" text="User Name" />
       <Label fx:id="labelUserPw" layoutX="141.0" layoutY="192.0" text="Password" />
       <TextField fx:id="textUserId" layoutX="202.0" layoutY="135.0" />
