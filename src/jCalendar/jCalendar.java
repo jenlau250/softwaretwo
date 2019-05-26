@@ -5,6 +5,9 @@
  */
 package jCalendar;
 
+import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,14 +20,37 @@ import javafx.stage.Stage;
  */
 public class jCalendar extends Application {
     
+    static Stage stage;
+    
     @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("viewcontroller/DAOLogin.fxml"));
+    public void start(Stage stage) {
         
-        Scene scene = new Scene(root);
+	this.stage= stage;
+	// Uncomment to change language back to English
+	//Locale.setDefault(new Locale("jp","JP"));
+	ResourceBundle rb = ResourceBundle.getBundle("jCalendar/utilities/rb");
+	
+	Parent main = null;
+	
+	try {
+	    FXMLLoader loader = new FXMLLoader(getClass().getResource("viewcontroller/DAOLogin.fxml"));
+	    loader.setResources(rb);
+	    main = loader.load();
+	    
+	    Scene scene = new Scene(main);
+	    
+	    stage.setScene(scene);
+	    stage.show();
+        } catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+	
+	//Parent root = FXMLLoader.load(getClass().getResource("viewcontroller/DAOLogin.fxml"));
         
-        stage.setScene(scene);
-        stage.show();
+//        Scene scene = new Scene(root);
+//        
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     /**
@@ -33,5 +59,10 @@ public class jCalendar extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    public static Stage getStage() {
+	return stage;
+    }
+    
     
 }

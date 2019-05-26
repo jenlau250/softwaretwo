@@ -7,6 +7,7 @@ package jCalendar.viewcontroller;
 
 import jCalendar.DAO.UserDaoImpl;
 import jCalendar.model.User;
+import jCalendar.utilities.I18N;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -43,17 +44,18 @@ public class DAOLoginController implements Initializable {
     @FXML    private TableColumn<?, ?> Password;
     @FXML    private Label labelUserPw;
     ObservableList<User> Users= FXCollections.observableArrayList();
+    
+    ResourceBundle rb;
+    
 
-    
-    
     @FXML
     void handleActionLogin(ActionEvent event) {
 // Show error message If user name or password is blank
 	if ((textUserId.getText().length() == 0) || (textUserPw.getText().length() == 0)) {
 	    Alert alert = new Alert(Alert.AlertType.ERROR);
-	    alert.setTitle(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("MISSING LOGIN INFORMATION"));
+	    alert.setTitle(rb.getString("MISSING LOGIN INFORMATION"));
 	    alert.setHeaderText(null);
-	    alert.setContentText(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("PLEASE ENTER USER NAME AND PASSWORD TO LOGIN."));
+	    alert.setContentText(rb.getString("PLEASE ENTER USER NAME AND PASSWORD TO LOGIN."));
 	    alert.showAndWait();
 
 	} else {
@@ -69,18 +71,18 @@ public class DAOLoginController implements Initializable {
 		}
 	    }
 
-	    //System.out.println(validLogin);
+//System.out.println(validLogin);
 	    if (validLogin) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("SUCCESSFUL LOGIN"));
+		alert.setTitle(rb.getString("SUCCESSFUL LOGIN"));
 		alert.setHeaderText(null);
-		alert.setContentText(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("LOGIN WAS SUCCESSFUL."));
+		alert.setContentText(rb.getString("LOGIN WAS SUCCESSFUL."));
 		alert.showAndWait();
 	    } else {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));
+		alert.setTitle(rb.getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));
 		alert.setHeaderText(null);
-		alert.setContentText(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("PLEASE TRY TO LOGIN AGAIN."));
+		alert.setContentText(rb.getString("PLEASE TRY TO LOGIN AGAIN."));
 		alert.showAndWait();
 	    }
 
@@ -89,43 +91,42 @@ public class DAOLoginController implements Initializable {
 	}
     }
 
-    
-    
-    
-    
-        
-    @FXML
+        @FXML
     void handleActionCancel(ActionEvent event) {
 	System.exit(0);
     }
-    
 
-    
+
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    ID.setCellValueFactory(new PropertyValueFactory<>(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("USERID")));
-    // CustomerName.setCellValueFactory(new PropertyValueFactory<>("address"));
-       UserName.setCellValueFactory(new PropertyValueFactory<>(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("USERNAME")));
-//       CustomerAddress2.setCellValueFactory(new PropertyValueFactory<>("customerAddress2"));
-       Password.setCellValueFactory(new PropertyValueFactory<>(java.util.ResourceBundle.getBundle("jCalendar/utilities/Bundle").getString("PASSWORD")));
-       
+	
+	this.rb = rb;
+	System.out.println(Locale.getDefault());
+	buttonLogin.setText(rb.getString("loginbutton"));
+	buttonCancel.setText(rb.getString("cancelbutton"));
+	labelUserId.setText(rb.getString("labelusername"));
+	labelUserPw.setText(rb.getString("labeluserpw"));
+	
+
+	ID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+//	// CustomerName.setCellValueFactory(new PropertyValueFactory<>("address"));
+	UserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
+////       CustomerAddress2.setCellValueFactory(new PropertyValueFactory<>("customerAddress2"));
+	Password.setCellValueFactory(new PropertyValueFactory<>("password"));
+
 // populate user table from SQL 
+	try {
+	    Users.addAll(UserDaoImpl.getAllUsers());
 
-        try {
-            Users.addAll(UserDaoImpl.getAllUsers());
-            
-  
-        } catch (Exception ex) {
-            Logger.getLogger(DAOLoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-                    UserTable.setItems(Users);
-                    //Using Lambda for efficient selection off a tableview
-    }    
-    
+	} catch (Exception ex) {
+	    Logger.getLogger(DAOLoginController.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	UserTable.setItems(Users);
+	//Using Lambda for efficient selection off a tableview
+    }
 
-    
-    
 }

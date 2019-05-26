@@ -12,6 +12,8 @@ package jCalendar.DAO;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
@@ -28,6 +30,7 @@ public class DBConnection {
     private static final String password="53688552114";
     private static final String driver="com.mysql.cj.jdbc.Driver";
     static Connection conn;
+    
     public static void makeConnection()throws ClassNotFoundException, SQLException, Exception
     {
         Class.forName(driver);
@@ -38,4 +41,5 @@ public class DBConnection {
         conn.close();
         System.out.println("Connection Closed");
     }
+   
 }
