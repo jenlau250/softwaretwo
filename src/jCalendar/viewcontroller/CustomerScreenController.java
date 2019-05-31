@@ -6,7 +6,9 @@
 package jCalendar.viewcontroller;
 
 import jCalendar.DAO.CustomerDaoImpl;
+import jCalendar.jCalendar;
 import jCalendar.model.Customer;
+import jCalendar.model.User;
 import java.net.URL;
 import java.util.Date;
 import java.util.Observable;
@@ -21,13 +23,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
  * @author jlau2
  */
-public class DAOCustomerController implements Initializable {
+public class CustomerScreenController {
 
     @FXML    private Button btnCustomerAdd;
     @FXML    private Button btnCustomerUpdate;
@@ -43,13 +46,38 @@ public class DAOCustomerController implements Initializable {
     @FXML    private TableColumn<?, ?> txtCustomerLastUpdateDate;
     
     ObservableList<Customer> Customers = FXCollections.observableArrayList();
+    
 
+    public User currentUser;
+    public Stage dialogStage;
+    public jCalendar mainApp;
+
+    CustomerScreenController() {
+	
+    }
+    
     /**
      * Initializes the controller class.
+     * @param mainApp
+     * @param user
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-	// TODO
+    public void setCustomerScreen(jCalendar mainApp, User currentUser) {
+	this.mainApp = mainApp;
+	this.currentUser = currentUser;
+
+	try {
+	    Customers.addAll(CustomerDaoImpl.getallCustomers());
+	} catch (Exception ex) {
+	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+
+	}
+	CustomerTable.setItems(Customers);
+
+    }
+
+//    @Override
+//    public void initialize(URL url, ResourceBundle rb) {
+//	// TODO
 	
 	// Bind table propeties 
 //	txtCustomerID.setCellFactory(new PropertyValueFactory<>("customerId"));
@@ -61,17 +89,9 @@ public class DAOCustomerController implements Initializable {
 //	txtCustomerLastUpdateBy.setCellFactory(new PropertyValueFactory<>("lastUpdateBy"));
 //	txtCustomerLastUpdateDate.setCellFactory(new PropertyValueFactory<>("lastUpdate"));
 	
-	try {
-	    Customers.addAll(CustomerDaoImpl.getallCustomers());
-	} catch (Exception ex) {
-	    Logger.getLogger(DAOCustomerController.class.getName()).log(Level.SEVERE, null, ex);
-	    
-	}
-	CustomerTable.setItems(Customers);
+
 	
 	
-	
-	
-    }    
+      
     
 }

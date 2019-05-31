@@ -42,4 +42,8 @@ public class DBConnection {
         System.out.println("Connection Closed");
     }
    
+    public static Connection getConn() {
+	return conn;
+    }
+    
 }

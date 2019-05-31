@@ -32,6 +32,10 @@ public class User {
         this.lastUpdateBy = lastUpdateBy;
     }
 
+    public User() {
+	
+    }
+
     /**
      * @return the userId
      */

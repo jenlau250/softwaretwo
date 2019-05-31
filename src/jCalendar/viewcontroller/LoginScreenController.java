@@ -6,6 +6,7 @@
 package jCalendar.viewcontroller;
 
 import jCalendar.DAO.UserDaoImpl;
+import jCalendar.jCalendar;
 import jCalendar.model.User;
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +36,7 @@ import javafx.stage.Stage;
  *
  * @author jlau2
  */
-public class DAOLoginController implements Initializable {
+public class LoginScreenController {
 
     @FXML    private TableColumn<User, String> UserName;
     @FXML    private Label labelUserId;
@@ -49,7 +50,15 @@ public class DAOLoginController implements Initializable {
     @FXML    private Label labelUserPw;
     ObservableList<User> Users= FXCollections.observableArrayList();
     
-    ResourceBundle rb;
+    // Reference back to main screen
+    public jCalendar mainApp;
+    ResourceBundle rb = ResourceBundle.getBundle("jCalendar/utilities/rb");
+    User user = new User();
+    
+    
+    public LoginScreenController() {
+	
+    }
     
 
     @FXML
@@ -84,32 +93,8 @@ public class DAOLoginController implements Initializable {
 		alert.showAndWait();
 
 // LOAD NEXT CUSTOMER SCREEN
-		Parent main = null;
-		Stage stage;
 
-
-		try {
-		    FXMLLoader loader = new FXMLLoader(getClass().getResource("viewcontroller/DAOCustomer.fxml"));
-		    stage = (Stage) buttonLogin.getScene().getWindow();
-		    loader.setResources(rb);
-		    main = loader.load();
-
-		    Scene scene = new Scene(main);
-
-		    stage.setScene(scene);
-		    stage.show();
-		} catch (IOException ex) {
-		    ex.printStackTrace();
-		}
-
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		
 	    } else {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -130,21 +115,17 @@ public class DAOLoginController implements Initializable {
     }
 
 
-
     /**
      * Initializes the controller class.
+     * @param mainApp
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-	
-	this.rb = rb;
-	System.out.println(Locale.getDefault());
+    public void setLogin(jCalendar mainApp) {
+	this.mainApp = mainApp;
 	buttonLogin.setText(rb.getString("loginbutton"));
 	buttonCancel.setText(rb.getString("cancelbutton"));
 	labelUserId.setText(rb.getString("labelusername"));
 	labelUserPw.setText(rb.getString("labeluserpw"));
 	
-
 	ID.setCellValueFactory(new PropertyValueFactory<>("userId"));
 //	// CustomerName.setCellValueFactory(new PropertyValueFactory<>("address"));
 	UserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
@@ -156,10 +137,14 @@ public class DAOLoginController implements Initializable {
 	    Users.addAll(UserDaoImpl.getAllUsers());
 
 	} catch (Exception ex) {
-	    Logger.getLogger(DAOLoginController.class.getName()).log(Level.SEVERE, null, ex);
+	    Logger.getLogger(LoginScreenController.class.getName()).log(Level.SEVERE, null, ex);
 	}
 	UserTable.setItems(Users);
 	//Using Lambda for efficient selection off a tableview
     }
-
+	
+    
+    
+  
+    
 }
