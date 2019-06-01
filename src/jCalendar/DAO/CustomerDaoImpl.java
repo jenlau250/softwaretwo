@@ -25,7 +25,7 @@ public class CustomerDaoImpl {
     static boolean act;
     public static Customer getCustomer(String customerName) throws SQLException, Exception {
 	
-	DBConnection.makeConnection();
+	DBConnection.init();
 	String SqlStatement ="select * from customer where customerName = '" + customerName + "'";
 	Query.makeQuery(SqlStatement);
 	
@@ -55,7 +55,7 @@ public class CustomerDaoImpl {
     
     public static ObservableList<Customer> getallCustomers() throws SQLException, Exception {
 	ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-	DBConnection.makeConnection();
+	DBConnection.init();
 	String sqlStatement = "select * from customer";
 	Query.makeQuery(sqlStatement);
 	ResultSet result = Query.getResult();

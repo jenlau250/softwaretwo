@@ -24,26 +24,48 @@ import java.sql.SQLException;
  * @author jlau2
  */
 public class DBConnection {
+    
     private static final String databaseName="U05NQU";
     private static final String DB_URL="jdbc:mysql://52.206.157.109/"+databaseName;
     private static final String username="U05NQU";
     private static final String password="53688552114";
     private static final String driver="com.mysql.cj.jdbc.Driver";
-    static Connection conn;
+    private static Connection conn;
     
-    public static void makeConnection()throws ClassNotFoundException, SQLException, Exception
-    {
-        Class.forName(driver);
-        conn=(Connection) DriverManager.getConnection(DB_URL,username,password);
-        System.out.println("Connection Successful");
+    public static void init() {
+	try {
+	    Class.forName(driver);
+	    conn=(Connection) DriverManager.getConnection(DB_URL,username,password);
+	    System.out.println("Connection Successful");
+	} catch (ClassNotFoundException ce) {
+	    ce.printStackTrace();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	
     }
+//    
+//    public static void makeConnection()throws ClassNotFoundException, SQLException, Exception
+//    {
+//        Class.forName(driver);
+//        conn=(Connection) DriverManager.getConnection(DB_URL,username,password);
+//        System.out.println("Connection Successful");
+//    }
     public static void closeConnection()throws ClassNotFoundException, SQLException, Exception{
         conn.close();
-        System.out.println("Connection Closed");
+	System.out.println("Connection Closed");
     }
-   
+
     public static Connection getConn() {
-	return conn;
+	try {
+	    Class.forName(driver);
+	  //  String unicode = "useSSL=false&autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8";
+	    return DriverManager.getConnection(DB_URL, username, password);
+	} catch (Exception ex) {
+	    System.out.println(ex.getMessage());
+	    System.out.println("couldn't connect!");
+	    throw new RuntimeException(ex);
+	}
     }
-    
+
 }

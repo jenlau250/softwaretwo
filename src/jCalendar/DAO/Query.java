@@ -7,7 +7,7 @@ package jCalendar.DAO;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
-import static jCalendar.DAO.DBConnection.conn;
+import java.sql.Connection;
 
 /**
  *
@@ -21,6 +21,7 @@ public class Query {
     public static void makeQuery(String q){
         query =q;
         try{
+	    Connection conn = DBConnection.getConn();
             stmt=conn.createStatement();
             // determine query execution
             if(query.toLowerCase().startsWith("select"))

@@ -15,24 +15,18 @@ public class User {
     private int userId;
     private String userName;
     private String password;
-    private boolean active;
+   // private boolean active;
     private Calendar createDate;
     private String createdBy;
     private Calendar lastUpdate;
     private String lastUpdateBy; 
 
-    public User(int userId, String userName, String password, boolean active, Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
+    public User(int userId, String userName, String password) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
-        this.active = active;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdateBy = lastUpdateBy;
     }
-
-    public User() {
+    public User(){
 	
     }
 
@@ -81,70 +75,15 @@ public class User {
     /**
      * @return the active
      */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    /**
-     * @return the createDate
-     */
-    public Calendar getCreateDate() {
-        return createDate;
-    }
-
-    /**
-     * @param createDate the createDate to set
-     */
-    public void setCreateDate(Calendar createDate) {
-        this.createDate = createDate;
-    }
-
-    /**
-     * @return the createdBy
-     */
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    /**
-     * @param createdBy the createdBy to set
-     */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    /**
-     * @return the lastUpdate
-     */
-    public Calendar getLastUpdate() {
-        return lastUpdate;
-    }
-
-    /**
-     * @param lastUpdate the lastUpdate to set
-     */
-    public void setLastUpdate(Calendar lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    /**
-     * @return the lastUpdateBy
-     */
-    public String getLastUpdateBy() {
-        return lastUpdateBy;
-    }
-
-    /**
-     * @param lastUpdateBy the lastUpdateBy to set
-     */
-    public void setLastUpdateBy(String lastUpdateBy) {
-        this.lastUpdateBy = lastUpdateBy;
-    }
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    /**
+//     * @param active the active to set
+//     */
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
+//
 }

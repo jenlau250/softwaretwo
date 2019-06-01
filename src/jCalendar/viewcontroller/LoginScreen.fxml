@@ -22,5 +22,7 @@
       <TextField fx:id="textUserId" layoutX="202.0" layoutY="135.0" />
       <TextField fx:id="textUserPw" layoutX="202.0" layoutY="188.0" />
       <Button fx:id="buttonCancel" layoutX="291.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleActionCancel" text="Cancel" />
+      <Button fx:id="button1" layoutX="496.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleActiontest" text="Button" />
+      <Button fx:id="button2" layoutX="496.0" layoutY="104.0" mnemonicParsing="false" onAction="#handleActiontest" text="Button" />
    </children>
 </AnchorPane>

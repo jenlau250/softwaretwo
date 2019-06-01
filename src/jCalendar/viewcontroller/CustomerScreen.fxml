@@ -29,7 +29,7 @@
             <TableColumn fx:id="txtCustomerLastUpdateDate" prefWidth="75.0" text="Last Update Date" />
         </columns>
          <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            <!--<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />-->
          </columnResizePolicy>
       </TableView>
    </center>
