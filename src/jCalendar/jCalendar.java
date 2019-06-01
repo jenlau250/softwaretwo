@@ -65,7 +65,7 @@ public class jCalendar extends Application {
      *
      * @param currentUser
      */
-    public void showMain() {
+    public void showMain(User user) {
 	try {
 	    // Load root layout from fxml file.
 	    FXMLLoader loader = new FXMLLoader();
@@ -77,7 +77,7 @@ public class jCalendar extends Application {
 	    mainStage.setScene(scene);
 	    // Give the controller access to the main app.
 	    MainScreenController controller = loader.getController();
-	    controller.setMenu(this);
+	    controller.setMenu(this, user);
 
 	    mainStage.show();
 	} catch (IOException e) {
@@ -93,7 +93,7 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
-	    loginScreen = (AnchorPane) loader.load();
+	    AnchorPane loginScreen = (AnchorPane) loader.load();
 
 	    // Give controller access
 	    LoginScreenController controller = loader.getController();
@@ -116,16 +116,19 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
-	    customerScreen = (BorderPane) loader.load();
+	    BorderPane customerScreen = (BorderPane) loader.load();
 
 	    // Give controller access
 	    CustomerScreenController controller = loader.getController();
 	    controller.setCustomerScreen(this, currentUser);
 
 	    //Show scene
-	    Scene scene = new Scene(customerScreen);
-	    mainStage.setScene(scene);
-	    mainStage.show();
+//	    Scene scene = new Scene(customerScreen);
+//	    mainStage.setScene(scene);
+//	    mainStage.show();
+
+	    //set customer screen in main screen root layout
+	    mainScreen.setCenter(customerScreen);
 
 	} catch (IOException ex) {
 	    ex.printStackTrace();

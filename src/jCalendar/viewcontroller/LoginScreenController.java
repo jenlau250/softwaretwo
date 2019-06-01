@@ -41,8 +41,6 @@ public class LoginScreenController {
     @FXML    private Label labelUserId;
     @FXML    private Button buttonLogin;
     @FXML    private Button buttonCancel;
-    @FXML    private Button button1;
-    @FXML    private Button button2;
     @FXML    private TextField textUserId;
     @FXML    private TableView<User> UserTable;
     @FXML    private TextField textUserPw;
@@ -81,8 +79,15 @@ public class LoginScreenController {
 // Login successful if user name and password matches
 // change to validate in SQL db
 	    //  User loginUser = validateUserLogin(userNameInput, userPwInput);
-	    if (validate_login(userNameInput, userPwInput)) {
+	    User validateUser = validate_login(userNameInput, userPwInput);
+	    if (validateUser == null) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(rb.getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));
+		alert.setHeaderText(null);
+		alert.setContentText(rb.getString("PLEASE TRY TO LOGIN AGAIN."));
+		alert.showAndWait();
 
+	    } else {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(rb.getString("SUCCESSFUL LOGIN"));
 		alert.setHeaderText(null);
@@ -90,21 +95,21 @@ public class LoginScreenController {
 		alert.showAndWait();
 		LOGGER.log(Level.INFO, "{0} logged in", userNameInput);
 
-		mainApp.showMain();
-	    } else {
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle(rb.getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));
-		alert.setHeaderText(null);
-		alert.setContentText(rb.getString("PLEASE TRY TO LOGIN AGAIN."));
-		alert.showAndWait();
+		mainApp.showMain(validateUser);
 
 //	    System.out.println(loginUser);
 	    }
 	}
     }
    
-
-    public boolean validate_login(String username, String password) {
+    /**
+     * Searches for matching username and password in database
+     *
+     * @param username
+     * @param password
+     * @return user if match found
+     */
+    User validate_login(String username, String password) {
 	try {
 //       Class.forName("com.mysql.jdbc.Driver");  // MySQL database connection
 //       Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/javademo?" + "user=root&password=");     
@@ -113,52 +118,20 @@ public class LoginScreenController {
 	    pst.setString(2, password);
 	    ResultSet rs = pst.executeQuery();
 	    if (rs.next()) {
-		return true;
+		user.setUserName(rs.getString("userName"));
+		user.setPassword(rs.getString("password"));
+		user.setUserId(rs.getInt("userId"));
 	    } else {
-		return false;
+		return null;
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    return false;
-	}
+	    
+	} return user;
 
     }
 	
 
-
-	    
-
-//    
-//    User validateUser (String username, String password) {
-//	try {
-//	    PreparedStatement pst = DBConnection.getConn().prepareStatement("SELECT * FROM user WHERE username=? and password=?");
-//	    pst.setString(1, username);
-//	    pst.setString(2. password);
-//	    ResultSet rs = pst.executeQuery();
-//	    if(rs.next()) {
-//		user.setUserName(rs.getString("username"));
-//		user.setPassword(rs.getString("password"));
-//		user.setUserID(rs.getString("userId"));
-//		
-//		
-//	    }
-//	}
-//    }
-    
-    /**
-     * Searches for matching username and password in database
-     *
-     * @param username
-     * @param password
-     * @return user if match found
-     */
-  
-
-    @FXML
-    void handleActiontest(ActionEvent event) {
-	System.out.println("test");
-	mainApp.showMain();
-    }
 
     
     @FXML
@@ -195,6 +168,12 @@ public class LoginScreenController {
 	}
 	UserTable.setItems(Users);
 	//Using Lambda for efficient selection off a tableview
+
+	buttonCancel.setOnAction((evt) -> {
+	    System.exit(0);
+	});
+
+	
     }
 	
     

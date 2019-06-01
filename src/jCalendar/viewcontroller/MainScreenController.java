@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import jCalendar.jCalendar;
+import javafx.scene.control.MenuItem;
 
 /**
  * FXML Controller class
@@ -20,26 +21,45 @@ import jCalendar.jCalendar;
  */
 public class MainScreenController {
 
-    @FXML
-    private Button loginButton;
-    @FXML
-    private Button customerButton;
+    @FXML    private MenuItem menuCustomers;
+    @FXML    private MenuItem menuExit;
+    @FXML    private MenuItem menuReports;
+    @FXML    private MenuItem menuAppointments;
+
     private jCalendar mainApp;
     private User currentUser;
-
+    
+    // initialize mainApp,currentuser, and empty controller constructor
+    public MainScreenController() {
+	
+    }
+    
     /**
      * Initializes the controller class.
      */
     /**
      * Initializes Menu
+     *
      * @param mainApp
-     * @param currentUser 
+     * @param currentUser
      */
-    public void setMenu(jCalendar mainApp) {
+    public void setMenu(jCalendar mainApp, User currentUser) {
 	this.mainApp = mainApp;
-        //this.currentUser = currentUser;
-        
-        //logoutUser.setText("Logout: " + currentUser.getUsername());
-    }   
+	this.currentUser = currentUser;
+
+	menuExit.setOnAction((evt) -> {
+	    System.exit(0);
+	});
+	
+	menuCustomers.setOnAction((evt) -> {
+	    mainApp.showCustomerScreen(currentUser);
+	});
+
+	//logoutUser.setText("Logout: " + currentUser.getUsername());
+    }
+
+
+    
+    
     
 }

@@ -48,18 +48,18 @@ public class CustomerScreenController {
     ObservableList<Customer> Customers = FXCollections.observableArrayList();
     
 
-    public User currentUser;
-    public Stage dialogStage;
-    public jCalendar mainApp;
+    private User currentUser;
+    private Stage dialogStage;
+    private jCalendar mainApp;
 
-    CustomerScreenController() {
+    public CustomerScreenController() {
 	
     }
     
     /**
      * Initializes the controller class.
      * @param mainApp
-     * @param user
+     * @param currentUser
      */
     public void setCustomerScreen(jCalendar mainApp, User currentUser) {
 	this.mainApp = mainApp;
