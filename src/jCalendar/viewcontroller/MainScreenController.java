@@ -33,10 +33,7 @@ public class MainScreenController {
     public MainScreenController() {
 	
     }
-    
-    /**
-     * Initializes the controller class.
-     */
+
     /**
      * Initializes Menu
      *
@@ -52,7 +49,7 @@ public class MainScreenController {
 	});
 	
 	menuCustomers.setOnAction((evt) -> {
-	    mainApp.showCustomerScreen(currentUser);
+	    this.mainApp.showCustomerScreen(this.currentUser);
 	});
 
 	//logoutUser.setText("Logout: " + currentUser.getUsername());

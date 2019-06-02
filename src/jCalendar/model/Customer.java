@@ -17,32 +17,35 @@ public class Customer {
     private int customerId;
     private String customerName;
     private String address;
-    private boolean active;
-    private Calendar createDate;
-    private String createdBy;
-    private Calendar lastUpdate;
-    private String lastUpdateBy;
-
+    private String address2;
+    private String city;
+    private String country;
+    private String zipCode;
+    private String phone;
     
+   public Customer(){
+        
+    }
     
-    public Customer(int customerId, String customerName, String address, boolean active, Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
-	this.customerId = customerId;
-	this.customerName = customerName;
-	this.address = address;
-	this.active = active;
-	this.createDate = createDate;
-	this.createdBy = createdBy;
-	this.lastUpdate = lastUpdate;
-	this.lastUpdateBy = lastUpdateBy;
+   //removed CITY for now
+    public Customer(int customerId, String customerName, String address, String address2, String city, String country, String zipCode, String phone) {
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.address = address;
+        this.address2 = address2;
+        this.city = city;
+        this.country = country;
+        this.zipCode = zipCode;
+        this.phone = phone;
     }
 
     public int getCustomerId() {
 	return customerId;
     }
 
-    public void setCustomerId(int customerId) {
-	this.customerId = customerId;
-    }
+//    public void setCustomerId(int customerId) {
+//	this.customerId = customerId;
+//    }
 
     public String getCustomerName() {
 	return customerName;
@@ -60,46 +63,46 @@ public class Customer {
 	this.address = address;
     }
 
-    public boolean isActive() {
-	return active;
+    public String getAddress2() {
+	return address2;
     }
 
-    public void setActive(boolean active) {
-	this.active = active;
+    public void setAddress2(String address2) {
+	this.address2 = address2;
     }
 
-    public Calendar getCreateDate() {
-	return createDate;
+    public String getCity() {
+	return city;
     }
 
-    public void setCreateDate(Calendar createDate) {
-	this.createDate = createDate;
+    public void setCity(String city) {
+	this.city = city;
     }
 
-    public String getCreatedBy() {
-	return createdBy;
+    public String getCountry() {
+	return country;
     }
 
-    public void setCreatedBy(String createdBy) {
-	this.createdBy = createdBy;
+    public void setCountry(String country) {
+	this.country = country;
     }
 
-    public Calendar getLastUpdate() {
-	return lastUpdate;
+    public String getZipCode() {
+	return zipCode;
     }
 
-    public void setLastUpdate(Calendar lastUpdate) {
-	this.lastUpdate = lastUpdate;
+    public void setZipCode(String zipCode) {
+	this.zipCode = zipCode;
     }
 
-    public String getLastUpdateBy() {
-	return lastUpdateBy;
+    public String getPhone() {
+	return phone;
     }
 
-    public void setLastUpdateBy(String lastUpdateBy) {
-	this.lastUpdateBy = lastUpdateBy;
+    public void setPhone(String phone) {
+	this.phone = phone;
     }
     
-    
+   
     
 }

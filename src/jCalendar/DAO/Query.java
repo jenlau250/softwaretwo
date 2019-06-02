@@ -8,6 +8,7 @@ package jCalendar.DAO;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Connection;
+import java.util.HashMap;
 
 /**
  *
@@ -37,4 +38,13 @@ public class Query {
     public static ResultSet getResult(){
         return result;
     }
+
+//    public ResultSet execute(String queryString, HashMap<String, String> params) throws SQLException {
+//	Query query = new Query(queryString, params);
+//	return results;
+//    }
+//
+// 
+   
+
 }

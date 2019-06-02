@@ -31,17 +31,18 @@ import javafx.stage.Stage;
 public class jCalendar extends Application {
     
     private Stage mainStage;
-    private AnchorPane loginScreen;
     private BorderPane mainScreen;
-    private BorderPane customerScreen;
+    private AnchorPane loginScreen;
+    private AnchorPane customerScreen;
     private static Connection connection;
-    
+
     @Override
     public void start(Stage mainStage) {
-        
+
 	this.mainStage= mainStage;
 	this.mainStage.setTitle("Calendar App");
 	showLoginScreen();
+	//showCustomerScreen(user);
 
     }
     
@@ -65,7 +66,7 @@ public class jCalendar extends Application {
      *
      * @param currentUser
      */
-    public void showMain(User user) {
+    public void showMain(User currentUser) {
 	try {
 	    // Load root layout from fxml file.
 	    FXMLLoader loader = new FXMLLoader();
@@ -77,7 +78,7 @@ public class jCalendar extends Application {
 	    mainStage.setScene(scene);
 	    // Give the controller access to the main app.
 	    MainScreenController controller = loader.getController();
-	    controller.setMenu(this, user);
+	    controller.setMenu(this, currentUser);
 
 	    mainStage.show();
 	} catch (IOException e) {
@@ -116,8 +117,12 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
-	    BorderPane customerScreen = (BorderPane) loader.load();
+	    AnchorPane customerScreen = (AnchorPane) loader.load();
 
+	    
+	    //set customer screen in main screen root layout
+	    mainScreen.setCenter(customerScreen);
+	    
 	    // Give controller access
 	    CustomerScreenController controller = loader.getController();
 	    controller.setCustomerScreen(this, currentUser);
@@ -127,8 +132,6 @@ public class jCalendar extends Application {
 //	    mainStage.setScene(scene);
 //	    mainStage.show();
 
-	    //set customer screen in main screen root layout
-	    mainScreen.setCenter(customerScreen);
 
 	} catch (IOException ex) {
 	    ex.printStackTrace();

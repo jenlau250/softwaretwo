@@ -42,10 +42,10 @@ public class LoginScreenController {
     @FXML    private Button buttonLogin;
     @FXML    private Button buttonCancel;
     @FXML    private TextField textUserId;
-    @FXML    private TableView<User> UserTable;
+//    @FXML    private TableView<User> UserTable;
     @FXML    private TextField textUserPw;
-    @FXML    private TableColumn<User, Integer> ID;
-    @FXML    private TableColumn<User, String> Password;
+//    @FXML    private TableColumn<User, Integer> ID;
+//    @FXML    private TableColumn<User, String> Password;
     @FXML    private Label labelUserPw;
     ObservableList<User> Users= FXCollections.observableArrayList();
     User user = new User();
@@ -152,21 +152,22 @@ public class LoginScreenController {
 	labelUserId.setText(rb.getString("labelusername"));
 	labelUserPw.setText(rb.getString("labeluserpw"));
 	
-	ID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+//	ID.setCellValueFactory(new PropertyValueFactory<>("userId"));
 //	// CustomerName.setCellValueFactory(new PropertyValueFactory<>("address"));
-	UserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
+//	UserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
 ////       CustomerAddress2.setCellValueFactory(new PropertyValueFactory<>("customerAddress2"));
-	Password.setCellValueFactory(new PropertyValueFactory<>("password"));
+//	Password.setCellValueFactory(new PropertyValueFactory<>("password"));
 
 // populate user table from SQL 
-	try {
-	    Users.addAll(UserDaoImpl.getAllUsers());
-
-	} catch (Exception ex) {
-	    LOGGER.log(Level.SEVERE, null, ex);
-	    //Logger.getLogger(LoginScreenController.class.getName()).log(Level.SEVERE, null, ex);
-	}
-	UserTable.setItems(Users);
+//	try {
+//	    Users.addAll(UserDaoImpl.getAllUsers());
+//
+//	} catch (Exception ex) {
+//	    LOGGER.log(Level.SEVERE, null, ex);
+//	    //Logger.getLogger(LoginScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//	}
+	
+//	UserTable.setItems(Users);
 	//Using Lambda for efficient selection off a tableview
 
 	buttonCancel.setOnAction((evt) -> {
