@@ -7,8 +7,10 @@ package jCalendar.DAO;
 
 import com.sun.deploy.uitoolkit.impl.fx.ui.FXAboutDialog;
 import jCalendar.model.City;
+import jCalendar.model.Country;
 import jCalendar.model.Customer;
 import static jCalendar.utilities.TimeFiles.stringToCalendar;
+import jCalendar.viewcontroller.CustomerScreenController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -107,37 +109,62 @@ public class CustomerDaoImpl {
 	    String address = result.getString("address.address");
 	    String address2 = result.getString("address.address2");
 	    //int cityId = result.getInt("city.cityId");
-	    String cityG = result.getString("city.city");
-	    String countryG = result.getString("country.country");
+	    City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
+//String cityG = result.getString("city.city");
+	    Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
+	    //String countryG = result.getString("country.country");
 //City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
 	    String zipcode = result.getString("address.postalCode");
 	    String phone = result.getString("address.phone");
 
-	    Customer customerResult = new Customer(customerId, customerNameG, address, address2, cityG, countryG, zipcode, phone);
+	    Customer customerResult = new Customer(customerId, customerNameG, address, address2, city, country, zipcode, phone);
   
 	    allCustomers.add(customerResult);
 	}
 	DBConnection.closeConnection();
 	return allCustomers;
     }
-//    
-//    public static ObservableList<City> getallCities() throws SQLException, Exception {
-//	ObservableList<City> cities = FXCollections.observableArrayList();
-//	DBConnection.init();
-//	String sql = ("SELECT cityId, city FROM city");
-//	
-//	Query.makeQuery(sql);
-//	ResultSet result = Query.getResult();
-//	while (result.next()) {
-//	    cities.add(new City(result.getInt("city.cityId"), result.getString("city.city")));
-//	    
-//	    
-//	}
-//	DBConnection.closeConnection();
-//	return cities;	
+
+    public static ObservableList<City> getallCities() throws SQLException, Exception {
+	ObservableList<City> cities = FXCollections.observableArrayList();
+	DBConnection.init();
+	String sql = "SELECT city.city, city.cityId "
+		+ "FROM city, country "
+		+ "WHERE city.countryId = country.countryId "
+		+ "AND country.country = \"" + country + "\"";
+
+
+	Query.makeQuery(sql);
+	ResultSet result = Query.getResult();
+	while (result.next()) {
+	    cities.add(new City(result.getInt("city.cityId"), result.getString("city.city")));
+	    
+	    
+	}
+	DBConnection.closeConnection();
+	return cities;	
 	
 //    }
-    
+    private void populateCityList() {
+	
+	String country = countryCombo.getValue();
+
+	
+	Query.makeQuery(sql);
+	ResultSet rs = Query.getResult();
+
+	try {
+	    while (rs.next()) {
+		selectedCities.add(new City(rs.getInt("city.CityId"), rs.getString("city.city")));
+//		cityCombo.getItems().add(rs.getString(1));
+//		cityCombo.getItems().add(selectedCities.get(0));
+		//cityCombo.getItems().setAll(selectedCities);
+	    }
+	} catch (SQLException ex) {
+	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	
+    }
     
     
 

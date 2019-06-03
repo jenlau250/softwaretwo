@@ -61,7 +61,7 @@
                               <Label contentDisplay="TOP" text="Phone Number" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                               <Label contentDisplay="TOP" text="Zip Code" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
                               <ComboBox fx:id="cityCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <Button fx:id="btnCustomerSave" mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+                              <Button fx:id="btnCustomerSave" mnemonicParsing="false" onAction="#handleSaveCustomer" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
                               <Button fx:id="btnCustomerCancelSave" mnemonicParsing="false" onAction="#handleCancelCustomer" text="Cancel" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                               <ComboBox fx:id="countryCombo" onAction="#comboCountryAction" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label fx:id="customerLabel" text="Label" GridPane.columnIndex="1">
@@ -79,7 +79,7 @@
       </SplitPane>
       <Button fx:id="btnCustomerAdd" layoutX="95.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add" />
       <Button fx:id="btnCustomerUpdate" layoutX="169.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleUpdateCustomer" text="Update" />
-      <Button fx:id="btnCustomerDelete" layoutX="255.0" layoutY="55.0" mnemonicParsing="false" text="Delete" />
+      <Button fx:id="btnCustomerDelete" layoutX="255.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleDeleteCustomer" text="Delete" />
    </children>
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

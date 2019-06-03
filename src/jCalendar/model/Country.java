@@ -10,24 +10,24 @@ package jCalendar.model;
  * @author jlau2
  */
 public class Country {
-    
-    private Integer countryId;
+
+    private int countryId;
     private String country;
-    
+
     public Country() {
-	
+
     }
-    
-    public Country(Integer countryId, String country) {
+
+    public Country(int countryId, String country) {
 	this.country = country;
 	this.countryId = countryId;
     }
 
-    public Integer getCountryId() {
+    public int getCountryId() {
 	return countryId;
     }
 
-    public void setCountryId(Integer countryId) {
+    public void setCountryId(int countryId) {
 	this.countryId = countryId;
     }
 
@@ -38,5 +38,5 @@ public class Country {
     public void setCountry(String country) {
 	this.country = country;
     }
-    
+
 }
