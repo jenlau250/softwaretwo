@@ -39,4 +39,10 @@ public class Country {
 	this.country = country;
     }
 
+    @Override
+    public String toString() {
+	return String.valueOf(country);
+    }
+    
+
 }

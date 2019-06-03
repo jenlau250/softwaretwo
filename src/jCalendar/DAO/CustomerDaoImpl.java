@@ -95,8 +95,8 @@ public class CustomerDaoImpl {
 	String sqlStatement = 
 		("SELECT customer.customerId, customer.customerName, address.address, address.address2, address.postalCode, city.cityId, city.city, country.country, address.phone "
 		+ "FROM customer, address, city, country "
-		+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId ");
-		//+ "ORDER BY customer.customerName");
+		+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
+		+ "ORDER BY customer.customerName");
 	
 	Query.makeQuery(sqlStatement);
 	ResultSet result = Query.getResult(); 
@@ -125,47 +125,52 @@ public class CustomerDaoImpl {
 	return allCustomers;
     }
 
-    public static ObservableList<City> getallCities() throws SQLException, Exception {
-	ObservableList<City> cities = FXCollections.observableArrayList();
+//    public static ObservableList<City> getallCities() throws SQLException, Exception {
+//	ObservableList<City> cities = FXCollections.observableArrayList();
+//	String sql = "SELECT city.city, city.cityId "
+//		+ "FROM city, country "
+//		+ "WHERE city.countryId = country.countryId "
+//		+ "AND country.country = \"" + country + "\"";
+//
+//
+//	Query.makeQuery(sql);
+//	ResultSet result = Query.getResult();
+//	while (result.next()) {
+//	    cities.add(new City(result.getInt("city.cityId"), result.getString("city.city")));
+//	    
+//	    
+//	}
+//	DBConnection.closeConnection();
+//	return cities;	
+//	
+//    }
+    public static ObservableList<Country> getCountries() throws SQLException, Exception {
 	DBConnection.init();
-	String sql = "SELECT city.city, city.cityId "
-		+ "FROM city, country "
-		+ "WHERE city.countryId = country.countryId "
-		+ "AND country.country = \"" + country + "\"";
+	ObservableList<Country> countries = FXCollections.observableArrayList();
+	String sql = "SELECT country FROM country;";
+	try {
 
+	    Query.makeQuery(sql);
+	    ResultSet rs = Query.getResult();
+	    while (rs.next()) {
+		countries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
 
-	Query.makeQuery(sql);
-	ResultSet result = Query.getResult();
-	while (result.next()) {
-	    cities.add(new City(result.getInt("city.cityId"), result.getString("city.city")));
-	    
-	    
+	    }
+
+	} catch (SQLException e) {
+
+	    System.out.println(e);
+	    throw e;
 	}
 	DBConnection.closeConnection();
-	return cities;	
-	
-//    }
-    private void populateCityList() {
-	
-	String country = countryCombo.getValue();
-
-	
-	Query.makeQuery(sql);
-	ResultSet rs = Query.getResult();
-
-	try {
-	    while (rs.next()) {
-		selectedCities.add(new City(rs.getInt("city.CityId"), rs.getString("city.city")));
-//		cityCombo.getItems().add(rs.getString(1));
-//		cityCombo.getItems().add(selectedCities.get(0));
-		//cityCombo.getItems().setAll(selectedCities);
-	    }
-	} catch (SQLException ex) {
-	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
-	}
+	return countries;
 	
     }
+
     
+}
+
+//    }
+//    
     
 
-}

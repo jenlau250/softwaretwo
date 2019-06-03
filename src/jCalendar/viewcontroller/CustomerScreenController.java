@@ -69,7 +69,7 @@ public class CustomerScreenController {
     @FXML    private TextField txtCustomerPhone;
     @FXML    private Label customerLabel;
     @FXML    private ComboBox<City> cityCombo;
-    @FXML    private ComboBox<String> countryCombo;
+    @FXML    private ComboBox<Country> countryCombo;
 //
 //    @FXML    private TableColumn<Customer, String> txtCustomerPhone;
 //    @FXML    private TableColumn<Customer, String> txtCustomerZipCode;
@@ -81,6 +81,7 @@ public class CustomerScreenController {
     @FXML   ObservableList<Customer> Customers = FXCollections.observableArrayList();
     @FXML   ObservableList<City> Cities = FXCollections.observableArrayList();
     ObservableList<City> selectedCities = FXCollections.observableArrayList();
+    ObservableList<Country> Countries = FXCollections.observableArrayList();
    
     private jCalendar mainApp;
     private User currentUser;
@@ -94,54 +95,98 @@ public class CustomerScreenController {
 	populateCityList();
 
     }
-    
-//    private void populateCityList() {
-//	
-//	String country = countryCombo.getValue();
-//
-//	String sql = "SELECT city.city, city.cityId "
-//		+ "FROM city, country "
-//		+ "WHERE city.countryId = country.countryId "
-//		+ "AND country.country = \"" + country + "\"";
-//
-//	Query.makeQuery(sql);
-//	ResultSet rs = Query.getResult();
-//	cityCombo.getItems().clear();
-//
-//	try {
-//	    while (rs.next()) {
-//		selectedCities.add(new City(rs.getInt("city.CityId"), rs.getString("city.city")));
-////		cityCombo.getItems().add(rs.getString(1));
-////		cityCombo.getItems().add(selectedCities.get(0));
-//		//cityCombo.getItems().setAll(selectedCities);
-//	    }
-//	} catch (SQLException ex) {
-//	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//	}
-//	cityCombo.setItems(selectedCities);
-//	
-//    }
-    
-    @FXML
-    private void initializeCountry() {
-	
-	//Customers.getClass().getDeclaredFields().
-	Query.makeQuery("SELECT country FROM country");
+
+    private void populateCountriesList() {
+
+
+	String sql = "SELECT country, countryId FROM country";
+
+	Query.makeQuery(sql);
 	ResultSet rs = Query.getResult();
+	countryCombo.getItems().clear();
 
-	//ResultSet rs = accessDB("SELECT country FROM country");
 	try {
-
 	    while (rs.next()) {
-		
-		countryCombo.getItems().add(rs.getString(1));
-
+		Countries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
+//		cityCombo.getItems().add(rs.getString(1));
+//		cityCombo.getItems().add(selectedCities.get(0));
+		//cityCombo.getItems().setAll(selectedCities);
 	    }
 	} catch (SQLException ex) {
 	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
 	}
+	countryCombo.setItems(Countries);
 
     }
+	
+    private void populateCityList() {
+	
+//	String sqlstmt = "SELECT country, countryId FROM country;";
+//	try {
+//
+//	    Query.makeQuery(sqlstmt);
+//	    ResultSet rs = Query.getResult();
+//	    while (rs.next()) {
+//		Countries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
+//
+//	    }
+//
+//	} catch (SQLException ex) {
+//	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//	}
+//	
+//	countryCombo.setItems(Countries);
+	
+	String country = countryCombo.getValue().getCountry();
+	
+	String sql = "SELECT city.city, city.cityId "
+		+ "FROM city, country "
+		+ "WHERE city.countryId = country.countryId "
+		+ "AND country.country = \"" + country + "\"";
+
+	Query.makeQuery(sql);
+	ResultSet result = Query.getResult();
+	cityCombo.getItems().clear();
+
+	try {
+	    while (result.next()) {
+		selectedCities.add(new City(result.getInt("city.CityId"), result.getString("city.city")));
+//		cityCombo.getItems().add(rs.getString(1));
+//		cityCombo.getItems().add(selectedCities.get(0));
+		//cityCombo.getItems().setAll(selectedCities);
+	    }
+	} catch (SQLException ex) {
+	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	cityCombo.setItems(selectedCities);
+	
+    }
+    
+//    @FXML
+//    private void initializeCountry() {
+//	
+//
+//	countryCombo.setItems(CustomerDaoImpl.getCountries());
+//	//Customers.getClass().getDeclaredFields().
+//	Query.makeQuery("SELECT country, countryId FROM country");
+//	ResultSet rs = Query.getResult();
+//
+//	//ResultSet rs = accessDB("SELECT country FROM country");
+//	try {
+//
+//	    while (rs.next()) {
+//		selectedCountries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
+//		//Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
+//		//countryCombo.getItems().add(rs.getString(1));
+//
+//	    }
+//	} catch (SQLException ex) {
+//	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//	}
+
+//    }
+    
+    
     @FXML
     private void showCustomerDetails(Customer selectedCustomer) {
 
@@ -152,19 +197,11 @@ public class CustomerScreenController {
 	txtCustomerAddress.setText(selectedCustomer.getAddress());
 	txtCustomerAddress2.setText(selectedCustomer.getAddress2());
 	
-    // selects current country
 	countryCombo.setValue(selectedCustomer.getCountry());
 	cityCombo.setValue(selectedCustomer.getCity());
-	// this worked whent City was a String cityCombo.setValue(selectedCustomer.getCity().toString());
-	//txtCustomerCountry.setText(selectedCustomer.getCountry());
 	txtCustomerZipCode.setText(selectedCustomer.getZipCode());
 	txtCustomerPhone.setText(selectedCustomer.getPhone());
-	//System.out.println(selectedCustomer.getPhone());
 
-	//populateCityList();
-	//TEST 1: both don't populate
-//	countryCombo.setValue(selectedCustomer.getCountry());
-//	cityCombo.setValue(selectedCustomer.getCity().getCityName());
     }
     
     
@@ -219,10 +256,12 @@ public class CustomerScreenController {
 
     @FXML
     void handleSaveCustomer(ActionEvent event) {
+	
 	Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+	
 	int cusId = selectedCustomer.getCustomerId();
 	if (editMode) {
-	    updateCustomer(cusId);
+	    updateCustomer();
 	} else {
 	    saveNewCustomer();
 	}
@@ -234,12 +273,13 @@ public class CustomerScreenController {
     void handleUpdateCustomer(ActionEvent event) {
 	
 	customerLabel.setText("Update Customer Details");
+	
 	Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-	int cusId = selectedCustomer.getCustomerId();
+
 	
 	if (selectedCustomer != null) {
 	    editMode = true;
-	    updateCustomer(cusId);
+	    updateCustomer();
 //	    btnCustomerDelete.setDisable(true);
 //	    btnCustomerUpdate.setDisable(true);
 //	    enableEdits();
@@ -259,6 +299,9 @@ public class CustomerScreenController {
 
     }
 
+   
+    
+    
     /**
      * Initializes the controller class.
      *
@@ -275,8 +318,12 @@ public class CustomerScreenController {
 	txtCustomerID1.setCellValueFactory(new PropertyValueFactory<>("customerId"));
 	txtCustomerName1.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 	txtCustomerCountry1.setCellValueFactory(new PropertyValueFactory<>("country"));
-	initializeCountry();
+	//populateCountriesList();
+	//countryCombo.setItems(Countries);
 	populateCityList();
+	
+
+
 //	initializeCity();
 
 	cityCombo.setConverter(new StringConverter<City>() {
@@ -292,9 +339,25 @@ public class CustomerScreenController {
 	    }
 	});
 
+//	countryCombo.setConverter(new StringConverter<Country>() {
+//
+//	    @Override
+//	    public String toString(Country object) {
+//		return object.getCountry();
+//	    }
+//
+//	    @Override
+//	    public Country fromString(String string) {
+//		return countryCombo.getItems().stream().filter(ap -> ap.getCountry().equals(string)).findFirst().orElse(null);
+//	    }
+//	});
+	
+	
+	
 	try {
 
 	    Customers.addAll(CustomerDaoImpl.getallCustomers());
+	    //Countries.addAll(CustomerDaoImpl.getCountries());
 	    // Cities.addAll(CustomerDaoImpl.getallCities());
 	} catch (Exception ex) {
 	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
@@ -309,6 +372,8 @@ public class CustomerScreenController {
 		showCustomerDetails(newSelection);
 	    }
 	});
+
+	
 
 
 	//triggers errors disableEdits();
@@ -421,11 +486,13 @@ public class CustomerScreenController {
     /**
      * Updates Customer records
      */
-    private void updateCustomer(int cusId) {
+    private void updateCustomer() {
 	try {
 	    int addId = -1;
 	    int newcusId = -1;
-	    
+	    Customer sCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+	    int cusId = sCustomer.getCustomerId();
+
 	    System.out.println(cusId)
 		    ;
 	    PreparedStatement ps = DBConnection.getConn().prepareStatement("UPDATE address, customer, city, country "
@@ -437,8 +504,8 @@ public class CustomerScreenController {
 	    ps.setString(1, txtCustomerAddress.getText());
 	    ps.setString(2, txtCustomerAddress2.getText());
 	    ps.setInt(3, cityCombo.getValue().getCityId());
-	    System.out.println(countryCombo.getValue());
-	    ps.setString(4, countryCombo.getValue());
+	    System.out.println(countryCombo.getValue().getCountry());
+	    ps.setString(4, countryCombo.getValue().getCountry());
 	    ps.setString(5, txtCustomerZipCode.getText());
 	    ps.setString(6, txtCustomerPhone.getText());
 	    //ps.setString(7, txtCustomerID.getText());

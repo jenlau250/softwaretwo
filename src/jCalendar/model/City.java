@@ -12,17 +12,17 @@ package jCalendar.model;
 public class City {
     private int cityId;
     private String cityName;
-    private int countryId;
+  //  private int countryId;
     
     public City(){
 
     }
 
-    public City(int cityId, String cityName, int countryId) {
-	this.cityId = cityId;
-	this.cityName = cityName;
-	this.countryId = countryId;
-    }
+//    public City(int cityId, String cityName, int countryId) {
+//	this.cityId = cityId;
+//	this.cityName = cityName;
+//	this.countryId = countryId;
+//    }
 
     public City(int cityId, String city) {
 	this.cityId = cityId;

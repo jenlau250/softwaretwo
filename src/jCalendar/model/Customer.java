@@ -19,7 +19,7 @@ public class Customer {
     private String address;
     private String address2;
     private City city;
-    private String country;
+    private Country country;
     private String zipCode;
     private String phone;
     
@@ -28,7 +28,7 @@ public class Customer {
     }
     
    //removed CITY for now
-    public Customer(int customerId, String customerName, String address, String address2, City city, String country, String zipCode, String phone) {
+    public Customer(int customerId, String customerName, String address, String address2, City city, Country country, String zipCode, String phone) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.address = address;
@@ -89,11 +89,11 @@ public class Customer {
 //	this.city.setCityId(cityId);
 //    }
 
-    public String getCountry() {
+    public Country getCountry() {
 	return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
 	this.country = country;
     }
 
