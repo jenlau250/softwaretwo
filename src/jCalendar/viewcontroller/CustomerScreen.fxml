@@ -64,9 +64,9 @@
                               <Button fx:id="btnCustomerSave" mnemonicParsing="false" onAction="#handleSaveCustomer" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
                               <Button fx:id="btnCustomerCancelSave" mnemonicParsing="false" onAction="#handleCancelCustomer" text="Cancel" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                               <ComboBox fx:id="countryCombo" onAction="#comboCountryAction" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label fx:id="customerLabel" text="Label" GridPane.columnIndex="1">
+                              <Label fx:id="customerLabel" prefHeight="27.0" prefWidth="145.0" text="Label" GridPane.columnIndex="1">
                                  <font>
-                                    <Font name="System Bold" size="18.0" />
+                                    <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
                            </children>

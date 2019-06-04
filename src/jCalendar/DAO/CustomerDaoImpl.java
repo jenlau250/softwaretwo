@@ -111,13 +111,13 @@ public class CustomerDaoImpl {
 	    //int cityId = result.getInt("city.cityId");
 	    City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
 //String cityG = result.getString("city.city");
-	    Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
-	    //String countryG = result.getString("country.country");
+	    //Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
+	    String countryG = result.getString("country.country");
 //City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
 	    String zipcode = result.getString("address.postalCode");
 	    String phone = result.getString("address.phone");
 
-	    Customer customerResult = new Customer(customerId, customerNameG, address, address2, city, country, zipcode, phone);
+	    Customer customerResult = new Customer(customerId, customerNameG, address, address2, city, countryG, zipcode, phone);
   
 	    allCustomers.add(customerResult);
 	}

@@ -12,14 +12,14 @@ package jCalendar.model;
 public class Country {
 
     private int countryId;
-    private String country;
+    private String countryName;
 
     public Country() {
 
     }
 
-    public Country(int countryId, String country) {
-	this.country = country;
+    public Country(int countryId, String countryName) {
+	this.countryName = countryName;
 	this.countryId = countryId;
     }
 
@@ -31,17 +31,17 @@ public class Country {
 	this.countryId = countryId;
     }
 
-    public String getCountry() {
-	return country;
+    public String getCountryName() {
+	return countryName;
     }
 
-    public void setCountry(String country) {
-	this.country = country;
+    public void setCountry(String countryName) {
+	this.countryName = countryName;
     }
 
     @Override
     public String toString() {
-	return String.valueOf(country);
+	return String.valueOf(countryName);
     }
     
 
