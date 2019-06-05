@@ -8,6 +8,7 @@ package jCalendar;
 import jCalendar.DAO.DBConnection;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
+import jCalendar.viewcontroller.AppointmentScreenController;
 import jCalendar.viewcontroller.CustomerScreenController;
 import jCalendar.viewcontroller.LoginScreenController;
 import jCalendar.viewcontroller.MainScreenController;
@@ -33,6 +34,7 @@ public class jCalendar extends Application {
     private Stage mainStage;
     private BorderPane mainScreen;
     private AnchorPane loginScreen;
+    private AnchorPane appointmentScreen;
     private AnchorPane customerScreen;
     private static Connection connection;
 
@@ -94,7 +96,7 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
-	    AnchorPane loginScreen = (AnchorPane) loader.load();
+	    loginScreen = (AnchorPane) loader.load();
 
 	    // Give controller access
 	    LoginScreenController controller = loader.getController();
@@ -117,7 +119,7 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
-	    AnchorPane customerScreen = (AnchorPane) loader.load();
+	    customerScreen = (AnchorPane) loader.load();
 
 	    
 	    //set customer screen in main screen root layout
@@ -138,8 +140,25 @@ public class jCalendar extends Application {
 	}
     }
 
+    public void showAppointmentScreen(User currentUser) {
 
+	try {
+	    // Load screen
+	    FXMLLoader loader = new FXMLLoader();
+	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
+	    AnchorPane appointmentScreen = (AnchorPane) loader.load();
 
+	    //set customer screen in main screen root layout
+	    mainScreen.setCenter(appointmentScreen);
+
+	    // Give controller access
+	    AppointmentScreenController controller = loader.getController();
+	    controller.setAppointmentScreen(this, currentUser);
+
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+    }
   
 
 }

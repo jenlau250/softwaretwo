@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
+   <children>
+      <SplitPane dividerPositions="0.29797979797979796" layoutX="147.0" layoutY="97.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="528.0" prefWidth="527.0">
+               <children>
+                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="700.0">
+                    <columns>
+                      <TableColumn fx:id="tCustomer" prefWidth="75.0" text="Customer" />
+                      <TableColumn fx:id="tStartDate" prefWidth="112.0" text="Start Date" />
+                        <TableColumn fx:id="tEndDate" prefWidth="94.0" text="End Date" />
+                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="78.0" text="Title" />
+                        <TableColumn fx:id="tDescription" prefWidth="94.0" text="Description" />
+                        <TableColumn fx:id="tLocation" prefWidth="85.0" text="Location" />
+                        <TableColumn fx:id="tContact" prefWidth="78.0" text="Contact" />
+                        <TableColumn fx:id="tUser" prefWidth="83.0" text="User" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="9.0" layoutY="14.0" prefHeight="45.0" prefWidth="125.0" text="Appointments">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="134.0" layoutY="28.0" text="Label" />
+                  <ToolBar layoutX="4.0" layoutY="59.0" prefHeight="40.0" prefWidth="200.0">
+                    <items>
+                      <Button fx:id="btnApptAdd" mnemonicParsing="false" onAction="#handleApptAdd" text="Add" />
+                        <Button fx:id="btnApptUpdate" mnemonicParsing="false" onAction="#handleApptEdit" text="Update" />
+                        <Button fx:id="btnApptDel" mnemonicParsing="false" onAction="#handleApptDelete" text="Delete" />
+                    </items>
+                  </ToolBar>
+                  <Separator layoutY="536.0" prefHeight="0.0" prefWidth="844.0" />
+                  <Button fx:id="btnApptSave" layoutX="539.0" layoutY="502.0" mnemonicParsing="false" onAction="#handleApptSave" text="Save" />
+                  <Button fx:id="btnApptCancel" layoutX="644.0" layoutY="502.0" mnemonicParsing="false" onAction="#handleApptCancel" text="Cancel" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

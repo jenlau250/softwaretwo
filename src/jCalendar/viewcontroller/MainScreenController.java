@@ -12,6 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import jCalendar.jCalendar;
+import jCalendar.model.Appointment;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 
 /**
@@ -21,14 +26,19 @@ import javafx.scene.control.MenuItem;
  */
 public class MainScreenController {
 
-    @FXML    private MenuItem menuCustomers;
-    @FXML    private MenuItem menuExit;
-    @FXML    private MenuItem menuReports;
-    @FXML    private MenuItem menuAppointments;
+    @FXML
+    private MenuItem menuCustomers;
+    @FXML
+    private MenuItem menuExit;
+    @FXML
+    private MenuItem menuReports;
+    @FXML
+    private MenuItem menuAppointments;
 
     private jCalendar mainApp;
     private User currentUser;
-    
+
+
     // initialize mainApp,currentuser, and empty controller constructor
     public MainScreenController() {
 	
@@ -50,6 +60,10 @@ public class MainScreenController {
 	
 	menuCustomers.setOnAction((evt) -> {
 	    this.mainApp.showCustomerScreen(this.currentUser);
+	});
+
+	menuAppointments.setOnAction((evt) -> {
+	    this.mainApp.showAppointmentScreen(this.currentUser);
 	});
 
 	//logoutUser.setText("Logout: " + currentUser.getUsername());

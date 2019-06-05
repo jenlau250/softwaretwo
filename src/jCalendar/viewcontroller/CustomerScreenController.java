@@ -53,8 +53,6 @@ import javafx.util.StringConverter;
  * @author jlau2
  */
 public class CustomerScreenController {
-    
-    
  
     @FXML    private Button btnCustomerAdd;
     @FXML    private Button btnCustomerUpdate;
@@ -76,14 +74,7 @@ public class CustomerScreenController {
     @FXML    private Label customerLabel;
     @FXML    private ComboBox<City> cityCombo;
     @FXML    private ComboBox<String> countryCombo;
-//
-//    @FXML    private TableColumn<Customer, String> txtCustomerPhone;
-//    @FXML    private TableColumn<Customer, String> txtCustomerZipCode;
-//    @FXML    private TableColumn<Customer, String> txtCustomerCity;
-//    @FXML    private TableColumn<Customer, String> txtCustomerAddress2;
-//    @FXML    private TableColumn<Customer, String> txtCustomerCountry;
-    
-    
+
     @FXML   ObservableList<Customer> Customers = FXCollections.observableArrayList();
     @FXML   ObservableList<City> Cities = FXCollections.observableArrayList();
     ObservableList<City> selectedCities = FXCollections.observableArrayList();
@@ -95,6 +86,11 @@ public class CustomerScreenController {
     boolean editMode;
     //private User currentUser;
 
+    public CustomerScreenController() {
+
+    }
+	
+	
      @FXML
     private void comboCountryAction(ActionEvent event) {
 	
@@ -260,9 +256,7 @@ public class CustomerScreenController {
 
     }
     
-    public CustomerScreenController() {
 
-    }
 
    
     

@@ -5,6 +5,9 @@
  */
 package jCalendar.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  *
  * @author jlau2
@@ -15,6 +18,8 @@ public class Appointment {
     private Customer customer;
     private String title;
     private String description;
+    private String location;
+
     private String start;
     private String end;
     private String user;
@@ -26,12 +31,13 @@ public class Appointment {
 	this.appointmentId = appointmentId;
     }
 
-    public Appointment(String appointmentId, String start, String end, String title, String description, Customer customer, String user) {
+    public Appointment(String appointmentId, String start, String end, String title, String description, String location, Customer customer, String user) {
 	this.appointmentId = appointmentId;
 	this.start = start;
 	this.end = end;
 	this.title = title;
 	this.description = description;
+	this.location = location;
 	this.customer = customer;
 	this.user = user;
     }
@@ -50,6 +56,15 @@ public class Appointment {
 	this.appointmentId = appointmentId;
     }
 
+    
+    public String getLocation() {
+	return location;
+    }
+
+    public void setLocation(String location) {
+	this.location = location;
+    }
+    
     public String getTitle() {
 	return title;
     }
@@ -93,8 +108,8 @@ public class Appointment {
 		+ " Consultant: " + this.user + ".\n";
     }
 
-    public Customer getCustomer() {
-	return customer;
+    public String getCustomer() {
+	return customer.getCustomerName();
     }
 
     public void setCustomer(Customer customer) {
@@ -108,5 +123,6 @@ public class Appointment {
     public void setUser(String user) {
 	this.user = user;
     }
+
 
 }

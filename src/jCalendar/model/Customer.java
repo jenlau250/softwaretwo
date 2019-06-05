@@ -8,6 +8,8 @@ package jCalendar.model;
 import java.util.Calendar;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -40,18 +42,17 @@ public class Customer {
         this.zipCode = zipCode;
         this.phone = phone;
     }
+
+    
+    public Customer (int customerId, String customerName) {
+	this.customerId = customerId;
+	this.customerName = customerName;
+    }
     
     private final IntegerProperty customerIdProperty = new SimpleIntegerProperty(customerId);
 
-    public int getCustomerIdProperty() {
-	return customerIdProperty.get();
-    }
-
-    public void setCustomerIdProperty(int value) {
-	customerIdProperty.set(value);
-    }
-
-    public IntegerProperty customerIdPropertyProperty() {
+    
+    public IntegerProperty customerIdProperty() {
 	return customerIdProperty;
     }
 
@@ -130,10 +131,6 @@ public class Customer {
     }
 
 
-    @Override
-    public String toString() {
-	return String.valueOf(city.getCityId());
-    }
 
    
 
