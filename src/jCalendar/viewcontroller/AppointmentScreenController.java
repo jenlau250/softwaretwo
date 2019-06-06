@@ -10,12 +10,16 @@ import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Customer;
 import jCalendar.model.User;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,14 +38,21 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
 /**
@@ -51,14 +62,26 @@ import javafx.util.Callback;
  */
 public class AppointmentScreenController {
     
-    @FXML    private TableColumn<Appointment, String> tContact;
-    @FXML    private TableColumn<Appointment, ?> tLocation;
     @FXML    private TableView<Appointment> ApptTable;
+    @FXML    private TableColumn<Appointment, String> tContact;
+    @FXML    private TableColumn<Appointment, String> tLocation;
     @FXML    private TableColumn<Appointment, String> tDescription;
     @FXML    private TableColumn<Appointment, String> tTitle;
     @FXML    private TableColumn<Appointment, ZonedDateTime> tEndDate;
     @FXML    private TableColumn<Appointment, LocalDateTime> tStartDate;
     @FXML    private TableColumn<Appointment, Customer> tCustomer;
+    @FXML    private Label labelAppt;
+    
+    @FXML    private TableView<Customer> tblApptCustomer;
+    @FXML    private TableColumn<Customer, Integer> tblCustomerId;
+    @FXML    private TableColumn<Customer, String> tblCustName;
+    @FXML    private DatePicker datePicker;
+    @FXML    private ComboBox<String> comboEnd;
+    @FXML    private ComboBox<String> comboStart;
+    @FXML    private TextField type;
+    @FXML    private TextField zoneID;
+    @FXML    private TextField txtLocation;
+    @FXML    private TextField txtTitle;
     
     @FXML    private Button btnApptDel;
     @FXML    private Button btnApptAdd;
@@ -70,9 +93,18 @@ public class AppointmentScreenController {
     private User currentUser;
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final ZoneId newzid = ZoneId.systemDefault();
-    ObservableList<Appointment> appointmentList;
+    private SplitPane splitPane;
+    
 
-
+    boolean okClicked;
+    Appointment selectedAppt;
+    private final ZoneId zid = ZoneId.systemDefault();
+    private ObservableList<Appointment> appointmentList;
+    private ObservableList<Customer> masterData = FXCollections.observableArrayList();
+    private final ObservableList<String> startTimes = FXCollections.observableArrayList();
+    private final ObservableList<String> endTimes = FXCollections.observableArrayList();
+    private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    ObservableList<Appointment> apptTimeList;
     
     public AppointmentScreenController() {
 
@@ -103,20 +135,40 @@ public class AppointmentScreenController {
 
     @FXML 
     void handleApptEdit(ActionEvent event) {
-	System.out.println("edit");
-	
+	Appointment selAppt = ApptTable.getSelectionModel().getSelectedItem();
+
+	if (selAppt != null) {
+	    
+	    boolean okClicked;
+	    mainApp.showAppointmentEntryScreen(selAppt, currentUser);
+	   //mainApp.showAppointmentEntryScreen(currentUser);
+
+
+
+	} else {
+	    Alert alert = new Alert(Alert.AlertType.WARNING);
+	    alert.setTitle("No Selection");
+	    alert.setHeaderText("No Appointment selected");
+	    alert.setContentText("Please select an Appointment in the Table");
+	    alert.showAndWait();
+	}
+
     }
     
     @FXML 
     void handleApptAdd(ActionEvent event) {
-	System.out.println("add");
-	
+	Appointment selAppt = ApptTable.getSelectionModel().getSelectedItem();
+//        boolean okClicked = mainApp.showAppointmentEntryScreen(currentUser);
+        mainApp.showAppointmentScreen(currentUser);
     }
 
     @FXML
     void handleApptSave(ActionEvent event) {
-	System.out.println("save");
-
+	if (okClicked) {
+//	    updateAppointment();
+	} else {
+//	    saveAppointment()
+	}
     }
     
     @FXML
@@ -134,6 +186,7 @@ public class AppointmentScreenController {
 
 	this.mainApp = mainApp;
 	this.currentUser = currentUser;
+//	selectedAppt = ApptTable.getSelectionModel().getSelectedItem();
 	
 	tCustomer.setCellValueFactory(new PropertyValueFactory<>("customer"));
 	tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
@@ -144,72 +197,105 @@ public class AppointmentScreenController {
 	tContact.setCellValueFactory(new PropertyValueFactory<>("user"));
 
 	appointmentList = FXCollections.observableArrayList();
-	showAppointments();
+	populateAppointmentList();
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList, t -> true);
 	ApptTable.getItems().setAll(filteredData);
 
-//	tCustomer.textProperty().addListener(obs -> {
-//	    filter(filteredData);
-//	});
-//	tCustomer.textProperty().addListener(
-//		(observable, oldValue, newValue) -> {
-//		    filteredData.setPredicate(t -> {
-//
-//			if (newValue == null || newValue.isEmpty()) {
-//			    return true;
-//			}
-//			String objectvalues = 
-//
-//			if (objectvalues.toLowerCase().indexOf(newValue) != -1) {
-//			    return true;
-//			}
-//
-//			return false;
-//		    });
-//		});
-	//Convert Customer to show name
-//	ObjectProperty<Predicate<Customer>> nameFilter = new SimpleObjectProperty<>();
-//	nameFilter.bind(Bindings.createObjectBinding(() ->
-//	cus -> cus.getCustomerName()));
-	
-//       
-//       tCustomer.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Appointment, Customer>, ObservableValue<Customer>>() {
-//	   public ObservableValue<String> call(CellDataFeatures<Appointment, Customer> param) {
-//	       return new SimpleStringProperty(param.getCustomerName());
-//	   		}  
-//		});
-	   
+	// Listener to load Appointment Details
+	ApptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+	    if (newSelection != null) {
+		System.out.println(newSelection);
+		showAppointmentDetails(newSelection);
+	    }
+	});
 
+	
+	// ====================================APPOINTMENT ENTRY DETAILS======================================================='
+//	LocalTime time = LocalTime.of(8, 0);
+//
+//	do {
+//	    startTimes.add(time.format(timeDTF));
+//	    endTimes.add(time.format(timeDTF));
+//	    time = time.plusMinutes(15);
+//	} while (!time.equals(LocalTime.of(17, 15)));
+//	startTimes.remove(startTimes.size() - 1);
+//	endTimes.remove(0);
+//
+//	datePicker.setValue(LocalDate.now());
+//
+//	comboStart.setItems(startTimes);
+//	comboEnd.setItems(endTimes);
+//	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
+//	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
+//
+//	
+//	
+//	// Load customer details
+//	tblCustName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+//	masterData = populateCustomerList();
+//	tblApptCustomer.setItems(masterData);
+//	
+	
+	
     }    
-// 
-//    private void filter(FilteredList<Appointment> filteredData) {
-//	filteredData.setPredicate(Appointment -> {
-//	    // If all filters are empty then display all Purchase Orders
-//	    if ((tCustomer. == null || txtFilter.getText().isEmpty())
-//		    && (txtFilter2.getText() == null || txtFilter2.getText().isEmpty())) {
-//		return true;
-//	    }
-//
-//	    // Convert filters to lower case
-//	    String lowerCaseFilter = txtFilter.getText().toLowerCase();
-//	    String lowerCaseFilter2 = txtFilter2.getText().toLowerCase();
-//
-//	    //If fails any given criteria, fail completely
-//	    if (txtFilter.getText().length() > 0) {
-//		if (PurchaseOrder.get("vendor_name").toLowerCase().contains(lowerCaseFilter) == false) {
-//		    return false;
-//		}
-//	    }
-//	    if (txtFilter2.getText().length() > 0) {
-//		if (PurchaseOrder.get("PONumber").toLowerCase().contains(lowerCaseFilter2) == false) {
-//		    return false;
-//		}
-//	    }
-//
-//	    return true; // Matches given criteria
-//	});
+	
+        protected ObservableList<Customer> populateCustomerList() {
+
+	int tCustomerId;
+	String tCustomerName;
+
+	ObservableList<Customer> customerList = FXCollections.observableArrayList();
+	try (
+		PreparedStatement statement = DBConnection.getConn().prepareStatement(
+			"SELECT customer.customerId, customer.customerName "
+			+ "FROM customer, address, city, country "
+			+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");
+		ResultSet rs = statement.executeQuery();) {
+
+	    while (rs.next()) {
+		tCustomerId = rs.getInt("customer.customerId");
+
+		tCustomerName = rs.getString("customer.customerName");
+
+		customerList.add(new Customer(tCustomerId, tCustomerName));
+
+	    }
+
+	} catch (SQLException sqe) {
+	    System.out.println("Check your SQL");
+	    sqe.printStackTrace();
+	} catch (Exception e) {
+	    System.out.println("Something besides the SQL went wrong.");
+	}
+
+	return customerList;
+
+    }
     
-    private void showAppointments() {
+    
+    public void showAppointmentDetails(Appointment appointment) {
+	okClicked = true;
+	selectedAppt = appointment;
+	
+	String start = appointment.getStart();
+	
+	LocalDateTime startLDT = LocalDateTime.parse(start, dateDTF);
+	String end = appointment.getEnd();
+	LocalDateTime endLDT = LocalDateTime.parse(end, dateDTF);
+	
+	labelAppt.setText("Edit Appointment");
+	txtTitle.setText(appointment.getTitle());
+//	tblApptCustomer.getSelectionModel().select(appointment.getCustomer());
+	datePicker.setValue(LocalDate.parse(appointment.getStart(),dateDTF));
+	type.setText(appointment.getDescription());
+	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeDTF));
+	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
+	txtLocation.setText(appointment.getLocation());
+	
+	
+    }
+
+    private void populateAppointmentList() {
 
 	try {
 	    PreparedStatement ps = DBConnection.getConn().prepareStatement(
@@ -243,7 +329,7 @@ public class AppointmentScreenController {
 		String sContact = rs.getString("appointment.createdBy");
 
 		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(timeDTF), newLocalEnd.format(timeDTF), tTitle, tDesc, tLocation, sCustomer, sContact));
-		//   public Appointment(String appointmentId, String start, String end, String title, String description, Customer customer, String user)
+		//public Appointment(String appointmentId, String start, String end, String title, String description, String location, Customer customer, String user) 
 	    }
 	} catch (SQLException ex) {
 	    Logger.getLogger(AppointmentScreenController.class.getName()).log(Level.SEVERE, null, ex);
@@ -264,6 +350,41 @@ public class AppointmentScreenController {
 	}
     }
 
+    private void updateAppointment() {
+
+    }
+
+    private void saveAppointment() {
+
+    }
+    
+//    public void showAppointmentDetails(Appointment appointment) {
+//	okClicked = true;
+//	selectedAppt = ApptTable.getSelectionModel().getSelectedItem();
+//	
+//	String start = appointment.getStart();
+//	
+//	LocalDateTime startLDT = LocalDateTime.parse(start, dateDTF);
+//	String end = appointment.getEnd();
+//	LocalDateTime endLDT = LocalDateTime.parse(end, dateDTF);
+//	
+//	labelAppt.setText("Edit Appointment");
+//	txtTitle.setText(appointment.getTitle());
+////	tblApptCustomer.getSelectionModel().select(appointment.getCustomer());
+//	datePicker.setValue(LocalDate.parse(appointment.getStart(),dateDTF));
+//	type.setText(appointment.getDescription());
+//	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeDTF));
+//	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
+//	txtLocation.setText(appointment.getLocation());
+	
+//	comboStart.getSelectionModel().select(parseInstantToIndex(appointment.getStart(), 0));
+//        comboEnd.getSelectionModel().select(parseInstantToIndex(appointment.getEnd(), 1));
+	
+//    }
+    
+      
+//    }
+    
+    
+    
 }
-
-

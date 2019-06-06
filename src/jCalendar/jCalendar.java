@@ -6,8 +6,10 @@
 package jCalendar;
 
 import jCalendar.DAO.DBConnection;
+import jCalendar.model.Appointment;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
+import jCalendar.viewcontroller.AppointmentEntryScreenController;
 import jCalendar.viewcontroller.AppointmentScreenController;
 import jCalendar.viewcontroller.CustomerScreenController;
 import jCalendar.viewcontroller.LoginScreenController;
@@ -23,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -35,8 +38,10 @@ public class jCalendar extends Application {
     private BorderPane mainScreen;
     private AnchorPane loginScreen;
     private AnchorPane appointmentScreen;
+    private AnchorPane appointmentEntryScreen;
     private AnchorPane customerScreen;
     private static Connection connection;
+    private Stage dialogStage;
 
     @Override
     public void start(Stage mainStage) {
@@ -146,7 +151,7 @@ public class jCalendar extends Application {
 	    // Load screen
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
-	    AnchorPane appointmentScreen = (AnchorPane) loader.load();
+	    appointmentScreen = (AnchorPane) loader.load();
 
 	    //set customer screen in main screen root layout
 	    mainScreen.setCenter(appointmentScreen);
@@ -157,6 +162,37 @@ public class jCalendar extends Application {
 
 	} catch (IOException ex) {
 	    ex.printStackTrace();
+	}
+    }
+    
+        public boolean showAppointmentEntryScreen(Appointment appt, User currentUser) {
+
+	try {
+	    // Load the fxml file and create a new stage for the popup dialog.
+	    FXMLLoader loader = new FXMLLoader();
+	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentEntryScreen.fxml"));
+	    appointmentEntryScreen = (AnchorPane) loader.load();
+
+	    // Create the dialog Stage.
+	    Stage dialogStage = new Stage();
+	    dialogStage.setTitle("Edit Appointment");
+	    dialogStage.initModality(Modality.WINDOW_MODAL);
+	    dialogStage.initOwner(mainStage);
+	    Scene scene = new Scene(appointmentEntryScreen);
+	    dialogStage.setScene(scene);
+
+	    // Set the person into the controller.
+	    AppointmentEntryScreenController controller = loader.getController();
+	    controller.setDialogStage(dialogStage, currentUser);
+	    controller.showAppointmentDetails(appt);
+
+	    // Show the dialog and wait until the user closes it
+	    dialogStage.showAndWait();
+	    return controller.isOkClicked();
+	    
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return false;
 	}
     }
   

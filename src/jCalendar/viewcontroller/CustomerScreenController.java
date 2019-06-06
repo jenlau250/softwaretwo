@@ -211,7 +211,19 @@ public class CustomerScreenController {
 
     @FXML
     void handleCancelCustomer(ActionEvent event) {
-
+	Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	alert.setTitle("Confirm Cancel");
+	alert.setHeaderText("Are you sure you want to Cancel?");
+	alert.showAndWait()
+		.filter(response -> response == ButtonType.OK)
+		.ifPresent(response -> {
+		    //btnCustomerSave.setDisable(true);
+		    CustomerTable.setDisable(false);
+		    clearFields();
+		    //newEditDeleteButtonBar.setDisable(false);
+		    editMode = false;
+		}
+		);
     }
 
     @FXML
