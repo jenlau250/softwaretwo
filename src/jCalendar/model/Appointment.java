@@ -19,6 +19,7 @@ public class Appointment {
     private String title;
     private String description;
     private String location;
+    private String customerName;
 
     private String start;
     private String end;
@@ -41,6 +42,7 @@ public class Appointment {
 	this.customer = customer;
 	this.user = user;
     }
+   
 
     public Appointment(String start, String end, String user) {
 	this.start = start;
@@ -108,8 +110,8 @@ public class Appointment {
 		+ " Consultant: " + this.user + ".\n";
     }
 
-    public String getCustomer() {
-	return customer.getCustomerName();
+    public Customer getCustomer() {
+	return customer;
     }
 
     public void setCustomer(Customer customer) {
@@ -124,5 +126,5 @@ public class Appointment {
 	this.user = user;
     }
 
-
+    
 }

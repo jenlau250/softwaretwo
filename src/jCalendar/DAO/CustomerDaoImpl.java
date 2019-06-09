@@ -11,6 +11,7 @@ import jCalendar.model.Country;
 import jCalendar.model.Customer;
 import static jCalendar.utilities.TimeFiles.stringToCalendar;
 import jCalendar.viewcontroller.CustomerScreenController;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -96,24 +97,18 @@ public class CustomerDaoImpl {
 		("SELECT customer.customerId, customer.customerName, address.address, address.address2, address.postalCode, city.cityId, city.city, country.country, address.phone "
 		+ "FROM customer, address, city, country "
 		+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
-		+ "ORDER BY customer.customerName");
+		+ "ORDER BY customer.customerId");
 	
 	Query.makeQuery(sqlStatement);
 	ResultSet result = Query.getResult(); 
-
-//	    public Customer(int customerId, String customerName, String address, String address2, String city, String country, String zipCode, String phone) {
 
 	while (result.next()) {
 	    int customerId = result.getInt("customerId");
 	    String customerNameG = result.getString("customerName");
 	    String address = result.getString("address.address");
 	    String address2 = result.getString("address.address2");
-	    //int cityId = result.getInt("city.cityId");
 	    City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
-//String cityG = result.getString("city.city");
-	    //Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
 	    String countryG = result.getString("country.country");
-//City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
 	    String zipcode = result.getString("address.postalCode");
 	    String phone = result.getString("address.phone");
 
@@ -167,6 +162,45 @@ public class CustomerDaoImpl {
 	
     }
 
+        public ObservableList<Customer> populateCustomerList() {
+
+	int tCustomerId;
+	String tCustomerName;
+
+	ObservableList<Customer> customerList = FXCollections.observableArrayList();
+	try (
+		PreparedStatement statement = DBConnection.getConn().prepareStatement(
+			"SELECT customer.customerId, customer.customerName "
+			+ "FROM customer, address, city, country "
+			+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
+			+ "ORDER BY customer.customerId");
+		ResultSet rs = statement.executeQuery();) {
+
+	    while (rs.next()) {
+		tCustomerId = rs.getInt("customer.customerId");
+
+		tCustomerName = rs.getString("customer.customerName");
+
+		customerList.add(new Customer(tCustomerId, tCustomerName));
+
+	    }
+
+	} catch (SQLException sqe) {
+	    System.out.println("Check your SQL");
+	    sqe.printStackTrace();
+	} catch (Exception e) {
+	    System.out.println("Something besides the SQL went wrong.");
+	}
+
+	return customerList;
+
+    }
+    
+    
+    
+    
+    
+    
     
 }
 

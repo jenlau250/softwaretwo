@@ -10,11 +10,11 @@
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
    <children>
-      <SplitPane fx:id="splitPane" dividerPositions="0.29797979797979796" layoutX="147.0" layoutY="97.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane fx:id="splitPane" dividerPositions="0.21619365609348914" layoutX="147.0" layoutY="97.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <VBox layoutX="36.0" layoutY="73.0" prefHeight="598.0" prefWidth="354.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox fx:id="apptVBox" layoutX="36.0" layoutY="73.0" prefHeight="598.0" prefWidth="354.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label fx:id="labelAppt" prefHeight="53.0" prefWidth="104.0" text="Label" />
                         <GridPane prefHeight="291.0" prefWidth="354.0">
@@ -25,44 +25,41 @@
                           </columnConstraints>
                           <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" />
                               <RowConstraints />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <TextField fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <Label text="End" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                              <Label text="End" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                                  <padding>
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label text="Zone ID" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                              <Label text="Customer" GridPane.halignment="RIGHT">
                                  <padding>
                                     <Insets right="10.0" top="10.0" />
                                  </padding>
                               </Label>
-                              <TextField fx:id="zoneID" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="txtTitle" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField fx:id="type" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Start" GridPane.halignment="RIGHT">
+                              <TextField fx:id="txtTitle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label text="Start" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                  <padding>
                                     <Insets right="10.0" />
                                  </padding>
                               </Label>
-                              <Label text="Title" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                              <Label text="Title" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                  <padding>
                                     <Insets right="10.0" top="10.0" />
                                  </padding>
                               </Label>
-                              <Label text="Type" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                              <Label text="Type" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                  <padding>
                                     <Insets right="10.0" top="10.0" />
                                  </padding>
@@ -75,42 +72,38 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <ComboBox fx:id="comboStart" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <ComboBox fx:id="comboEnd" prefWidth="150.0" GridPane.columnIndex="1" />
-                              <Label text="Date" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                              <ComboBox fx:id="comboStart" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <ComboBox fx:id="comboEnd" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label text="Date" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                  <padding>
                                     <Insets right="10.0" top="10.0" />
                                  </padding>
                               </Label>
+                              <ComboBox fx:id="comboCustomer" prefWidth="150.0" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
-                        <ToolBar prefHeight="40.0" prefWidth="221.0">
-                          <items>
+                        <HBox alignment="CENTER" prefHeight="32.0" prefWidth="256.0">
+                           <children>
                               <Button fx:id="btnApptSave" mnemonicParsing="false" onAction="#handleApptSave" text="Save" />
+                              <Pane prefHeight="62.0" prefWidth="22.0" />
                               <Button fx:id="btnApptCancel" mnemonicParsing="false" onAction="#handleApptCancel" text="Cancel" />
-                          </items>
-                        </ToolBar>
-                        <TableView fx:id="tblApptCustomer" prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                            <TableColumn fx:id="tblCustomerId" prefWidth="107.0" text="Customer ID" />
-                            <TableColumn fx:id="tblCustName" prefWidth="126.0" text="Customer Name" />
-                          </columns>
-                        </TableView>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="528.0" prefWidth="527.0">
                <children>
-                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="700.0">
+                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="837.0">
                     <columns>
                       <TableColumn fx:id="tCustomer" prefWidth="75.0" text="Customer" />
-                      <TableColumn fx:id="tStartDate" prefWidth="112.0" text="Start Date" />
-                        <TableColumn fx:id="tEndDate" prefWidth="94.0" text="End Date" />
-                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="78.0" text="Title" />
-                        <TableColumn fx:id="tDescription" prefWidth="94.0" text="Description" />
-                        <TableColumn fx:id="tLocation" prefWidth="85.0" text="Location" />
-                        <TableColumn fx:id="tContact" prefWidth="78.0" text="Contact" />
-                        <TableColumn fx:id="tUser" prefWidth="83.0" text="User" />
+                      <TableColumn fx:id="tStartDate" prefWidth="128.0" text="Start Date" />
+                        <TableColumn fx:id="tEndDate" prefWidth="121.0" text="End Date" />
+                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="96.0" text="Title" />
+                        <TableColumn fx:id="tDescription" prefWidth="104.0" text="Description" />
+                        <TableColumn fx:id="tLocation" prefWidth="83.0" text="Location" />
+                        <TableColumn fx:id="tContact" text="Contact" />
+                        <TableColumn fx:id="tUser" prefWidth="105.0" text="User" />
                     </columns>
                   </TableView>
                   <Label layoutX="9.0" layoutY="14.0" prefHeight="45.0" prefWidth="125.0" text="Appointments">
@@ -118,15 +111,26 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="134.0" layoutY="28.0" text="Label" />
-                  <ToolBar layoutX="4.0" layoutY="59.0" prefHeight="40.0" prefWidth="200.0">
-                    <items>
+                  <Label fx:id="labelMainAppt" layoutX="134.0" layoutY="28.0" text="Label" />
+                  <Separator layoutY="536.0" prefHeight="0.0" prefWidth="844.0" />
+                  <ChoiceBox fx:id="choiceWeekMonth" layoutX="261.0" layoutY="67.0" prefWidth="150.0" />
+                  <Button fx:id="btnNext" layoutX="419.0" layoutY="67.0" mnemonicParsing="false" text="&gt;&gt;" />
+                  <Button fx:id="btnBack" layoutX="221.0" layoutY="67.0" mnemonicParsing="false" text="&lt;&lt;" />
+                  <Label fx:id="labelEndBound" alignment="TOP_LEFT" layoutX="462.0" layoutY="71.0" prefHeight="17.0" prefWidth="125.0" text="Label">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <Label fx:id="labelStartBound" alignment="TOP_RIGHT" layoutX="53.0" layoutY="71.0" prefHeight="17.0" prefWidth="156.0" text="Label">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <HBox alignment="CENTER" layoutX="245.0" layoutY="494.0" prefHeight="45.0" prefWidth="381.0" spacing="30.0">
+                     <children>
                       <Button fx:id="btnApptAdd" mnemonicParsing="false" onAction="#handleApptAdd" text="Add" />
                         <Button fx:id="btnApptUpdate" mnemonicParsing="false" onAction="#handleApptEdit" text="Update" />
-                        <Button fx:id="btnApptDel" mnemonicParsing="false" onAction="#handleApptDelete" text="Delete" />
-                    </items>
-                  </ToolBar>
-                  <Separator layoutY="536.0" prefHeight="0.0" prefWidth="844.0" />
+                        <Button fx:id="btnApptDel" mnemonicParsing="false" onAction="#handleApptDelete" text="Delete" textAlignment="JUSTIFY" />
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
         </items>

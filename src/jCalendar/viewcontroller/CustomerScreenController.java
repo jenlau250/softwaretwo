@@ -114,9 +114,6 @@ public class CustomerScreenController {
 	try {
 	    while (result.next()) {
 		selectedCities.add(new City(result.getInt("city.CityId"), result.getString("city.city")));
-//		cityCombo.getItems().add(rs.getString(1));
-//		cityCombo.getItems().add(selectedCities.get(0));
-		//cityCombo.getItems().setAll(selectedCities);
 	    }
 	} catch (SQLException ex) {
 	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,32 +126,22 @@ public class CustomerScreenController {
     private void initializeCountry() {
 	
 
-	//countryCombo.setItems(CustomerDaoImpl.getCountries());
-	//Customers.getClass().getDeclaredFields().
 	Query.makeQuery("SELECT country FROM country");
 	ResultSet rs = Query.getResult();
-
-	//ResultSet rs = accessDB("SELECT country FROM country");
 	try {
 
 	    while (rs.next()) {
-		//Countries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
-		//Country country = new Country(result.getInt("country.countryId"), result.getString("country.country"));
 		countryCombo.getItems().add(rs.getString(1));
 
 	    }
 	} catch (SQLException ex) {
 	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	//countryCombo.setItems(Countries);
     }
     
     
     @FXML
     private void showCustomerDetails(Customer selectedCustomer) {
-
-	
-//	String custID = Integer.toString(selectedCustomer.getCustomerId());
 	txtCustomerID.setText(String.valueOf(selectedCustomer.getCustomerId()));
 	txtCustomerName.setText(selectedCustomer.getCustomerName());
 	txtCustomerAddress.setText(selectedCustomer.getAddress());

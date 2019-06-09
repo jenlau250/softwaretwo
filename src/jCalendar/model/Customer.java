@@ -48,13 +48,6 @@ public class Customer {
 	this.customerId = customerId;
 	this.customerName = customerName;
     }
-    
-    private final IntegerProperty customerIdProperty = new SimpleIntegerProperty(customerId);
-
-    
-    public IntegerProperty customerIdProperty() {
-	return customerIdProperty;
-    }
 
     public int getCustomerId() {
 	return customerId;

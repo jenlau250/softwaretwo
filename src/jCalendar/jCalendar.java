@@ -9,7 +9,6 @@ import jCalendar.DAO.DBConnection;
 import jCalendar.model.Appointment;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
-import jCalendar.viewcontroller.AppointmentEntryScreenController;
 import jCalendar.viewcontroller.AppointmentScreenController;
 import jCalendar.viewcontroller.CustomerScreenController;
 import jCalendar.viewcontroller.LoginScreenController;
@@ -38,17 +37,17 @@ public class jCalendar extends Application {
     private BorderPane mainScreen;
     private AnchorPane loginScreen;
     private AnchorPane appointmentScreen;
-    private AnchorPane appointmentEntryScreen;
     private AnchorPane customerScreen;
     private static Connection connection;
     private Stage dialogStage;
-
+    private User currUser;
+    
     @Override
     public void start(Stage mainStage) {
-
 	this.mainStage= mainStage;
 	this.mainStage.setTitle("Calendar App");
 	showLoginScreen();
+
 	//showCustomerScreen(user);
 
     }
@@ -165,36 +164,6 @@ public class jCalendar extends Application {
 	}
     }
     
-        public boolean showAppointmentEntryScreen(Appointment appt, User currentUser) {
 
-	try {
-	    // Load the fxml file and create a new stage for the popup dialog.
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentEntryScreen.fxml"));
-	    appointmentEntryScreen = (AnchorPane) loader.load();
-
-	    // Create the dialog Stage.
-	    Stage dialogStage = new Stage();
-	    dialogStage.setTitle("Edit Appointment");
-	    dialogStage.initModality(Modality.WINDOW_MODAL);
-	    dialogStage.initOwner(mainStage);
-	    Scene scene = new Scene(appointmentEntryScreen);
-	    dialogStage.setScene(scene);
-
-	    // Set the person into the controller.
-	    AppointmentEntryScreenController controller = loader.getController();
-	    controller.setDialogStage(dialogStage, currentUser);
-	    controller.showAppointmentDetails(appt);
-
-	    // Show the dialog and wait until the user closes it
-	    dialogStage.showAndWait();
-	    return controller.isOkClicked();
-	    
-	} catch (IOException e) {
-	    e.printStackTrace();
-	    return false;
-	}
-    }
-  
 
 }
