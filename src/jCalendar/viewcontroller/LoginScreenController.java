@@ -93,10 +93,9 @@ public class LoginScreenController {
 		alert.setHeaderText(null);
 		alert.setContentText(rb.getString("LOGIN WAS SUCCESSFUL."));
 		alert.showAndWait();
-		LOGGER.log(Level.INFO, "{0} logged in", userNameInput);
-
+		
 		mainApp.showMain(validateUser);
-
+		LOGGER.log(Level.INFO, "{0} logged in", userNameInput);
 //	    System.out.println(loginUser);
 	    }
 	}

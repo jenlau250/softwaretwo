@@ -71,7 +71,7 @@ import javafx.util.StringConverter;
 public class AppointmentScreenController {
     
     @FXML    private TableView<Appointment> ApptTable;
-    @FXML    private TableColumn<Appointment, String> tContact;
+//    @FXML    private TableColumn<Appointment, String> tContact;
     @FXML    private TableColumn<Appointment, String> tLocation;
     @FXML    private TableColumn<Appointment, String> tDescription;
     @FXML    private TableColumn<Appointment, String> tTitle;
@@ -88,6 +88,7 @@ public class AppointmentScreenController {
     @FXML    private ComboBox<String> comboEnd;
     @FXML    private ComboBox<String> comboStart;
     @FXML    private ComboBox<Customer> comboCustomer;
+    @FXML    private ComboBox<String> comboType;
     @FXML    private TextField type;
     @FXML    private TextField txtLocation;
     @FXML    private TextField txtTitle;
@@ -116,6 +117,7 @@ public class AppointmentScreenController {
     Appointment selectedAppt;
     private ObservableList<Appointment> appointmentList;
     private ObservableList<Customer> masterData = FXCollections.observableArrayList();
+    private ObservableList<String> typeOptions = FXCollections.observableArrayList();
 
    
     ObservableList<Appointment> apptTimeList;
@@ -273,7 +275,7 @@ public class AppointmentScreenController {
 	tTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 	tDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 	tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-	tContact.setCellValueFactory(new PropertyValueFactory<>("user"));
+//	tContact.setCellValueFactory(new PropertyValueFactory<>("user"));
 
 	appointmentList = FXCollections.observableArrayList();
 	populateAppointmentList();
@@ -386,7 +388,9 @@ public class AppointmentScreenController {
 	});
 	
 
-	
+	// create combo type box
+	typeOptions.addAll("New", "Follow-up", "Resolution", "Final", "Other");
+	comboType.setItems(typeOptions);
 	
 	
 	
@@ -499,13 +503,13 @@ public class AppointmentScreenController {
 //	tblApptCustomer.getSelectionModel().select(appointment.getCustomer());
 //	zoneID.getSelectionModel().select(appointment.getCustomer());
 	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateDTF));
-	type.setText(appointment.getDescription());
+//	type.setText(appointment.getDescription());
 	txtLocation.setText(appointment.getLocation());
 
 	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeDTF));
 	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
 	comboCustomer.getSelectionModel().select(appointment.getCustomer());
-
+	comboType.getSelectionModel().select(appointment.getDescription());
 	
 	
     }
@@ -599,7 +603,7 @@ public class AppointmentScreenController {
 
 	    pst.setInt(1, comboCustomer.getValue().getCustomerId());
 	    pst.setString(2, txtTitle.getText());
-	    pst.setString(3, type.getText());
+	    pst.setString(3, comboType.getValue());
 	    pst.setString(4, txtLocation.getText());
 	    pst.setTimestamp(5, startsqlts);
 	    pst.setTimestamp(6, endsqlts);
@@ -625,7 +629,7 @@ public class AppointmentScreenController {
 	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
 	datePicker.setValue(LocalDate.now());
 	txtTitle.setText("");
-	type.setText("");
+	comboType.setValue(null);
 	txtLocation.setText("");
 		
 	
@@ -659,9 +663,9 @@ public class AppointmentScreenController {
 	    
 	    pst.setInt(1, comboCustomer.getValue().getCustomerId());
 	    pst.setString(2, txtTitle.getText());
-	    pst.setString(3, type.getText());
+	    pst.setString(3, comboType.getValue());
 	    pst.setString(4, txtLocation.getText());
-	    pst.setString(5, tContact.getText());
+	    pst.setString(5, "");
 	    pst.setString(6, "");
 	    pst.setTimestamp(7, startsqlts);
 	    pst.setTimestamp(8, endsqlts);

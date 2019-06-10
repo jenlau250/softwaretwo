@@ -217,15 +217,15 @@ public class CustomerScreenController {
     void handleSaveCustomer(ActionEvent event) {
 	
 	Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-	
-	int cusId = selectedCustomer.getCustomerId();
-	if (editMode) {
-	    updateCustomer(selectedCustomer);
-	} else {
-	    saveNewCustomer();
+
+	if (validateCustomer()) {
+	    if (editMode) {
+		updateCustomer(selectedCustomer);
+	    } else {
+		saveNewCustomer();
+	    }
+	    mainApp.showCustomerScreen(currentUser);
 	}
-	mainApp.showCustomerScreen(currentUser);
-    
     }
 
     @FXML
@@ -239,11 +239,6 @@ public class CustomerScreenController {
 
 	if (selectedCustomer != null) {
 	    editMode = true;
-	    //updateCustomer(selectedCustomer);
-//	    btnCustomerDelete.setDisable(true);
-//	    btnCustomerUpdate.setDisable(true);
-//	    enableEdits();
-//	    initializeCountry();
 	    
 	} else {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -254,10 +249,6 @@ public class CustomerScreenController {
 	}
 
     }
-    
-
-
-   
     
     
     /**
@@ -503,7 +494,56 @@ public class CustomerScreenController {
 	    e.printStackTrace();
 	}
     }
+  /**
+     * Validates Customer details to ensure no non-existant or invalid data
+     * @return true if no errors
+     */
+    private boolean validateCustomer() {
+        String name = txtCustomerName.getText();
+        String address = txtCustomerAddress.getText();
+        City city = cityCombo.getValue();
+        String country = txtCustomerCountry.getText();
+        String zip = txtCustomerZipCode.getText();
+        String phone = txtCustomerPhone.getText();
+        
+        String errorMessage = "";
+        //first checks to see if inputs are null
+        if (name == null || name.length() == 0) {
+            errorMessage += "Please enter the Customer's name.\n"; 
+        }
+        if (address == null || address.length() == 0) {
+            errorMessage += "Please enter an address.\n";  
+        } 
+        if (city == null) {
+            errorMessage += "Please Select a City.\n"; 
+        } 
+        if (country == null || country.length() == 0) {
+            errorMessage += "No valid Country. Country set by City.\n"; 
+        }         
+        if (zip == null || zip.length() == 0) {
+            errorMessage += "Please enter the Postal Code.\n"; 
+        } else if (zip.length() > 10 || zip.length() < 5){
+            errorMessage += "Please enter a valid Postal Code.\n";
+        }
+        if (phone == null || phone.length() == 0) {
+            errorMessage += "Please enter a Phone Number (including Area Code)."; 
+        } else if (phone.length() < 10 || phone.length() > 15 ){
+            errorMessage += "Please enter a valid phone number (including Area Code).\n";
+        }        
+        if (errorMessage.length() == 0) {
+            return true;
+        } else {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Invalid Fields");
+            alert.setHeaderText("Please correct invalid Customer fields");
+            alert.setContentText(errorMessage);
 
+            alert.showAndWait();
+
+            return false;
+        }
+    }
     
 
 }

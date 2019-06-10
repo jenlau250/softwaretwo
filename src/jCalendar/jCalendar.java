@@ -13,15 +13,18 @@ import jCalendar.viewcontroller.AppointmentScreenController;
 import jCalendar.viewcontroller.CustomerScreenController;
 import jCalendar.viewcontroller.LoginScreenController;
 import jCalendar.viewcontroller.MainScreenController;
+import jCalendar.viewcontroller.ReportScreenController;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -38,6 +41,8 @@ public class jCalendar extends Application {
     private AnchorPane loginScreen;
     private AnchorPane appointmentScreen;
     private AnchorPane customerScreen;
+    private AnchorPane reportScreen;
+    
     private static Connection connection;
     private Stage dialogStage;
     private User currUser;
@@ -164,6 +169,27 @@ public class jCalendar extends Application {
 	}
     }
     
+    public void showReportScreen(User currentUser, MenuItem menuReports) throws ParseException {
+
+	try {
+	    // Load screen
+	    FXMLLoader loader = new FXMLLoader();
+	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/ReportScreen.fxml"));
+	    reportScreen = (AnchorPane) loader.load();
+
+	    //set customer screen in main screen root layout
+	    mainScreen.setCenter(reportScreen);
+
+	    // Give controller access
+	    ReportScreenController controller = loader.getController();
+	    controller.setReportScreen(this, currentUser, menuReports);
+
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+    }
+    
+
 
 
 }

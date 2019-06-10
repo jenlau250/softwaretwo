@@ -12,22 +12,27 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <MenuItem mnemonicParsing="false" text="Log out" />
               <MenuItem fx:id="menuExit" mnemonicParsing="false" text="Exit App" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View Options">
             <items>
               <MenuItem fx:id="menuCustomers" mnemonicParsing="false" text="Customers" />
-                  <MenuItem fx:id="menuReports" mnemonicParsing="false" text="Reports" />
                   <MenuItem fx:id="menuAppointments" mnemonicParsing="false" text="Appointments" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
+            <Menu fx:id="menuReports" mnemonicParsing="false" text="Reports">
+              <items>
+                <MenuItem fx:id="menuReportSchedule" mnemonicParsing="false" text="Schedule Details" />
+                  <MenuItem fx:id="menuReportAppt" mnemonicParsing="false" text="Appointment Types by Month" />
+                  <MenuItem fx:id="menuReportCustomer" mnemonicParsing="false" text="Customer Metrics" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
+   <bottom>
+      <TextArea fx:id="txtAreaReminders" prefHeight="100.0" prefWidth="1200.0" BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>

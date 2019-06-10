@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
+<AnchorPane id="AnchorPane" prefHeight="709.0" prefWidth="984.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
    <children>
       <SplitPane fx:id="splitPane" dividerPositions="0.21619365609348914" layoutX="147.0" layoutY="97.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -47,7 +47,7 @@
                                  </padding>
                               </Label>
                               <TextField fx:id="txtTitle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="type" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Start" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                  <padding>
@@ -80,6 +80,7 @@
                                  </padding>
                               </Label>
                               <ComboBox fx:id="comboCustomer" prefWidth="150.0" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="comboType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <HBox alignment="CENTER" prefHeight="32.0" prefWidth="256.0">
@@ -92,18 +93,16 @@
                      </children>
                   </VBox>
                </children></AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="528.0" prefWidth="527.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="692.0" prefWidth="769.0">
                <children>
-                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="837.0">
+                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="757.0">
                     <columns>
                       <TableColumn fx:id="tCustomer" prefWidth="75.0" text="Customer" />
                       <TableColumn fx:id="tStartDate" prefWidth="128.0" text="Start Date" />
-                        <TableColumn fx:id="tEndDate" prefWidth="121.0" text="End Date" />
-                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="96.0" text="Title" />
-                        <TableColumn fx:id="tDescription" prefWidth="104.0" text="Description" />
-                        <TableColumn fx:id="tLocation" prefWidth="83.0" text="Location" />
-                        <TableColumn fx:id="tContact" text="Contact" />
-                        <TableColumn fx:id="tUser" prefWidth="105.0" text="User" />
+                        <TableColumn fx:id="tEndDate" prefWidth="133.0" text="End Date" />
+                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="120.0" text="Title" />
+                        <TableColumn fx:id="tDescription" prefWidth="114.0" text="Description" />
+                        <TableColumn fx:id="tLocation" prefWidth="130.0" text="Location" />
                     </columns>
                   </TableView>
                   <Label layoutX="9.0" layoutY="14.0" prefHeight="45.0" prefWidth="125.0" text="Appointments">
@@ -124,7 +123,7 @@
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Label>
-                  <HBox alignment="CENTER" layoutX="245.0" layoutY="494.0" prefHeight="45.0" prefWidth="381.0" spacing="30.0">
+                  <HBox alignment="CENTER" layoutX="162.0" layoutY="494.0" prefHeight="45.0" prefWidth="381.0" spacing="30.0">
                      <children>
                       <Button fx:id="btnApptAdd" mnemonicParsing="false" onAction="#handleApptAdd" text="Add" />
                         <Button fx:id="btnApptUpdate" mnemonicParsing="false" onAction="#handleApptEdit" text="Update" />
