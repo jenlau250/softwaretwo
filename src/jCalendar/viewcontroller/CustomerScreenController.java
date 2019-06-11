@@ -65,7 +65,6 @@ public class CustomerScreenController {
     @FXML    private TableColumn<Customer, String> txtCustomerCountry1;
     @FXML    private TextField txtCustomerID;
     @FXML    private TextField txtCustomerName;
-    @FXML    private TextField txtCustomerCity;
     @FXML    private TextField txtCustomerAddress;
     @FXML    private TextField txtCustomerAddress2;
     @FXML    private TextField txtCustomerCountry;
@@ -294,22 +293,11 @@ public class CustomerScreenController {
 
 	}
 
-//	SortedList<Customer> sortedData = new SortedList<>(Customers);
-//	sortedData.comparatorProperty().bind(CustomerTable.comparatorProperty());
-//	
-	
-	// Sort table by Customer Id
-//	txtCustomerID1.setSortType(TableColumn.SortType.ASCENDING);
-
 	CustomerTable.getItems().setAll(Customers);
 	disableEdits();
-//	CustomerTable.getColumns().addAll(txtCustomerID1, txtCustomerName1, txtCustomerCountry1);
-//	CustomerTable.getSortOrder().add(txtCustomerID1);
-//	CustomerTable.getSortOrder();
 
 	CustomerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 	    if (newSelection != null) {
-		System.out.println(newSelection);
 		showCustomerDetails(newSelection);
 	    }
 	});

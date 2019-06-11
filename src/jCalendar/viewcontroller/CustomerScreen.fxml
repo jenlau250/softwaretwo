@@ -8,17 +8,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.CustomerScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.CustomerScreenController">
    <children>
-      <SplitPane dividerPositions="0.407514450867052" layoutX="75.0" layoutY="97.0" prefHeight="416.0" prefWidth="668.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="82.0">
+      <SplitPane dividerPositions="0.5510204081632653" layoutX="72.0" layoutY="137.0" prefHeight="454.0" prefWidth="708.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="122.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="418.0" prefWidth="393.0">
                <children>
                   <TableView fx:id="CustomerTable" layoutY="-2.0" prefHeight="390.0" prefWidth="293.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                     <columns>
-                      <TableColumn fx:id="txtCustomerID1" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="txtCustomerName1" prefWidth="75.0" text="Name" />
-                        <TableColumn fx:id="txtCustomerCountry1" prefWidth="75.0" text="Country" />
+                      <TableColumn fx:id="txtCustomerID1" prefWidth="94.0" text="ID" />
+                      <TableColumn fx:id="txtCustomerName1" prefWidth="173.0" text="Name" />
+                        <TableColumn fx:id="txtCustomerCountry1" prefWidth="101.0" text="Country" />
                     </columns>
                   </TableView>
                </children>
@@ -27,14 +27,22 @@
                <children>
                   <VBox layoutX="62.0" layoutY="58.0" prefHeight="450.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="customerLabel" layoutX="28.0" layoutY="19.0" prefHeight="27.0" prefWidth="125.0" text="Label">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
                         <GridPane prefHeight="392.0" prefWidth="395.0">
                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="120.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="113.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="58.0" />
                           </columnConstraints>
                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -46,40 +54,70 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextField fx:id="txtCustomerZipCode" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <TextField fx:id="txtCustomerAddress2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="txtCustomerID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="txtCustomerName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="txtCustomerAddress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="txtCustomerPhone" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                              <Label contentDisplay="TOP" text="ID" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                              <Label contentDisplay="TOP" text="Name" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                              <Label contentDisplay="TOP" text="Address" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                              <Label contentDisplay="TOP" text="Address 2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                              <Label contentDisplay="TOP" text="City" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                              <Label contentDisplay="TOP" text="Country" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                              <Label contentDisplay="TOP" text="Phone Number" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
-                              <Label contentDisplay="TOP" text="Zip Code" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-                              <ComboBox fx:id="cityCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <Button fx:id="btnCustomerSave" mnemonicParsing="false" onAction="#handleSaveCustomer" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
-                              <Button fx:id="btnCustomerCancelSave" mnemonicParsing="false" onAction="#handleCancelCustomer" text="Cancel" GridPane.columnIndex="2" GridPane.rowIndex="9" />
-                              <ComboBox fx:id="countryCombo" onAction="#comboCountryAction" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label fx:id="customerLabel" prefHeight="27.0" prefWidth="145.0" text="Label" GridPane.columnIndex="1">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
+                              <TextField fx:id="txtCustomerZipCode" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextField fx:id="txtCustomerAddress2" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="txtCustomerID" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtCustomerName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtCustomerAddress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtCustomerPhone" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <Label contentDisplay="TOP" text="ID" GridPane.halignment="RIGHT">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Name" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Address" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Address 2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="City" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Country" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Phone Number" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <Label contentDisplay="TOP" text="Zip Code" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding></Label>
+                              <ComboBox fx:id="cityCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <ComboBox fx:id="countryCombo" onAction="#comboCountryAction" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnCustomerSave" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleSaveCustomer" text="Save" textAlignment="RIGHT" />
+                              <Pane prefHeight="42.0" prefWidth="40.0" />
+                              <Button fx:id="btnCustomerCancelSave" alignment="CENTER_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleCancelCustomer" text="Cancel" />
+                           </children>
+                        </HBox>
+                        <Region prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </VBox>
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
-      <Button fx:id="btnCustomerAdd" layoutX="95.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add" />
-      <Button fx:id="btnCustomerUpdate" layoutX="169.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleUpdateCustomer" text="Update" />
-      <Button fx:id="btnCustomerDelete" layoutX="255.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleDeleteCustomer" text="Delete" />
+      <Button fx:id="btnCustomerAdd" layoutX="260.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleAddCustomer" prefHeight="34.0" prefWidth="55.0" text="Add" />
+      <Button fx:id="btnCustomerUpdate" layoutX="340.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleUpdateCustomer" prefHeight="34.0" prefWidth="55.0" text="Update" />
+      <Button fx:id="btnCustomerDelete" layoutX="420.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleDeleteCustomer" prefHeight="34.0" prefWidth="66.0" text="Delete" />
+      <Label layoutX="129.0" layoutY="78.0" text="Select option:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

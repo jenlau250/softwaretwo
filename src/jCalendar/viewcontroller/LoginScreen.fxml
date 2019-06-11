@@ -7,13 +7,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.LoginScreenController">
+<AnchorPane id="AnchorPane" prefHeight="350.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.LoginScreenController">
    <children>
-      <Button fx:id="buttonLogin" layoutX="202.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleActionLogin" text="Login" />
-      <Label fx:id="labelUserId" layoutX="137.0" layoutY="139.0" text="User Name" />
-      <Label fx:id="labelUserPw" layoutX="141.0" layoutY="192.0" text="Password" />
-      <TextField fx:id="textUserId" layoutX="202.0" layoutY="135.0" />
-      <TextField fx:id="textUserPw" layoutX="202.0" layoutY="188.0" />
-      <Button fx:id="buttonCancel" layoutX="291.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleActionCancel" text="Cancel" />
+      <Button fx:id="buttonLogin" layoutX="153.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleActionLogin" prefHeight="32.0" prefWidth="59.0" text="Login" />
+      <Label fx:id="labelUserId" layoutX="107.0" layoutY="118.0" text="User Name" />
+      <Label fx:id="labelUserPw" layoutX="112.0" layoutY="167.0" text="Password" />
+      <TextField fx:id="textUserId" layoutX="176.0" layoutY="114.0" />
+      <TextField fx:id="textUserPw" layoutX="176.0" layoutY="163.0" />
+      <Button fx:id="buttonCancel" layoutX="279.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleActionCancel" prefHeight="32.0" prefWidth="59.0" text="Cancel" />
    </children>
 </AnchorPane>

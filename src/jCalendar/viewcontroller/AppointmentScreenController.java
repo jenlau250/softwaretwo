@@ -73,7 +73,7 @@ public class AppointmentScreenController {
     @FXML    private TableView<Appointment> ApptTable;
 //    @FXML    private TableColumn<Appointment, String> tContact;
     @FXML    private TableColumn<Appointment, String> tLocation;
-    @FXML    private TableColumn<Appointment, String> tDescription;
+    @FXML    private TableColumn<Appointment, String> tType;
     @FXML    private TableColumn<Appointment, String> tTitle;
     @FXML    private TableColumn<Appointment, LocalDateTime> tEndDate;
     @FXML    private TableColumn<Appointment, ZonedDateTime> tStartDate;
@@ -273,7 +273,7 @@ public class AppointmentScreenController {
 	tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
 	tEndDate.setCellValueFactory(new PropertyValueFactory<>("end"));
 	tTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-	tDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+	tType.setCellValueFactory(new PropertyValueFactory<>("type"));
 	tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
 //	tContact.setCellValueFactory(new PropertyValueFactory<>("user"));
 
@@ -503,13 +503,12 @@ public class AppointmentScreenController {
 //	tblApptCustomer.getSelectionModel().select(appointment.getCustomer());
 //	zoneID.getSelectionModel().select(appointment.getCustomer());
 	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateDTF));
-//	type.setText(appointment.getDescription());
 	txtLocation.setText(appointment.getLocation());
 
 	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeDTF));
 	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
 	comboCustomer.getSelectionModel().select(appointment.getCustomer());
-	comboType.getSelectionModel().select(appointment.getDescription());
+	comboType.getSelectionModel().select(appointment.getType());
 	
 	
     }
@@ -522,7 +521,7 @@ public class AppointmentScreenController {
 		    "SELECT appointment.appointmentId, "
 			    + "appointment.customerId, "
 			    + "appointment.title, "
-			    + "appointment.description, "
+			    + "appointment.type, "
 			    + "appointment.location, "
 			    + "appointment.start, "
 			    + "appointment.end, "
@@ -552,14 +551,14 @@ public class AppointmentScreenController {
 		ZonedDateTime newLocalEnd = newzdtEnd.withZoneSameInstant(newzid);
 
 		String tTitle = rs.getString("appointment.title");
-		String tDesc = rs.getString("appointment.description");
+		String tType = rs.getString("appointment.type");
 		String tLocation = rs.getString("appointment.location");
 		Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
 	
 		String sContact = rs.getString("appointment.createdBy");
 
-		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateDTF), newLocalEnd.format(dateDTF), tTitle, tDesc, tLocation, sCustomer, sContact));
-		//public Appointment(String appointmentId, String start, String end, String title, String description, String location, Customer customer, String user) 
+		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateDTF), newLocalEnd.format(dateDTF), tTitle, tType, tLocation, sCustomer, sContact));
+		//public Appointment(String appointmentId, String start, String end, String title, String type, String location, Customer customer, String user) 
 	    }
 	} catch (SQLException ex) {
 	    Logger.getLogger(AppointmentScreenController.class.getName()).log(Level.SEVERE, null, ex);
@@ -598,7 +597,7 @@ public class AppointmentScreenController {
 	try {
 
 	    PreparedStatement pst = DBConnection.getConn().prepareStatement("UPDATE appointment "
-		    + "SET customerId = ?, title = ?, description = ?, location = ?, start = ?, end = ?, lastUpdate = CURRENT_TIMESTAMP, lastUpdateBy = ? "
+		    + "SET customerId = ?, title = ?, type = ?, location = ?, start = ?, end = ?, lastUpdate = CURRENT_TIMESTAMP, lastUpdateBy = ? "
 		    + "WHERE appointmentId = ?");
 
 	    pst.setInt(1, comboCustomer.getValue().getCustomerId());
@@ -658,7 +657,7 @@ public class AppointmentScreenController {
 	try {
 
 	    PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
-		    + "(customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
+		    + "(customerId, title, type, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
 		    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)");
 	    
 	    pst.setInt(1, comboCustomer.getValue().getCustomerId());

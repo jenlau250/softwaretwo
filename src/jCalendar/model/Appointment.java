@@ -5,6 +5,7 @@
  */
 package jCalendar.model;
 
+import java.time.Month;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -17,9 +18,10 @@ public class Appointment {
     private String appointmentId;
     private Customer customer;
     private String title;
-    private String description;
+    private String type;
     private String location;
-    private String customerName;
+    private String month;
+    private String count;
 
     private String start;
     private String end;
@@ -27,28 +29,49 @@ public class Appointment {
 
     public Appointment() {
     }
+    
+    public Appointment(String month, String type, String count) {
+	this.month = month;
+	this.type = type;
+	this.count = count;
+    }
 
+    public String getMonth() {
+	return month;
+    }
+
+    public void setMonth(String month) {
+	this.month = month;
+    }
+
+    public String getCount() {
+	return count;
+    }
+
+    public void setCount(String count) {
+	this.count = count;
+    }
     public Appointment(String appointmentId) {
 	this.appointmentId = appointmentId;
     }
 
-    public Appointment(String appointmentId, String start, String end, String title, String description, String location, Customer customer, String user) {
+    public Appointment(String appointmentId, String start, String end, String title, String type, String location, Customer customer, String user) {
 	this.appointmentId = appointmentId;
 	this.start = start;
 	this.end = end;
 	this.title = title;
-	this.description = description;
+	this.type = type;
 	this.location = location;
 	this.customer = customer;
 	this.user = user;
     }
    
 
-    public Appointment(String start, String end, String user) {
-	this.start = start;
-	this.end = end;
-	this.user = user;
-    }
+//    public Appointment(String start, String end, String user) {
+//	this.start = start;
+//	this.end = end;
+//	this.user = user;
+//    }
 
     public String getAppointmentId() {
 	return appointmentId;
@@ -75,12 +98,12 @@ public class Appointment {
 	this.title = title;
     }
 
-    public String getDescription() {
-	return description;
+    public String getType() {
+	return type;
     }
 
-    public void setDescription(String description) {
-	this.description = description;
+    public void setType(String type) {
+	this.type = type;
     }
 
     public String getStart() {
@@ -105,7 +128,7 @@ public class Appointment {
 		+ " Start: " + this.start
 		+ " End: " + this.end
 		+ " Title: " + this.title
-		+ " Type: " + this.description
+		+ " Type: " + this.type
 		+ " Customer: " + this.customer.getCustomerName()
 		+ " Consultant: " + this.user + ".\n";
     }

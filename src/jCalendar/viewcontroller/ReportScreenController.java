@@ -8,6 +8,7 @@ package jCalendar.viewcontroller;
 import jCalendar.DAO.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
+import jCalendar.model.City;
 import jCalendar.model.Customer;
 import jCalendar.model.User;
 import java.net.URL;
@@ -28,7 +29,9 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -52,6 +55,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -73,7 +77,10 @@ public class ReportScreenController {
     
     @FXML    private Label labelReportMenu;
     @FXML    private Label labelSub;
+    
+    @FXML    private TabPane tabMenu;
     @FXML    private Tab tabScheduleDetails;
+    @FXML    private Tab selTab;
     @FXML    private Tab tabApptType;
     @FXML    private Tab tabCustomerDetail;
     
@@ -86,10 +93,21 @@ public class ReportScreenController {
     @FXML    private TableColumn<Appointment, String> colCustomer;
     @FXML    private ComboBox comboMonth;
     
+    @FXML    private TableView<Appointment> tblApptType;
+    @FXML    private TableColumn<Appointment, String> colApptType;
+    @FXML    private TableColumn<Appointment, String> colApptMonth;
+    @FXML    private TableColumn<Appointment, String> colApptCount;
+    
+    @FXML    private TableView<Customer> tblCustData;
+    @FXML    private TableColumn<Customer, String> colCustCount;
+    @FXML    private TableColumn<Customer, City> colCustCity;
+    
+    HashMap<String, Integer> custData;
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final ZoneId newzid = ZoneId.systemDefault();
     private ObservableList<Appointment> apptList;
+    private ObservableList<Customer> custList;
     private ObservableList<Appointment> schedule;
     private ObservableSet<String> monthSet;
     FilteredList<Appointment> filteredData;
@@ -103,44 +121,33 @@ public class ReportScreenController {
     /**
      * Initializes the controller class.
      */
-    public void setReportScreen(jCalendar mainApp, User currentUser, MenuItem menu) throws ParseException {
+    public void setReportScreen(jCalendar mainApp, User currentUser) {
 
 	this.mainApp = mainApp;
 	this.currentUser = currentUser;
-	this.menu = menu;
 	
-	String selectedReport = menu.getText();
-	labelReportMenu.setText(selectedReport);
-	
-    
+//	String selectedReport = menu.getText();
+//	labelReportMenu.setText(selectedReport);
+	System.out.println(selTab);
         
         //methods called to populate data on each tab        
         populateApptTypeList();
-        populateCustBarChart();
+        populateCustReport();
         populateSchedule();      
         
         colStart.setCellValueFactory(new PropertyValueFactory<>("start"));
         colEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("description"));
-//        colCustomer.setCellValueFactory(new PropertyValueFactory<>("customer"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 	colCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
 	
+        
+        colApptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
+        colApptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        colApptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
 	
-//	colCustomer.setCellValueFactory(new Callback<CellDataFeatures<Appointment, Customer>, ObservableValue<Customer>>() {
-//        @Override
-//        public ObservableValue<String> call(CellDataFeatures<LineItem, String> p) {
-//            SimpleStringProperty ssp = new SimpleStringProperty(String.format("%.4f", p.getValue().getAmount()));
-//            colCustomer.setPrefWidth(Math.max(colCustomer.getPrefWidth(), ssp.get().length()*20));
-//            return ssp;
-//        }
-//    });
-	
-	
-//        
-//        monthColumn.setCellValueFactory(new PropertyValueFactory<>("Month"));
-//        typeColumn.setCellValueFactory(new PropertyValueFactory<>("Type"));
-//        typeAmount.setCellValueFactory(new PropertyValueFactory<>("Amount"));
+	colCustCount.setCellValueFactory(new PropertyValueFactory<>("citycount"));
+	colCustCity.setCellValueFactory(new PropertyValueFactory<>("city"));
   
 
 	ObservableList<String> newList = FXCollections.observableArrayList(monthSet);
@@ -157,6 +164,11 @@ public class ReportScreenController {
 		filterMonth(newvalue);
 		
         }});
+	
+
+	
+	
+	
 	
 	
 
@@ -180,71 +192,70 @@ public class ReportScreenController {
     
     
     private void populateApptTypeList() {
-//        apptList = FXCollections.observableArrayList();
-//        
-//        try{
-//            
-//            
-//        PreparedStatement statement = DBConnection.getConn().prepareStatement(
-//            "SELECT MONTHNAME(`start`) AS \"Month\", description AS \"Type\", COUNT(*) as \"Amount\" "
-//            + "FROM appointment "
-//            + "GROUP BY MONTHNAME(`start`), description");
-//            ResultSet rs = statement.executeQuery();
-//           
-//            
-//            while (rs.next()) {
-//                
-//                String month = rs.getString("Month");
-//                
-//                String type = rs.getString("Type");
-//
-//                String amount = rs.getString("Amount");
-//                      
-//                apptList.add(new AppointmentReport(month, type, amount));
-//                
-//                
-//
-//            }
-//            
-//        } catch (SQLException sqe) {
-//            System.out.println("Check your SQL");
-//            sqe.printStackTrace();
-//        } catch (Exception e) {
-//            System.out.println("Something besides the SQL went wrong.");
-//        }
-//        
-//        apptTableView.getItems().setAll(apptList);
+	apptList = FXCollections.observableArrayList();
+
+	try {
+
+	    PreparedStatement statement = DBConnection.getConn().prepareStatement(
+		    "SELECT MONTHNAME(`start`) AS \"month\", type AS \"type\", COUNT(*) as \"count\" "
+		    + "FROM appointment "
+		    + "GROUP BY MONTHNAME(`start`), type");
+	    ResultSet rs = statement.executeQuery();
+
+	    while (rs.next()) {
+
+		String month = rs.getString("month");
+
+		String type = rs.getString("type");
+
+		String count = rs.getString("count");
+
+		apptList.add(new Appointment(month, type, count));
+
+	    }
+
+	} catch (SQLException sqe) {
+	    System.out.println("Check your SQL");
+	    sqe.printStackTrace();
+	} catch (Exception e) {
+	    System.out.println("Something besides the SQL went wrong.");
+	}
+
+	tblApptType.getItems().setAll(apptList);
     }
     
-    private void populateCustBarChart() {
-//        
-//        ObservableList<XYChart.Data<String, Integer>> data = FXCollections.observableArrayList();
-//        XYChart.Series<String, Integer> series = new XYChart.Series<>();
-//
-//            try { PreparedStatement pst = DBConnection.getConn().prepareStatement(
-//                  "SELECT city.city, COUNT(city) "
-//                + "FROM customer, address, city "
-//                + "WHERE customer.addressId = address.addressId "
-//                + "AND address.cityId = city.cityId "
-//                + "GROUP BY city"); 
-//                ResultSet rs = pst.executeQuery();
-//
-//
-//                while (rs.next()) {
-//                        String city = rs.getString("city");
-//                        Integer count = rs.getInt("COUNT(city)");
-//                        data.add(new XYChart.Data<>(city, count));
-//                }
-//
-//            } catch (SQLException sqe) {
-//                System.out.println("Check your SQL");
-//                sqe.printStackTrace();
-//            } catch (Exception e) {
-//                System.out.println("Something besides the SQL went wrong.");
-//                e.printStackTrace();
-//            }             
-//        series.getData().addAll(data);
-//        barChart.getData().add(series);
+ 
+    private void populateCustReport() {
+        
+        custList = FXCollections.observableArrayList();
+//	custData = new HashMap<>();
+      
+            try { PreparedStatement pst = DBConnection.getConn().prepareStatement(
+                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
+                + "FROM customer, address, city "
+                + "WHERE customer.addressId = address.addressId "
+                + "AND address.cityId = city.cityId "
+                + "GROUP BY city"); 
+                ResultSet rs = pst.executeQuery();
+
+
+                while (rs.next()) {
+                        City city = new City(rs.getInt("cityId"), rs.getString("city"));
+                        String count = rs.getString("count");
+                        custList.add(new Customer(city, count));
+                }
+
+            } catch (SQLException sqe) {
+                System.out.println("Check your SQL");
+                sqe.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Something besides the SQL went wrong.");
+                e.printStackTrace();
+            }             
+//        tblCustData.addAll(custData);
+//	  colApptMonth
+        tblCustData.setItems(custList);
+	
     }
     
 
@@ -257,7 +268,7 @@ public class ReportScreenController {
         try{
             
         PreparedStatement pst = DBConnection.getConn().prepareStatement(
-        "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.description, appointment.location, "
+        "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
                 + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
                 + "FROM appointment, customer "
                 + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
@@ -279,7 +290,7 @@ public class ReportScreenController {
 
                 String tTitle = rs.getString("appointment.title");
                 
-                String tType = rs.getString("appointment.description");
+                String tType = rs.getString("appointment.type");
                 String tLocation = rs.getString("appointment.location");
                 
                 Customer tCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));

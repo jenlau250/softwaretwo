@@ -25,6 +25,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -42,6 +44,8 @@ public class jCalendar extends Application {
     private AnchorPane appointmentScreen;
     private AnchorPane customerScreen;
     private AnchorPane reportScreen;
+    private Tab selTab;
+    private TabPane selTabPane;
     
     private static Connection connection;
     private Stage dialogStage;
@@ -65,7 +69,8 @@ public class jCalendar extends Application {
 	DBConnection.init();
 	connection = DBConnection.getConn();
 	// Uncomment to change language back to English
-	//Locale.setDefault(new Locale("jp","JP"));
+	Locale.setDefault(new Locale("jp","JP"));
+	
 	//System.out.println(Locale.getDefault());
 	//connection = DBConnection.getConn();
         launch(args);
@@ -169,7 +174,7 @@ public class jCalendar extends Application {
 	}
     }
     
-    public void showReportScreen(User currentUser, MenuItem menuReports) throws ParseException {
+    public void showReportScreen(User currentUser) {
 
 	try {
 	    // Load screen
@@ -182,7 +187,7 @@ public class jCalendar extends Application {
 
 	    // Give controller access
 	    ReportScreenController controller = loader.getController();
-	    controller.setReportScreen(this, currentUser, menuReports);
+	    controller.setReportScreen(this, currentUser);
 
 	} catch (IOException ex) {
 	    ex.printStackTrace();

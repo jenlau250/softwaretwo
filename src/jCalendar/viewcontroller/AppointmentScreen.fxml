@@ -8,20 +8,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="709.0" prefWidth="984.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentScreenController">
    <children>
-      <SplitPane fx:id="splitPane" dividerPositions="0.21619365609348914" layoutX="147.0" layoutY="97.0" prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane fx:id="splitPane" dividerPositions="0.24299065420560748" layoutX="147.0" layoutY="97.0" prefHeight="750.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <VBox fx:id="apptVBox" layoutX="36.0" layoutY="73.0" prefHeight="598.0" prefWidth="354.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label fx:id="labelAppt" prefHeight="53.0" prefWidth="104.0" text="Label" />
+                        <Pane prefHeight="100.0" prefWidth="209.0">
+                           <children>
+                              <Label fx:id="labelAppt" alignment="CENTER" layoutX="53.0" layoutY="47.0" prefHeight="53.0" prefWidth="104.0" text="Label" />
+                           </children>
+                        </Pane>
                         <GridPane prefHeight="291.0" prefWidth="354.0">
                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.0" minWidth="10.0" prefWidth="113.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="148.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.0" minWidth="10.0" prefWidth="87.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.0" minWidth="10.0" prefWidth="71.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="119.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.0" minWidth="10.0" prefWidth="24.0" />
                           </columnConstraints>
                           <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" />
@@ -31,8 +35,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <TextField fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -47,7 +50,6 @@
                                  </padding>
                               </Label>
                               <TextField fx:id="txtTitle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="type" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Start" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                  <padding>
@@ -83,26 +85,27 @@
                               <ComboBox fx:id="comboType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
-                        <HBox alignment="CENTER" prefHeight="32.0" prefWidth="256.0">
+                        <HBox alignment="CENTER" prefHeight="51.0" prefWidth="209.0">
                            <children>
-                              <Button fx:id="btnApptSave" mnemonicParsing="false" onAction="#handleApptSave" text="Save" />
-                              <Pane prefHeight="62.0" prefWidth="22.0" />
-                              <Button fx:id="btnApptCancel" mnemonicParsing="false" onAction="#handleApptCancel" text="Cancel" />
+                              <Pane prefHeight="51.0" prefWidth="37.0" />
+                              <Button fx:id="btnApptSave" mnemonicParsing="false" onAction="#handleApptSave" prefHeight="22.0" prefWidth="52.0" text="Save" />
+                              <Pane prefHeight="51.0" prefWidth="23.0" />
+                              <Button fx:id="btnApptCancel" mnemonicParsing="false" onAction="#handleApptCancel" prefHeight="25.0" prefWidth="55.0" text="Cancel" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
                </children></AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="692.0" prefWidth="769.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="589.0" prefWidth="688.0">
                <children>
-                  <TableView fx:id="ApptTable" layoutX="4.0" layoutY="98.0" prefHeight="396.0" prefWidth="757.0">
+                  <TableView fx:id="ApptTable" layoutX="20.0" layoutY="105.0" prefHeight="374.0" prefWidth="605.0">
                     <columns>
-                      <TableColumn fx:id="tCustomer" prefWidth="75.0" text="Customer" />
-                      <TableColumn fx:id="tStartDate" prefWidth="128.0" text="Start Date" />
-                        <TableColumn fx:id="tEndDate" prefWidth="133.0" text="End Date" />
-                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="120.0" text="Title" />
-                        <TableColumn fx:id="tDescription" prefWidth="114.0" text="Description" />
-                        <TableColumn fx:id="tLocation" prefWidth="130.0" text="Location" />
+                      <TableColumn fx:id="tCustomer" prefWidth="87.0" text="Customer" />
+                      <TableColumn fx:id="tStartDate" prefWidth="131.0" text="Start Date" />
+                        <TableColumn fx:id="tEndDate" prefWidth="132.0" text="End Date" />
+                        <TableColumn fx:id="tTitle" minWidth="7.0" prefWidth="83.0" text="Title" />
+                        <TableColumn fx:id="tType" prefWidth="83.0" text="Type" />
+                        <TableColumn fx:id="tLocation" prefWidth="88.0" text="Location" />
                     </columns>
                   </TableView>
                   <Label layoutX="9.0" layoutY="14.0" prefHeight="45.0" prefWidth="125.0" text="Appointments">

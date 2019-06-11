@@ -26,6 +26,15 @@ public class Customer {
     private String country;
     private String zipCode;
     private String phone;
+    private String citycount;
+
+    public String getCitycount() {
+	return citycount;
+    }
+
+    public void setCitycount(String citycount) {
+	this.citycount = citycount;
+    }
     
    public Customer(){
         
@@ -49,6 +58,13 @@ public class Customer {
 	this.customerName = customerName;
     }
 
+    public Customer(City city, String citycount) {
+	this.city = city;
+	this.citycount = citycount;
+    }
+
+    
+    
     public int getCustomerId() {
 	return customerId;
     }

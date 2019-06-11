@@ -26,6 +26,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +35,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 
 /**
@@ -46,13 +50,20 @@ public class MainScreenController {
     @FXML    private MenuItem menuCustomers;
     @FXML    private MenuItem menuExit;
     @FXML    private MenuItem menuAppointments;
+    @FXML    private MenuItem menuLogout;
     @FXML    private TextArea txtAreaReminders;
     @FXML    private Menu menuReports;
+    @FXML    private Menu menuAppointment;
+    @FXML    private Menu menuCustomer;
     @FXML    private MenuItem menuReportAppt;
     @FXML    private MenuItem menuReportSchedule;
     @FXML    private MenuItem menuReportCustomer;
 
-
+    @FXML    private TabPane tabMenu;
+    @FXML    private Tab tabScheduleDetails;
+    @FXML    private Tab tabApptType;
+    @FXML    private Tab tabCustomerDetail;
+    
     private jCalendar mainApp;
     private User currentUser;
     private final ZoneId newzid = ZoneId.systemDefault();
@@ -88,33 +99,38 @@ public class MainScreenController {
 	    this.mainApp.showCustomerScreen(this.currentUser);
 	});
 
-	menuAppointments.setOnAction((evt) -> {
+	menuAppointment.setOnAction((evt) -> {
 	    this.mainApp.showAppointmentScreen(this.currentUser);
 	});
 
 	
 	menuReportAppt.setOnAction((evt) -> {
-	    this.mainApp.showReportScreen(this.currentUser, this.menuReportAppt);
+	    
+	    this.mainApp.showReportScreen(this.currentUser);
+	    
 	});
-
+	
 	menuReportCustomer.setOnAction((evt) -> {
-	    this.mainApp.showReportScreen(this.currentUser, this.menuReportCustomer);
+	    this.mainApp.showReportScreen(this.currentUser);
 	});
 	
 	menuReportSchedule.setOnAction((evt) -> {
-	    this.mainApp.showReportScreen(this.currentUser, this.menuReportSchedule);
+	    this.mainApp.showReportScreen(this.currentUser);
+	});
+	
+	menuLogout.setOnAction((evt) -> {
+	    this.mainApp.showLoginScreen();
+	    LOGGER.log(Level.INFO, "{0} logged out", currentUser.getUserName());
 	});
 
-
-
-	//logoutUser.setText("Logout: " + currentUser.getUsername());
     }
 
     private void reminder() {
 	LocalDateTime now = LocalDateTime.now();
+	
 	//CHANGE BACK TO 15 MINUTES
-//	LocalDateTime nowPlus15Min = now.plusMinutes(15);
-	LocalDateTime nowPlus15Min = now.plusMonths(1);
+	LocalDateTime nowPlus15Min = now.plusMinutes(1550);
+//	LocalDateTime nowPlus15Min = now.plus(1, 
 
 	FilteredList<Appointment> filteredData = new FilteredList<>(reminderList);
 
@@ -124,39 +140,27 @@ public class MainScreenController {
 	}
 	);
 	if (filteredData.isEmpty()) {
-	    System.out.println("No reminders");
 	    txtAreaReminders.setText("No Upcoming Appointments within 15 minutes");
+	    
 	} else {
-	    String type = filteredData.get(0).getDescription();
+	    String type = filteredData.get(0).getType();
 	    String customer = filteredData.get(0).getCustomer().getCustomerName();
 	    String start = filteredData.get(0).getStart();
 	    
-	    txtAreaReminders.setText("Reminder: Upcoming Appointments \n");
-	    Iterator<Appointment> itr = filteredData.iterator();
-	    while (itr.hasNext()) {
-		Appointment a = itr.next();
-		txtAreaReminders.appendText(
-			 " Description: " + a.getDescription() + "\t"
-			+ " Customer: " + a.getCustomer().getCustomerName() + "\t"
-			+ " Start Time: " + a.getStart() + "\n"
+	    txtAreaReminders.appendText("Reminder for upcoming appointment! \n"
+			
+			+ " Customer: " + customer + "\n"
+			+ " Start Time: " + start + "\n"
+			+ " Appointment Type: " + type
 		);
-
-	    }
-
-	
 	    
-//	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//	    alert.setTitle("Upcoming Appointment Reminder");
-//	    alert.setHeaderText("Reminder: You have the following appointment set for the next 15 minutes.");
-//	    alert.setContentText("Your upcoming " + type + " appointment with " + customer
-//		    + " is currently set for " + start + ".");
-//	    alert.showAndWait();
-	}
+	    
+	    }
 
     }
     
     private void populateReminderList() {
-//        System.out.println(User.getUserName());
+
         try{           
         PreparedStatement pst = DBConnection.getConn().prepareStatement(
         "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.description, appointment.location, "

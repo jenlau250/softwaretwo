@@ -42,17 +42,14 @@ public class LoginScreenController {
     @FXML    private Button buttonLogin;
     @FXML    private Button buttonCancel;
     @FXML    private TextField textUserId;
-//    @FXML    private TableView<User> UserTable;
     @FXML    private TextField textUserPw;
-//    @FXML    private TableColumn<User, Integer> ID;
-//    @FXML    private TableColumn<User, String> Password;
     @FXML    private Label labelUserPw;
     ObservableList<User> Users= FXCollections.observableArrayList();
     User user = new User();
     // Reference back to main screen
     ResourceBundle rb = ResourceBundle.getBundle("jCalendar/utilities/rb");
     private jCalendar mainApp;
-    private final static Logger LOGGER = Logger.getLogger(Loggerutil.class.getName());
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     
     
     public LoginScreenController() {
@@ -95,8 +92,8 @@ public class LoginScreenController {
 		alert.showAndWait();
 		
 		mainApp.showMain(validateUser);
-		LOGGER.log(Level.INFO, "{0} logged in", userNameInput);
-//	    System.out.println(loginUser);
+	
+		logger.log(Level.INFO, "{0} logged in", userNameInput);
 	    }
 	}
     }
@@ -135,6 +132,7 @@ public class LoginScreenController {
     
     @FXML
     void handleActionCancel(ActionEvent event) {
+	
 	System.exit(0);
     }
 
@@ -145,26 +143,10 @@ public class LoginScreenController {
      */
     public void setLogin(jCalendar mainApp) {
 	this.mainApp = mainApp;
-	//this.rb = rb;
 	buttonLogin.setText(rb.getString("loginbutton"));
 	buttonCancel.setText(rb.getString("cancelbutton"));
 	labelUserId.setText(rb.getString("labelusername"));
 	labelUserPw.setText(rb.getString("labeluserpw"));
-	
-//	ID.setCellValueFactory(new PropertyValueFactory<>("userId"));
-//	// CustomerName.setCellValueFactory(new PropertyValueFactory<>("address"));
-//	UserName.setCellValueFactory(new PropertyValueFactory<>("userName"));
-////       CustomerAddress2.setCellValueFactory(new PropertyValueFactory<>("customerAddress2"));
-//	Password.setCellValueFactory(new PropertyValueFactory<>("password"));
-
-// populate user table from SQL 
-//	try {
-//	    Users.addAll(UserDaoImpl.getAllUsers());
-//
-//	} catch (Exception ex) {
-//	    LOGGER.log(Level.SEVERE, null, ex);
-//	    //Logger.getLogger(LoginScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//	}
 	
 //	UserTable.setItems(Users);
 	//Using Lambda for efficient selection off a tableview

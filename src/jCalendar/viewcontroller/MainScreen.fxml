@@ -6,20 +6,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
    <top>
-      <MenuBar BorderPane.alignment="CENTER">
+      <MenuBar prefHeight="26.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Log out" />
+                  <MenuItem fx:id="menuLogout" mnemonicParsing="false" text="Log out" />
               <MenuItem fx:id="menuExit" mnemonicParsing="false" text="Exit App" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="View Options">
+          <Menu fx:id="menuCustomer" mnemonicParsing="false" text="Customers">
             <items>
-              <MenuItem fx:id="menuCustomers" mnemonicParsing="false" text="Customers" />
-                  <MenuItem fx:id="menuAppointments" mnemonicParsing="false" text="Appointments" />
+              <MenuItem fx:id="menuCustomers" mnemonicParsing="false" text="View Customer" />
             </items>
           </Menu>
             <Menu fx:id="menuReports" mnemonicParsing="false" text="Reports">
@@ -29,10 +28,15 @@
                   <MenuItem fx:id="menuReportCustomer" mnemonicParsing="false" text="Customer Metrics" />
               </items>
             </Menu>
+            <Menu fx:id="menuAppointment" mnemonicParsing="false" text="Appointments">
+              <items>
+                <MenuItem mnemonicParsing="false" text="View Appt" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
    <bottom>
-      <TextArea fx:id="txtAreaReminders" prefHeight="100.0" prefWidth="1200.0" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="txtAreaReminders" prefHeight="91.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>
