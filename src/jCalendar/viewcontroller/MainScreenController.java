@@ -7,11 +7,7 @@ package jCalendar.viewcontroller;
 
 import jCalendar.DAO.DBConnection;
 import jCalendar.model.User;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Customer;
@@ -25,17 +21,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -46,7 +38,10 @@ import javafx.scene.control.TextArea;
  * @author jlau2
  */
 public class MainScreenController {
-
+    
+    private jCalendar mainApp;
+    private User currentUser;
+    
     @FXML    private MenuItem menuCustomers;
     @FXML    private MenuItem menuExit;
     @FXML    private MenuItem menuAppointments;
@@ -63,15 +58,12 @@ public class MainScreenController {
     @FXML    private Tab tabScheduleDetails;
     @FXML    private Tab tabApptType;
     @FXML    private Tab tabCustomerDetail;
-    
-    private jCalendar mainApp;
-    private User currentUser;
+
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     private final ZoneId newzid = ZoneId.systemDefault();
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     ObservableList<Appointment> reminderList;
-    private final static Logger LOGGER = Logger.getLogger(Loggerutil.class.getName());
-
-    // initialize mainApp,currentuser, and empty controller constructor
+ 
     public MainScreenController() {
 	
     }
@@ -90,58 +82,46 @@ public class MainScreenController {
 	populateReminderList();
 	reminder();
 	
-
+	// Justification for Lambda Use - set action on button
 	menuExit.setOnAction((evt) -> {
 	    System.exit(0);
 	});
-	
 	menuCustomers.setOnAction((evt) -> {
 	    this.mainApp.showCustomerScreen(this.currentUser);
 	});
-
 	menuAppointment.setOnAction((evt) -> {
 	    this.mainApp.showAppointmentScreen(this.currentUser);
 	});
-
-	
 	menuReportAppt.setOnAction((evt) -> {
-	    
 	    this.mainApp.showReportScreen(this.currentUser);
-	    
 	});
-	
 	menuReportCustomer.setOnAction((evt) -> {
 	    this.mainApp.showReportScreen(this.currentUser);
 	});
-	
 	menuReportSchedule.setOnAction((evt) -> {
 	    this.mainApp.showReportScreen(this.currentUser);
 	});
-	
 	menuLogout.setOnAction((evt) -> {
 	    this.mainApp.showLoginScreen();
-	    LOGGER.log(Level.INFO, "{0} logged out", currentUser.getUserName());
 	});
-
     }
 
     private void reminder() {
+	
 	LocalDateTime now = LocalDateTime.now();
 	
-	//CHANGE BACK TO 15 MINUTES
+	//Set alert for appointments within 15 minutes of current time
 	LocalDateTime nowPlus15Min = now.plusMinutes(1550);
-//	LocalDateTime nowPlus15Min = now.plus(1, 
 
 	FilteredList<Appointment> filteredData = new FilteredList<>(reminderList);
 
 	filteredData.setPredicate(row -> {
 	    LocalDateTime rowDate = LocalDateTime.parse(row.getStart(), timeDTF);
 	    return rowDate.isAfter(now.minusMinutes(1)) && rowDate.isBefore(nowPlus15Min);
-	}
-	);
+	});
+	
 	if (filteredData.isEmpty()) {
 	    txtAreaReminders.setText("No Upcoming Appointments within 15 minutes");
-	    
 	} else {
 	    String type = filteredData.get(0).getType();
 	    String customer = filteredData.get(0).getCustomer().getCustomerName();
@@ -153,54 +133,45 @@ public class MainScreenController {
 			+ " Start Time: " + start + "\n"
 			+ " Appointment Type: " + type
 		);
-	    
-	    
 	    }
-
     }
     
     private void populateReminderList() {
 
         try{           
-        PreparedStatement pst = DBConnection.getConn().prepareStatement(
+	    
+        PreparedStatement ps = DBConnection.getConn().prepareStatement(
         "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.description, appointment.location, "
                 + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
                 + "FROM appointment, customer "
                 + "WHERE appointment.customerId = customer.customerId AND appointment.createdBy = ? "
                 + "ORDER BY `start`");
-            pst.setString(1, currentUser.getUserName());
-            ResultSet rs = pst.executeQuery();
-           
-            
+            ps.setString(1, currentUser.getUserName());
+            ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
-                
-                String tAppointmentId = rs.getString("appointment.appointmentId");
-                Timestamp tsStart = rs.getTimestamp("appointment.start");
-                ZonedDateTime newzdtStart = tsStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
-        	ZonedDateTime newLocalStart = newzdtStart.withZoneSameInstant(newzid);
 
-                Timestamp tsEnd = rs.getTimestamp("appointment.end");
-                ZonedDateTime newzdtEnd = tsEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
-        	ZonedDateTime newLocalEnd = newzdtEnd.withZoneSameInstant(newzid);
+		Timestamp pStart = rs.getTimestamp("appointment.start");
+		Timestamp pEnd = rs.getTimestamp("appointment.end");
+		ZonedDateTime newZoneStart = pStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
+		ZonedDateTime newZoneEnd = pEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
+		ZonedDateTime newLocalStart = newZoneStart.withZoneSameInstant(newzid);
+		ZonedDateTime newLocalEnd = newZoneEnd.withZoneSameInstant(newzid);
 
-                String tTitle = rs.getString("appointment.title");
-                
-                String tType = rs.getString("appointment.description");
-                String tLocation = rs.getString("appointment.location");
-                
-                Customer tCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
-                
-                String tUser = rs.getString("appointment.createdBy");
-                      
-                reminderList.add(new Appointment(tAppointmentId, newLocalStart.format(timeDTF), newLocalEnd.format(timeDTF), tTitle, tType, tLocation, tCustomer, tUser));   
+		String pAppointmentId = rs.getString("appointment.appointmentId");
+		String pTitle = rs.getString("appointment.title");
+		String pType = rs.getString("appointment.description");
+		String pLocation = rs.getString("appointment.location");
+		Customer pCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
+		String pUser = rs.getString("appointment.createdBy");
 
-            }   
-            
-        } catch (SQLException sqe) {
-            System.out.println("Check your SQL");
+		reminderList.add(new Appointment(pAppointmentId, newLocalStart.format(timeDTF), newLocalEnd.format(timeDTF), pTitle, pType, pLocation, pCustomer, pUser));
+	    }
+	} catch (SQLException sqe) {
+            logger.log(Level.SEVERE, "SQL Exception with showing reminder data.");
             sqe.printStackTrace();
         } catch (Exception e) {
-            System.out.println("Something besides the SQL went wrong.");
+            logger.log(Level.SEVERE, "Check Exception Error");
             e.printStackTrace();
         }
     }

@@ -5,10 +5,6 @@
  */
 package jCalendar.model;
 
-import java.time.Month;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 /**
  *
  * @author jlau2
@@ -22,7 +18,6 @@ public class Appointment {
     private String location;
     private String month;
     private String count;
-
     private String start;
     private String end;
     private String user;
@@ -36,21 +31,7 @@ public class Appointment {
 	this.count = count;
     }
 
-    public String getMonth() {
-	return month;
-    }
 
-    public void setMonth(String month) {
-	this.month = month;
-    }
-
-    public String getCount() {
-	return count;
-    }
-
-    public void setCount(String count) {
-	this.count = count;
-    }
     public Appointment(String appointmentId) {
 	this.appointmentId = appointmentId;
     }
@@ -65,13 +46,6 @@ public class Appointment {
 	this.customer = customer;
 	this.user = user;
     }
-   
-
-//    public Appointment(String start, String end, String user) {
-//	this.start = start;
-//	this.end = end;
-//	this.user = user;
-//    }
 
     public String getAppointmentId() {
 	return appointmentId;
@@ -81,7 +55,6 @@ public class Appointment {
 	this.appointmentId = appointmentId;
     }
 
-    
     public String getLocation() {
 	return location;
     }
@@ -122,17 +95,6 @@ public class Appointment {
 	this.end = end;
     }
 
-    @Override
-    public String toString() {
-	return "ID: " + this.appointmentId
-		+ " Start: " + this.start
-		+ " End: " + this.end
-		+ " Title: " + this.title
-		+ " Type: " + this.type
-		+ " Customer: " + this.customer.getCustomerName()
-		+ " Consultant: " + this.user + ".\n";
-    }
-
     public Customer getCustomer() {
 	return customer;
     }
@@ -149,5 +111,19 @@ public class Appointment {
 	this.user = user;
     }
 
-    
+    public String getMonth() {
+	return month;
+    }
+
+    public void setMonth(String month) {
+	this.month = month;
+    }
+
+    public String getCount() {
+	return count;
+    }
+
+    public void setCount(String count) {
+	this.count = count;
+    }
 }

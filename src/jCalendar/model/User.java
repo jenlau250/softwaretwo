@@ -16,10 +16,10 @@ public class User {
     private String userName;
     private String password;
    // private boolean active;
-    private Calendar createDate;
-    private String createdBy;
-    private Calendar lastUpdate;
-    private String lastUpdateBy; 
+//    private Calendar createDate;
+//    private String createdBy;
+//    private Calendar lastUpdate;
+//    private String lastUpdateBy; 
 
     public User(int userId, String userName, String password) {
         this.userId = userId;
@@ -72,18 +72,4 @@ public class User {
         this.password = password;
     }
 
-    /**
-     * @return the active
-     */
-//    public boolean isActive() {
-//        return active;
-//    }
-//
-//    /**
-//     * @param active the active to set
-//     */
-//    public void setActive(boolean active) {
-//        this.active = active;
-//    }
-//
 }

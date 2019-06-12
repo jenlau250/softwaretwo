@@ -13,7 +13,6 @@ public class Address {
     private Integer addressId;
     private String address;
     private String address2;
-    //private Integer cityId;
     private String postalCode;
     private String phone;
     

@@ -28,19 +28,12 @@ public class Customer {
     private String phone;
     private String citycount;
 
-    public String getCitycount() {
-	return citycount;
-    }
-
-    public void setCitycount(String citycount) {
-	this.citycount = citycount;
-    }
+    
     
    public Customer(){
         
     }
-    
-   //removed CITY for now
+
     public Customer(int customerId, String customerName, String address, String address2, City city, String country, String zipCode, String phone) {
         this.customerId = customerId;
         this.customerName = customerName;
@@ -52,7 +45,7 @@ public class Customer {
         this.phone = phone;
     }
 
-    
+
     public Customer (int customerId, String customerName) {
 	this.customerId = customerId;
 	this.customerName = customerName;
@@ -62,17 +55,11 @@ public class Customer {
 	this.city = city;
 	this.citycount = citycount;
     }
+    
 
-    
-    
     public int getCustomerId() {
 	return customerId;
     }
-
-//    public void setCustomerId(int customerId) {
-//	this.customerId = customerId;
-//    }
-
     public String getCustomerName() {
 	return customerName;
     }
@@ -92,13 +79,10 @@ public class Customer {
     public String getAddress2() {
 	return address2;
     }
-
     public void setAddress2(String address2) {
 	this.address2 = address2;
     }
 
- 
-    
     public City getCity() {
 	return city;
     }
@@ -110,11 +94,6 @@ public class Customer {
     public int getCityId() {
 	return city.getCityId();
     }
-
-//    public void setCityId(int cityId) {
-//	this.city.setCityId(cityId);
-//    }
-
     public String getCountry() {
 	return country;
     }
@@ -139,8 +118,12 @@ public class Customer {
 	this.phone = phone;
     }
 
+    public String getCitycount() {
+	return citycount;
+    }
 
-
-   
+    public void setCitycount(String citycount) {
+	this.citycount = citycount;
+    }
 
 }

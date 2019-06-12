@@ -13,6 +13,7 @@ import jCalendar.model.City;
 import jCalendar.model.Country;
 import jCalendar.model.Customer;
 import jCalendar.model.User;
+import jCalendar.utilities.Loggerutil;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -54,47 +55,45 @@ import javafx.util.StringConverter;
  */
 public class CustomerScreenController {
  
+    private jCalendar mainApp;
+    private User currentUser;
+    
+    @FXML    private Label customerLabel;
+    @FXML    private Label labelCusID;
     @FXML    private Button btnCustomerAdd;
     @FXML    private Button btnCustomerUpdate;
     @FXML    private Button btnCustomerDelete;
     @FXML    private Button btnCustomerSave;
     @FXML    private Button btnCustomerCancelSave;
     @FXML    private TableView<Customer> CustomerTable;
-    @FXML    private TableColumn<Customer, String> txtCustomerID1;
-    @FXML    private TableColumn<Customer, String> txtCustomerName1;
-    @FXML    private TableColumn<Customer, String> txtCustomerCountry1;
-    @FXML    private TextField txtCustomerID;
+    @FXML    private TableColumn<Customer, String> colCustomerID;
+    @FXML    private TableColumn<Customer, String> colCustomerName;
+    @FXML    private TableColumn<Customer, String> colCustomerCountry;
+
     @FXML    private TextField txtCustomerName;
     @FXML    private TextField txtCustomerAddress;
     @FXML    private TextField txtCustomerAddress2;
-    @FXML    private TextField txtCustomerCountry;
     @FXML    private TextField txtCustomerZipCode;
     @FXML    private TextField txtCustomerPhone;
-    @FXML    private Label customerLabel;
+
     @FXML    private ComboBox<City> cityCombo;
     @FXML    private ComboBox<String> countryCombo;
-
+    
     @FXML   ObservableList<Customer> Customers = FXCollections.observableArrayList();
     @FXML   ObservableList<City> Cities = FXCollections.observableArrayList();
     ObservableList<City> selectedCities = FXCollections.observableArrayList();
     ObservableList<Country> Countries = FXCollections.observableArrayList();
-   
-    private jCalendar mainApp;
-    private User currentUser;
-    private Stage dialogStage;
-    boolean editMode;
-    //private User currentUser;
+    private boolean editMode;
+    
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     public CustomerScreenController() {
 
     }
-	
-	
+
      @FXML
     private void comboCountryAction(ActionEvent event) {
-	
 	populateCityList();
-
     }
 	
     private void populateCityList() {
@@ -105,7 +104,7 @@ public class CustomerScreenController {
 		+ "FROM city, country "
 		+ "WHERE city.countryId = country.countryId "
 		+ "AND country.country = \"" + country + "\"";
-
+	
 	Query.makeQuery(sql);
 	ResultSet result = Query.getResult();
 	cityCombo.getItems().clear();
@@ -115,8 +114,9 @@ public class CustomerScreenController {
 		selectedCities.add(new City(result.getInt("city.CityId"), result.getString("city.city")));
 	    }
 	} catch (SQLException ex) {
-	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+	    logger.log(Level.SEVERE, "SQL Exception with populating city combo box.");
 	}
+	// Set city options in cb.
 	cityCombo.setItems(selectedCities);
 	
     }
@@ -124,49 +124,49 @@ public class CustomerScreenController {
     @FXML
     private void initializeCountry() {
 	
-
 	Query.makeQuery("SELECT country FROM country");
 	ResultSet rs = Query.getResult();
 	try {
-
 	    while (rs.next()) {
 		countryCombo.getItems().add(rs.getString(1));
-
 	    }
 	} catch (SQLException ex) {
-	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+	    logger.log(Level.SEVERE, "SQL Exception with populating country combo box.");
 	}
     }
     
     
     @FXML
     private void showCustomerDetails(Customer selectedCustomer) {
-	txtCustomerID.setText(String.valueOf(selectedCustomer.getCustomerId()));
+
 	txtCustomerName.setText(selectedCustomer.getCustomerName());
 	txtCustomerAddress.setText(selectedCustomer.getAddress());
 	txtCustomerAddress2.setText(selectedCustomer.getAddress2());
-	
 	countryCombo.setValue(selectedCustomer.getCountry());
 	cityCombo.setValue(selectedCustomer.getCity());
 	txtCustomerZipCode.setText(selectedCustomer.getZipCode());
 	txtCustomerPhone.setText(selectedCustomer.getPhone());
+	labelCusID.setText(String.valueOf(selectedCustomer.getCustomerId()));
 
     }
     
     
     @FXML
     void handleAddCustomer(ActionEvent event) {
+	
 	customerLabel.setText("Add Customer Details");
-	txtCustomerID.setEditable(false);
-		btnCustomerCancelSave.setDisable(false);
+	btnCustomerAdd.setDisable(true);
+	btnCustomerUpdate.setDisable(true);
+	btnCustomerDelete.setDisable(true);
+	btnCustomerCancelSave.setDisable(false);
 	btnCustomerSave.setDisable(false);
-	// Disable selection on Customer Table
 	CustomerTable.setDisable(true);
 	clearFields();
-//	btnCustomerDelete.setDisable(true);
-//	btnCustomerUpdate.setDisable(true);
+	txtCustomerName.requestFocus();
 	editMode = false;
 	enableEdits();
+	labelCusID.setText("Auto Generated");
+	
 	
     }
 
@@ -177,20 +177,19 @@ public class CustomerScreenController {
 
 	if (selectedCustomer != null) {
 	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-	    alert.setTitle("Confirm Deletion");
+	    alert.setTitle("Confirm delete");
 	    alert.setHeaderText("Are you sure you want to delete " + selectedCustomer.getCustomerName() + "?");
 	    alert.showAndWait()
 		    .filter(response -> response == ButtonType.OK)
 		    .ifPresent(response -> {
 			deleteCustomer(selectedCustomer);
 			mainApp.showCustomerScreen(currentUser);
-		    }
-		    );
+		    });
 	} else {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
-	    alert.setTitle("No Selection");
-	    alert.setHeaderText("No Customer selected for Deletion");
-	    alert.setContentText("Please select a Customer in the Table to delete");
+	    alert.setTitle("Not selected");
+	    alert.setHeaderText("No customer was selected to delete");
+	    alert.setContentText("Please select a customer to delete");
 	    alert.showAndWait();
 	}
     }
@@ -198,18 +197,24 @@ public class CustomerScreenController {
     @FXML
     void handleCancelCustomer(ActionEvent event) {
 	Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-	alert.setTitle("Confirm Cancel");
-	alert.setHeaderText("Are you sure you want to Cancel?");
+	alert.setTitle("Confirm cancel");
+	alert.setHeaderText("Are you sure you want to cancel?");
 	alert.showAndWait()
+		
+	// Lambda use - set OK button to respond
 		.filter(response -> response == ButtonType.OK)
 		.ifPresent(response -> {
-		    //btnCustomerSave.setDisable(true);
 		    CustomerTable.setDisable(false);
+		    labelCusID.setText("");
+		    btnCustomerAdd.setDisable(false);
+		    btnCustomerUpdate.setDisable(false);
+		    btnCustomerDelete.setDisable(false);
+		    btnCustomerCancelSave.setDisable(false);
+		    btnCustomerSave.setDisable(false);
+		    customerLabel.setText("Customer Details");
 		    clearFields();
-		    //newEditDeleteButtonBar.setDisable(false);
 		    editMode = false;
-		}
-		);
+		});
     }
 
     @FXML
@@ -229,26 +234,30 @@ public class CustomerScreenController {
 
     @FXML
     void handleUpdateCustomer(ActionEvent event) {
+	
 	enableEdits();
 	customerLabel.setText("Update Customer Details");
-	btnCustomerCancelSave.setDisable(false);
-	btnCustomerSave.setDisable(false);
 
 	Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
 
 	if (selectedCustomer != null) {
 	    editMode = true;
+	    CustomerTable.setDisable(false);
+	    btnCustomerAdd.setDisable(true);
+	    btnCustomerUpdate.setDisable(true);
+	    btnCustomerDelete.setDisable(true);
+	    btnCustomerCancelSave.setDisable(false);
+	    btnCustomerSave.setDisable(false);
 	    
 	} else {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
-	    alert.setTitle("No Selection");
-	    alert.setHeaderText("No Customer selected");
-	    alert.setContentText("Please select a Customer in the Table");
+	    alert.setTitle("Not selected");
+	    alert.setHeaderText("No customer was selected");
+	    alert.setContentText("Please select a customer to update");
 	    alert.showAndWait();
 	}
 
     }
-    
     
     /**
      * Initializes the controller class.
@@ -262,13 +271,14 @@ public class CustomerScreenController {
 	this.currentUser = currentUser;
 	
 	customerLabel.setText("Customer Details");
-	// Bind table propeties 
-	txtCustomerID1.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-	txtCustomerName1.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-	txtCustomerCountry1.setCellValueFactory(new PropertyValueFactory<>("country"));
+	colCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+	colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+	colCustomerCountry.setCellValueFactory(new PropertyValueFactory<>("country"));
+	
 	initializeCountry();
 	populateCityList();
-
+	
+	// Show city name in combo box
 	cityCombo.setConverter(new StringConverter<City>() {
 
 	    @Override
@@ -284,29 +294,25 @@ public class CustomerScreenController {
 
 	
 	try {
-
 	    Customers.addAll(CustomerDaoImpl.getallCustomers());
-	    //Countries.addAll(CustomerDaoImpl.getCountries());
-	    // Cities.addAll(CustomerDaoImpl.getallCities());
 	} catch (Exception ex) {
+	    logger.log(Level.SEVERE,"Exception error with getting all customer data");
 	    Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
-
 	}
-
+	
+	//default settings
 	CustomerTable.getItems().setAll(Customers);
 	disableEdits();
+	labelCusID.setText("");
+	btnCustomerCancelSave.setDisable(true);
+	btnCustomerSave.setDisable(true);
 
 	CustomerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 	    if (newSelection != null) {
 		showCustomerDetails(newSelection);
 	    }
 	});
-
-	btnCustomerCancelSave.setDisable(true);
-	btnCustomerSave.setDisable(true);
     }
-
-
 
    
     private void enableEdits() {
@@ -328,7 +334,7 @@ public class CustomerScreenController {
     }
 
     private void clearFields() {
-	txtCustomerID.clear();
+	labelCusID.setText("");
 	txtCustomerName.clear();
 	txtCustomerAddress.clear();
 	txtCustomerAddress2.clear();
@@ -358,33 +364,28 @@ public class CustomerScreenController {
 	    ps.setString(7, currentUser.getUserName());
 	
 	    boolean res = ps.execute();
+	    
 	    int newAddressId = -1;
 	    int newCustomerId = -1;
 	    ResultSet rs = ps.getGeneratedKeys();
 
 	    if (rs.next()) {
 		newAddressId = rs.getInt(1);
-		newCustomerId = rs.getInt(1);
-		System.out.println("Generated AddressId: "+ newAddressId);
-		System.out.println("Generated CustomerId: "+ newCustomerId);
-		
-		
+		newCustomerId = rs.getInt(1);	
 	    }
 
-	    PreparedStatement psc = DBConnection.getConn().prepareStatement("INSERT INTO customer "
+	    PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO customer "
 		    + "(customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy, customerId)"
 		    + "VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?, ?)");
 
-	    psc.setString(1, txtCustomerName.getText());
-	    psc.setInt(2, newAddressId);
-	    psc.setInt(3, 1);
-	    //psc.setString(4, LocalDateTime.now().toString());
-	    psc.setString(4, currentUser.getUserName());
-	    //psc.setString(6, LocalDateTime.now().toString());
-	    psc.setString(5, currentUser.getUserName());
-	    psc.setInt(6, newCustomerId);
+	    pst.setString(1, txtCustomerName.getText());
+	    pst.setInt(2, newAddressId);
+	    pst.setInt(3, 1);
+	    pst.setString(4, currentUser.getUserName());
+	    pst.setString(5, currentUser.getUserName());
+	    pst.setInt(6, newCustomerId);
 	    
-	    int result = psc.executeUpdate();
+	    int result = pst.executeUpdate();
 
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
@@ -392,20 +393,11 @@ public class CustomerScreenController {
     }
 
     /**
-     * Updates Customer records
+     * Updates customer records
      */
     private void updateCustomer(Customer selectedCustomer) {
 	try {
-	    int addId = -1;
-	    int newcusId = -1;
 
-	    int cusId = selectedCustomer.getCustomerId();
-	    String selCountry = countryCombo.getValue();
-	    int getCountryId = getCountryId(selCountry, currentUser);
-
-	    System.out.println(cusId);
-	    System.out.println(selCountry);
-		    
 	     PreparedStatement ps = DBConnection.getConn().prepareStatement("UPDATE address, customer, city, country "
                         + "SET address = ?, address2 = ?, address.cityId = ?, postalCode = ?, phone = ?, address.lastUpdate = CURRENT_TIMESTAMP, address.lastUpdateBy = ? "
                         + "WHERE customer.customerId = ? AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");
@@ -416,18 +408,17 @@ public class CustomerScreenController {
                 ps.setString(4, txtCustomerZipCode.getText());
                 ps.setString(5, txtCustomerPhone.getText());
                 ps.setString(6, currentUser.getUserName());
-                ps.setString(7, txtCustomerID.getText());
+                ps.setString(7, labelCusID.getText());
                 
                 int result = ps.executeUpdate();
                              
-            
                 PreparedStatement psc = DBConnection.getConn().prepareStatement("UPDATE customer, address, city "
                 + "SET customerName = ?, customer.lastUpdate = CURRENT_TIMESTAMP, customer.lastUpdateBy = ? "
                 + "WHERE customer.customerId = ? AND customer.addressId = address.addressId AND address.cityId = city.cityId");
             
                 psc.setString(1, txtCustomerName.getText());
                 psc.setString(2, currentUser.getUserName());
-                psc.setString(3, txtCustomerID.getText());
+                psc.setString(3, labelCusID.getText());
                 int results = psc.executeUpdate();
                 
             } catch (SQLException ex) {
@@ -435,8 +426,8 @@ public class CustomerScreenController {
             }
     }
 
-    public int getCountryId(String country, User currentUser)
-	    throws SQLException {
+    public int getCountryId(String country, User currentUser) throws SQLException {
+	
 	int countryId = 0;
 	
 	String sqlstmt = "SELECT countryId FROM country WHERE country = ?";
@@ -465,7 +456,7 @@ public class CustomerScreenController {
 		countryId = getCountryId(country, currentUser);
 	    }
 	} catch (SQLException e) {
-	    System.out.println("There was an error: " + e);
+	    e.printStackTrace();
 	}
 	return countryId;
     }
@@ -482,49 +473,48 @@ public class CustomerScreenController {
 	    e.printStackTrace();
 	}
     }
-  /**
-     * Validates Customer details to ensure no non-existant or invalid data
-     * @return true if no errors
-     */
+
     private boolean validateCustomer() {
+	
+	//EXCEPTION CONTROL: Validate nonexistent or invalid customer data
         String name = txtCustomerName.getText();
         String address = txtCustomerAddress.getText();
         City city = cityCombo.getValue();
-        String country = txtCustomerCountry.getText();
+        String country = countryCombo.getValue();
         String zip = txtCustomerZipCode.getText();
         String phone = txtCustomerPhone.getText();
         
         String errorMessage = "";
-        //first checks to see if inputs are null
+
         if (name == null || name.length() == 0) {
-            errorMessage += "Please enter the Customer's name.\n"; 
+            errorMessage += "Please enter customer name.\n"; 
         }
         if (address == null || address.length() == 0) {
             errorMessage += "Please enter an address.\n";  
         } 
+	// address 2 is optional
         if (city == null) {
-            errorMessage += "Please Select a City.\n"; 
+            errorMessage += "Please select a valid city.\n"; 
         } 
         if (country == null || country.length() == 0) {
-            errorMessage += "No valid Country. Country set by City.\n"; 
+            errorMessage += "Please select a valid country.\n"; 
         }         
         if (zip == null || zip.length() == 0) {
-            errorMessage += "Please enter the Postal Code.\n"; 
+            errorMessage += "Please enter the zip code.\n"; 
         } else if (zip.length() > 10 || zip.length() < 5){
-            errorMessage += "Please enter a valid Postal Code.\n";
+            errorMessage += "Zip code must be between 5 and 10 digits.\n";
         }
         if (phone == null || phone.length() == 0) {
-            errorMessage += "Please enter a Phone Number (including Area Code)."; 
-        } else if (phone.length() < 10 || phone.length() > 15 ){
-            errorMessage += "Please enter a valid phone number (including Area Code).\n";
+            errorMessage += "Please enter a phone number)."; 
+        } else if (phone.length() < 10 || phone.length() > 20){
+            errorMessage += "Phone number must be between 10 and 20 digits.\n";
         }        
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            // Show the error message.
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid Customer fields");
+            alert.setTitle("Invalid data");
+            alert.setHeaderText("Please fix the following customer field(s)");
             alert.setContentText(errorMessage);
 
             alert.showAndWait();

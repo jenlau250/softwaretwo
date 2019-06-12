@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
@@ -8,7 +9,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
    <top>
-      <MenuBar prefHeight="26.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+      <MenuBar prefHeight="35.0" prefWidth="1000.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -16,6 +17,11 @@
               <MenuItem fx:id="menuExit" mnemonicParsing="false" text="Exit App" />
             </items>
           </Menu>
+            <Menu fx:id="menuAppointment" mnemonicParsing="false" text="Appointments">
+              <items>
+                <MenuItem mnemonicParsing="false" text="View Appt" />
+              </items>
+            </Menu>
           <Menu fx:id="menuCustomer" mnemonicParsing="false" text="Customers">
             <items>
               <MenuItem fx:id="menuCustomers" mnemonicParsing="false" text="View Customer" />
@@ -28,12 +34,13 @@
                   <MenuItem fx:id="menuReportCustomer" mnemonicParsing="false" text="Customer Metrics" />
               </items>
             </Menu>
-            <Menu fx:id="menuAppointment" mnemonicParsing="false" text="Appointments">
-              <items>
-                <MenuItem mnemonicParsing="false" text="View Appt" />
-              </items>
-            </Menu>
         </menus>
+         <padding>
+            <Insets bottom="5.0" left="5.0" top="10.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </MenuBar>
    </top>
    <bottom>

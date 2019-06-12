@@ -12,17 +12,10 @@ package jCalendar.model;
 public class City {
     private int cityId;
     private String cityName;
-  //  private int countryId;
     
     public City(){
 
     }
-
-//    public City(int cityId, String cityName, int countryId) {
-//	this.cityId = cityId;
-//	this.cityName = cityName;
-//	this.countryId = countryId;
-//    }
 
     public City(int cityId, String city) {
 	this.cityId = cityId;
@@ -44,14 +37,6 @@ public class City {
     public void setCity(String cityName) {
 	this.cityName = cityName;
     }
-
-//    public int getCountryId() {
-//	return countryId;
-//    }
-//
-//    public void setCountryId(int countryId) {
-//	this.countryId = countryId;
-//    }
 
     @Override
     public String toString() {

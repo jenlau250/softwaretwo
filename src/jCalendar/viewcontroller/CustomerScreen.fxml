@@ -16,9 +16,9 @@
                <children>
                   <TableView fx:id="CustomerTable" layoutY="-2.0" prefHeight="390.0" prefWidth="293.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                     <columns>
-                      <TableColumn fx:id="txtCustomerID1" prefWidth="94.0" text="ID" />
-                      <TableColumn fx:id="txtCustomerName1" prefWidth="173.0" text="Name" />
-                        <TableColumn fx:id="txtCustomerCountry1" prefWidth="101.0" text="Country" />
+                      <TableColumn fx:id="colCustomerID" prefWidth="94.0" text="ID" />
+                      <TableColumn fx:id="colCustomerName" prefWidth="173.0" text="Name" />
+                        <TableColumn fx:id="colCustomerCountry" prefWidth="101.0" text="Country" />
                     </columns>
                   </TableView>
                </children>
@@ -29,7 +29,7 @@
                      <children>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="customerLabel" layoutX="28.0" layoutY="19.0" prefHeight="27.0" prefWidth="125.0" text="Label">
+                              <Label fx:id="customerLabel" layoutX="28.0" layoutY="19.0" prefHeight="27.0" prefWidth="240.0" text="Label">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -56,7 +56,6 @@
                            <children>
                               <TextField fx:id="txtCustomerZipCode" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <TextField fx:id="txtCustomerAddress2" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="txtCustomerID" GridPane.columnIndex="1" />
                               <TextField fx:id="txtCustomerName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField fx:id="txtCustomerAddress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField fx:id="txtCustomerPhone" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -94,6 +93,7 @@
                                  </padding></Label>
                               <ComboBox fx:id="cityCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <ComboBox fx:id="countryCombo" onAction="#comboCountryAction" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="labelCusID" text="Label" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

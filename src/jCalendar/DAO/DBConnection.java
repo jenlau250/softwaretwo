@@ -12,11 +12,7 @@ package jCalendar.DAO;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
-
 
 
 /**
@@ -44,13 +40,7 @@ public class DBConnection {
 	}
 	
     }
-//    
-//    public static void makeConnection()throws ClassNotFoundException, SQLException, Exception
-//    {
-//        Class.forName(driver);
-//        conn=(Connection) DriverManager.getConnection(DB_URL,username,password);
-//        System.out.println("Connection Successful");
-//    }
+
     public static void closeConnection()throws ClassNotFoundException, SQLException, Exception{
         conn.close();
 	System.out.println("Connection Closed");
@@ -59,11 +49,10 @@ public class DBConnection {
     public static Connection getConn() {
 	try {
 	    Class.forName(driver);
-	  //  String unicode = "useSSL=false&autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8";
 	    return DriverManager.getConnection(DB_URL, username, password);
 	} catch (Exception ex) {
 	    System.out.println(ex.getMessage());
-	    System.out.println("couldn't connect!");
+	    System.out.println("couldn't connect");
 	    throw new RuntimeException(ex);
 	}
     }

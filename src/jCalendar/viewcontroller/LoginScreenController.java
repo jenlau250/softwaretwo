@@ -6,15 +6,11 @@
 package jCalendar.viewcontroller;
 
 import jCalendar.DAO.DBConnection;
-import jCalendar.DAO.UserDaoImpl;
 import jCalendar.jCalendar;
 import jCalendar.model.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import jCalendar.utilities.Loggerutil;
-import java.sql.Connection;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +22,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
+
 
 /**
  * FXML Controller class
@@ -37,18 +32,22 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class LoginScreenController {
 
-    @FXML    private TableColumn<User, String> UserName;
+    private jCalendar mainApp;
+    
     @FXML    private Label labelUserId;
     @FXML    private Button buttonLogin;
     @FXML    private Button buttonCancel;
     @FXML    private TextField textUserId;
     @FXML    private TextField textUserPw;
     @FXML    private Label labelUserPw;
+    
     ObservableList<User> Users= FXCollections.observableArrayList();
     User user = new User();
+    
     // Reference back to main screen
     ResourceBundle rb = ResourceBundle.getBundle("jCalendar/utilities/rb");
-    private jCalendar mainApp;
+    
+
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     
     
@@ -58,12 +57,12 @@ public class LoginScreenController {
     
     @FXML
     void handleActionLogin(ActionEvent event) {
-//	Stage s = jCalendar.getStage();
 
 // Show error message If user name or password is blank
 	String userNameInput = textUserId.getText();
 	String userPwInput = textUserPw.getText();
 
+	// EXCEPTION CONTROL: Entering incorrect username and password
 	if ((textUserId.getText().length() == 0) || (textUserPw.getText().length() == 0)) {
 	    Alert alert = new Alert(Alert.AlertType.ERROR);
 	    alert.setTitle(rb.getString("MISSING LOGIN INFORMATION"));
@@ -73,10 +72,7 @@ public class LoginScreenController {
 
 	} else {
 
-// Login successful if user name and password matches
-// change to validate in SQL db
-	    //  User loginUser = validateUserLogin(userNameInput, userPwInput);
-	    User validateUser = validate_login(userNameInput, userPwInput);
+	    User validateUser = validateLogin(userNameInput, userPwInput);
 	    if (validateUser == null) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle(rb.getString("LOGIN ATTEMPT WAS UNSUCCESSFUL"));
@@ -92,27 +88,20 @@ public class LoginScreenController {
 		alert.showAndWait();
 		
 		mainApp.showMain(validateUser);
-	
-		logger.log(Level.INFO, "{0} logged in", userNameInput);
+		
+		//Log user login name and timestamp
+		logger.log(Level.INFO, userNameInput + " logged in on " + Loggerutil.currentTimestamp() );
+
 	    }
 	}
     }
    
-    /**
-     * Searches for matching username and password in database
-     *
-     * @param username
-     * @param password
-     * @return user if match found
-     */
-    User validate_login(String username, String password) {
+    User validateLogin(String username, String password) {
 	try {
-//       Class.forName("com.mysql.jdbc.Driver");  // MySQL database connection
-//       Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/javademo?" + "user=root&password=");     
-	    PreparedStatement pst = DBConnection.getConn().prepareStatement("select * from user where userName=? and password=?");
-	    pst.setString(1, username);
-	    pst.setString(2, password);
-	    ResultSet rs = pst.executeQuery();
+	    PreparedStatement ps = DBConnection.getConn().prepareStatement("SELECT * FROM user WHERE userName=? and password=?");
+	    ps.setString(1, username);
+	    ps.setString(2, password);
+	    ResultSet rs = ps.executeQuery();
 	    if (rs.next()) {
 		user.setUserName(rs.getString("userName"));
 		user.setPassword(rs.getString("password"));
@@ -121,21 +110,10 @@ public class LoginScreenController {
 		return null;
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
-	    
+	    e.printStackTrace();    
 	} return user;
 
     }
-	
-
-
-    
-    @FXML
-    void handleActionCancel(ActionEvent event) {
-	
-	System.exit(0);
-    }
-
 
     /**
      * Initializes the controller class.
@@ -148,18 +126,13 @@ public class LoginScreenController {
 	labelUserId.setText(rb.getString("labelusername"));
 	labelUserPw.setText(rb.getString("labeluserpw"));
 	
-//	UserTable.setItems(Users);
-	//Using Lambda for efficient selection off a tableview
-
+//	Lambda use - set exit action to cancel button
 	buttonCancel.setOnAction((evt) -> {
 	    System.exit(0);
 	});
 
-	
     }
 	
-    
-    
   
     
 }

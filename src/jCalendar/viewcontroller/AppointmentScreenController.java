@@ -10,32 +10,21 @@ import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Customer;
 import jCalendar.model.User;
-import java.io.IOException;
-import java.net.URL;
+import jCalendar.utilities.Loggerutil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -43,8 +32,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -52,15 +39,11 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -71,7 +54,6 @@ import javafx.util.StringConverter;
 public class AppointmentScreenController {
     
     @FXML    private TableView<Appointment> ApptTable;
-//    @FXML    private TableColumn<Appointment, String> tContact;
     @FXML    private TableColumn<Appointment, String> tLocation;
     @FXML    private TableColumn<Appointment, String> tType;
     @FXML    private TableColumn<Appointment, String> tTitle;
@@ -106,22 +88,22 @@ public class AppointmentScreenController {
     private User currentUser;
 
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final DateTimeFormatter labelDTF = DateTimeFormatter.ofPattern("E MMM d, yyyy");
     private final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private final ObservableList<String> endTimes = FXCollections.observableArrayList();
-    private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-    private final ZoneId newzid = ZoneId.systemDefault();
+    private final ZoneId newZoneId = ZoneId.systemDefault();
+    private LocalDate currDate;
 
-    boolean editClicked;
-    LocalDate currDate;
-    Appointment selectedAppt;
+    private boolean editClicked;
+
+    private Appointment selectedAppt;
     private ObservableList<Appointment> appointmentList;
     private ObservableList<Customer> masterData = FXCollections.observableArrayList();
     private ObservableList<String> typeOptions = FXCollections.observableArrayList();
-
-   
-    ObservableList<Appointment> apptTimeList;
     
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
+
     public AppointmentScreenController() {
 
     }
@@ -132,14 +114,14 @@ public class AppointmentScreenController {
 
 	if (selAppt == null) {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
-	    alert.setTitle("No Selection");
-	    alert.setHeaderText("No Appointment selected for Deletion");
-	    alert.setContentText("Please select an Appointment in the Table to delete");
+	    alert.setTitle("Nothing selected");
+	    alert.setHeaderText("No appointment was selected to delete");
+	    alert.setContentText("Please select an appointment to delete");
 	    alert.showAndWait();
 	} else {
 	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 	    alert.setTitle("Confirm Deletion");
-	    alert.setHeaderText("Are you sure you want to delete " + selAppt.getTitle() + " scheduled for " + selAppt.getStart() + "?");
+	    alert.setHeaderText("Are you sure you want to delete " + selAppt.getTitle() + " scheduled for " + selAppt.getCustomer().getCustomerName() + "?");
 	    alert.showAndWait() 
 		    .filter(response -> response == ButtonType.OK)
 		    .ifPresent(response -> {
@@ -156,10 +138,8 @@ public class AppointmentScreenController {
 	labelAppt.setText("Edit Appointment");
 	if (selAppt != null) {
 	    editClicked = true;
-	    
 	    btnApptCancel.setDisable(false);
 	    btnApptSave.setDisable(false);
-	    
 	    btnApptUpdate.setDisable(true);
 	    btnApptAdd.setDisable(true);
 	    btnApptDel.setDisable(true);
@@ -167,9 +147,9 @@ public class AppointmentScreenController {
 
 	} else {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
-	    alert.setTitle("No Selection");
-	    alert.setHeaderText("No Appointment selected");
-	    alert.setContentText("Please select an Appointment in the Table");
+	    alert.setTitle("Nothing selected");
+	    alert.setHeaderText("No appointment was selected");
+	    alert.setContentText("Please select an appointment to update");
 	    alert.showAndWait();
 	}
 
@@ -177,31 +157,22 @@ public class AppointmentScreenController {
     
     @FXML
     void handleApptAdd(ActionEvent event) {
-//        mainApp.showAppointmentScreen(currentUser);
 	apptVBox.setVisible(true);
-	// make appointment table unselectable
 	ApptTable.setDisable(true);
-
 	editClicked = false;
 	clearApptFields();
 	labelAppt.setText("Add Appointment");
 	
 	btnApptCancel.setDisable(false);
 	btnApptSave.setDisable(false);
-	
 	btnApptUpdate.setDisable(true);
 	btnApptAdd.setDisable(true);
 	btnApptDel.setDisable(true);
-	
-
-
-
 	
     }
 
     @FXML
     void handleApptSave(ActionEvent event) {
-	System.out.println("trigger is " + editClicked);
 	apptVBox.setVisible(false);
 	btnApptUpdate.setDisable(false);
 	btnApptAdd.setDisable(false);
@@ -209,28 +180,20 @@ public class AppointmentScreenController {
 	ApptTable.setDisable(false);
 
 	if (labelAppt.getText().contains("Edit")) {
-	    System.out.println("updating..");
+	    System.out.println("Updating..");
 	    updateAppointment();
 
 	} else if (labelAppt.getText().contains("Add")) {
-	    System.out.println("adding..");
+	    System.out.println("Adding..");
 	    saveAppointment();
-
 	}
-	
-	
-//	appointmentList.clear();
-//	populateAppointmentList();
-//	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList, t -> true);
-//	ApptTable.getItems().setAll(filteredData);
-
     }
 
     
     @FXML
     void handleApptCancel(ActionEvent event) {
 	 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-	    alert.setTitle("Confirm Cancel");
+	    alert.setTitle("Confirm cancelling");
 	    alert.setHeaderText("Are you sure you want to cancel?");
 	    alert.showAndWait() 
 		    .filter(response -> response == ButtonType.OK)
@@ -240,25 +203,9 @@ public class AppointmentScreenController {
 			btnApptDel.setDisable(false);
 			ApptTable.setDisable(false);
 			apptVBox.setVisible(false);
-//			mainApp.showAppointmentScreen(currentUser);}
 		    });
 	}
-
     
-//    public void hideInputFields() {
-//	
-//	labelAppt.setVisible(false);
-//	txtTitle.setVisible(false);
-//	type.setVisible(false);
-//	txtLocation.setVisible(false);
-//	datePicker.setVisible(false);
-//	comboCustomer.setVisible(false);
-//	comboEnd.setVisible(false);
-//	comboStart.setVisible(false);
-//	btnApptSave.setVisible(false);
-//	btnApptCancel.setVisible(false);
-//	
-//    }
     /**
      * Initializes the controller class.
      * @param mainApp
@@ -275,23 +222,24 @@ public class AppointmentScreenController {
 	tTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 	tType.setCellValueFactory(new PropertyValueFactory<>("type"));
 	tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-//	tContact.setCellValueFactory(new PropertyValueFactory<>("user"));
-
 	appointmentList = FXCollections.observableArrayList();
-	populateAppointmentList();
-	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList, t -> true);
-	ApptTable.getItems().setAll(filteredData);
+	
+	populateAppointments();
+	ApptTable.getItems().setAll(appointmentList);
 
-	// Listener to load Appointment Details
+	// Load Appointment Details
 	ApptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 	    if (newSelection != null) {
-		System.out.println(newSelection);
 		showAppointmentDetails(newSelection);
 	    }
 	});
 
+	
+	// Create list of appointment start and end times
+	// EXCEPTION: Scheduling hours are only allowed between 8am and 5pm local time.
 	DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 		LocalTime time = LocalTime.of(8, 0);
+		
 	do {
 		startTimes.add(time.format(timeDTF));
 		endTimes.add(time.format(timeDTF));
@@ -304,67 +252,50 @@ public class AppointmentScreenController {
 
         comboStart.setItems(startTimes);
 	comboEnd.setItems(endTimes);
-	// set to select data pull timesD
-	
-	//default set times 8:00 - 8:15am
-	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
-	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
-	
 	
 	// Load customer details
-	masterData = populateCustomerList();
+	masterData = populateCustomers();
 	comboCustomer.setItems(masterData);
 	comboCustomer.setConverter(new StringConverter<Customer>() {
-
 	    @Override
 	    public String toString(Customer object) {
 		return object.getCustomerName();
 	    }
-
 	    @Override
 	    public Customer fromString(String string) {
 		return comboCustomer.getItems().stream().filter(ap -> ap.getCustomerName().equals(string)).findFirst().orElse(null);
 	    }
 	});
-	
+
 	// SET DEFAULTS
-	// disable save and remove buttons
+	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
+	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
+
 	btnApptCancel.setDisable(true);
 	btnApptSave.setDisable(true);
 	labelMainAppt.setText("Click buttons below to add, update, or delete an appointment");
 	labelAppt.setText(null);
 	labelStartBound.setText(null);
 	labelEndBound.setText(null);
-	
-	// hide appointment details
-//	hideInputFields();
 	apptVBox.setVisible(false);
+	choiceWeekMonth.setValue("Monthly");
 		
-	
 	currDate = LocalDate.now();
 	nextMonth(currDate);
 	
-  
-        // create a choiceBox 
+	// Add monthly or weekly filter to tableview
         choiceWeekMonth.setItems(FXCollections.observableArrayList("Weekly", "Monthly")); 
-	choiceWeekMonth.setValue("Monthly");
-
-        // add a listener 
-      choiceWeekMonth.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+        choiceWeekMonth.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
 	  // if the item of the list is changed 
 	  public void changed(ObservableValue ov, Number value, Number new_value) {
-	      // set the text for the label to the selected item 
-	      System.out.println(new_value);
 	      LocalDate cbStartDate = currDate;
-
 	      if (choiceWeekMonth.getSelectionModel().getSelectedIndex() == 0) {
 		  nextWeek(cbStartDate);
 	      } else if (choiceWeekMonth.getSelectionModel().getSelectedIndex() == 1) {
 		  nextMonth(cbStartDate);
 	      }
 	    }
-
       });
 	
 	btnNext.setOnAction((evt) -> {
@@ -376,7 +307,6 @@ public class AppointmentScreenController {
 		nextMonth(cbStartDate);
 	    }
 	});
-	
 		
 	btnBack.setOnAction((evt) -> {
 	    LocalDate cbEndDate = currDate;
@@ -386,14 +316,9 @@ public class AppointmentScreenController {
 		previousMonth(cbEndDate);
 	    }
 	});
-	
-
 	// create combo type box
 	typeOptions.addAll("New", "Follow-up", "Resolution", "Final", "Other");
 	comboType.setItems(typeOptions);
-	
-	
-	
     }
 
     
@@ -426,8 +351,6 @@ public class AppointmentScreenController {
     }
 
      private void nextWeek(LocalDate cbStartDate) {
-	
-
 	currDate = currDate.plusWeeks(1);
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
 	filteredData.setPredicate(row -> {
@@ -435,7 +358,6 @@ public class AppointmentScreenController {
 	    return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
 	});
 	ApptTable.setItems(filteredData);
-
 	labelStartBound.setText(cbStartDate.format(labelDTF));
 	labelEndBound.setText(currDate.format(labelDTF));
     }
@@ -448,16 +370,14 @@ public class AppointmentScreenController {
 	    return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
 	});
 	ApptTable.setItems(filteredData);
-
 	labelStartBound.setText(currDate.format(labelDTF));
 	labelEndBound.setText(cbEndDate.format(labelDTF));
     }
     
+    protected ObservableList<Customer> populateCustomers() {
 
-    protected ObservableList<Customer> populateCustomerList() {
-
-	int tCustomerId;
-	String tCustomerName;
+	int pCustomerId;
+	String pCustomerName;
 
 	ObservableList<Customer> customerList = FXCollections.observableArrayList();
 	try (
@@ -466,42 +386,32 @@ public class AppointmentScreenController {
 			+ "FROM customer, address, city, country "
 			+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");
 		ResultSet rs = statement.executeQuery();) {
-
 	    while (rs.next()) {
-		tCustomerId = rs.getInt("customer.customerId");
-
-		tCustomerName = rs.getString("customer.customerName");
-
-		customerList.add(new Customer(tCustomerId, tCustomerName));
-
+		pCustomerId = rs.getInt("customer.customerId");
+		pCustomerName = rs.getString("customer.customerName");
+		customerList.add(new Customer(pCustomerId, pCustomerName));
 	    }
-
 	} catch (SQLException sqe) {
-	    System.out.println("Check your SQL");
+	    System.out.println("Check SQL Exception");
 	    sqe.printStackTrace();
 	} catch (Exception e) {
-	    System.out.println("Something besides the SQL went wrong.");
+	    System.out.println("Check Exception");
 	}
-
 	return customerList;
 
     }
-    
+
  
-    
     public void showAppointmentDetails(Appointment appointment) {
 	editClicked = true;
 	selectedAppt = appointment;
 
 	String start = appointment.getStart();
-
-	LocalDateTime startLDT = LocalDateTime.parse(start, dateDTF);
 	String end = appointment.getEnd();
+	LocalDateTime startLDT = LocalDateTime.parse(start, dateDTF);
 	LocalDateTime endLDT = LocalDateTime.parse(end, dateDTF);
   
 	txtTitle.setText(appointment.getTitle());
-//	tblApptCustomer.getSelectionModel().select(appointment.getCustomer());
-//	zoneID.getSelectionModel().select(appointment.getCustomer());
 	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateDTF));
 	txtLocation.setText(appointment.getLocation());
 
@@ -509,25 +419,22 @@ public class AppointmentScreenController {
 	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
 	comboCustomer.getSelectionModel().select(appointment.getCustomer());
 	comboType.getSelectionModel().select(appointment.getType());
-	
-	
     }
 
-
-    private void populateAppointmentList() {
+    private void populateAppointments() {
 
 	try {
 	    PreparedStatement ps = DBConnection.getConn().prepareStatement(
 		    "SELECT appointment.appointmentId, "
-			    + "appointment.customerId, "
-			    + "appointment.title, "
-			    + "appointment.type, "
-			    + "appointment.location, "
-			    + "appointment.start, "
-			    + "appointment.end, "
-			    + "customer.customerId, "
-			    + "customer.customerName, "
-			    + "appointment.createdBy "
+		    + "appointment.customerId, "
+		    + "appointment.title, "
+		    + "appointment.type, "
+		    + "appointment.location, "
+		    + "appointment.start, "
+		    + "appointment.end, "
+		    + "customer.customerId, "
+		    + "customer.customerName, "
+		    + "appointment.createdBy "
 		    + "FROM appointment, customer "
 		    + "WHERE appointment.customerId = customer.customerId "
 		    + "ORDER BY `start`");
@@ -538,32 +445,27 @@ public class AppointmentScreenController {
 
 		String tAppointmentId = rs.getString("appointment.appointmentId");
 		Timestamp tsStart = rs.getTimestamp("appointment.start");
-		
-		
-	      //Adding UTC time zone as the Time Zone to localDateTime
-		ZonedDateTime newzdtStart = tsStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
-		
-		//Converting ZonedDateTime to its equivalent in default system time zone
-		ZonedDateTime newLocalStart = newzdtStart.withZoneSameInstant(newzid);
-
 		Timestamp tsEnd = rs.getTimestamp("appointment.end");
+
+		ZonedDateTime newzdtStart = tsStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
 		ZonedDateTime newzdtEnd = tsEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
-		ZonedDateTime newLocalEnd = newzdtEnd.withZoneSameInstant(newzid);
+
+		ZonedDateTime newLocalStart = newzdtStart.withZoneSameInstant(newZoneId);
+		ZonedDateTime newLocalEnd = newzdtEnd.withZoneSameInstant(newZoneId);
 
 		String tTitle = rs.getString("appointment.title");
 		String tType = rs.getString("appointment.type");
 		String tLocation = rs.getString("appointment.location");
 		Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
-	
+
 		String sContact = rs.getString("appointment.createdBy");
 
 		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateDTF), newLocalEnd.format(dateDTF), tTitle, tType, tLocation, sCustomer, sContact));
-		//public Appointment(String appointmentId, String start, String end, String title, String type, String location, Customer customer, String user) 
 	    }
 	} catch (SQLException ex) {
-	    Logger.getLogger(AppointmentScreenController.class.getName()).log(Level.SEVERE, null, ex);
+	    logger.log(Level.SEVERE,"Check SQL exception");
 	} catch (Exception e) {
-	    Logger.getLogger(AppointmentScreenController.class.getName()).log(Level.SEVERE, null, e);
+	    logger.log(Level.SEVERE,"Check exception");
 	}
 
     }
@@ -575,24 +477,26 @@ public class AppointmentScreenController {
 	    pst.executeUpdate();
 
 	} catch (SQLException e) {
-	    e.printStackTrace();
+	    logger.log(Level.WARNING,"Deleting appointment not successful");
 	}
     }
 
     private void updateAppointment() {
+	
 	editClicked = true;
+	
 	LocalDate localDate = datePicker.getValue();
+	
 	LocalTime startTime = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeDTF);
 	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeDTF);
-
-	LocalDateTime startDT = LocalDateTime.of(localDate, startTime);
-	LocalDateTime endDT = LocalDateTime.of(localDate, endTime);
-
-	ZonedDateTime startUTC = startDT.atZone(newzid).withZoneSameInstant(ZoneId.of("UTC"));
-	ZonedDateTime endUTC = endDT.atZone(newzid).withZoneSameInstant(ZoneId.of("UTC"));
-
-	Timestamp startsqlts = Timestamp.valueOf(startUTC.toLocalDateTime()); //this value can be inserted into database
-	Timestamp endsqlts = Timestamp.valueOf(endUTC.toLocalDateTime()); //this value can be inserted into database        
+	LocalDateTime startDate = LocalDateTime.of(localDate, startTime);
+	LocalDateTime endDate = LocalDateTime.of(localDate, endTime);
+	
+	ZonedDateTime startUTC = startDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+	
+	Timestamp startsql = Timestamp.valueOf(startUTC.toLocalDateTime()); 
+	Timestamp endsql = Timestamp.valueOf(endUTC.toLocalDateTime());       
 
 	try {
 
@@ -604,16 +508,16 @@ public class AppointmentScreenController {
 	    pst.setString(2, txtTitle.getText());
 	    pst.setString(3, comboType.getValue());
 	    pst.setString(4, txtLocation.getText());
-	    pst.setTimestamp(5, startsqlts);
-	    pst.setTimestamp(6, endsqlts);
+	    pst.setTimestamp(5, startsql);
+	    pst.setTimestamp(6, endsql);
 	    pst.setString(7, currentUser.getUserName());
 	    pst.setString(8, selectedAppt.getAppointmentId());
 	    int result = pst.executeUpdate();
-	    if (result == 1) {//one row was affected; namely the one that was inserted!
-		System.out.println("YAY! Update Appointment Save");
+	    if (result == 1) {
+		logger.log(Level.INFO, "Customer update complete");
 		mainApp.showAppointmentScreen(currentUser);
 	    } else {
-		System.out.println("BOO! Update Appointment Save");
+		logger.log(Level.WARNING, "Customer update was not successful.");
 	    }
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
@@ -636,57 +540,48 @@ public class AppointmentScreenController {
     private void saveAppointment() {
 	System.out.println(editClicked);
 	
-	// Get the date and times from the date picker and combo box
 	LocalDate selDate = datePicker.getValue();
+	
 	LocalTime selStart = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeDTF);
 	LocalTime selEnd = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeDTF);
 
-	
-        // Convert the times selected to datetime
 	LocalDateTime startDT = LocalDateTime.of(selDate, selStart);
 	LocalDateTime endDT = LocalDateTime.of(selDate, selEnd);
-	
-	// Convert the datetimes to UTC for storage in the database
-	ZonedDateTime startUTC = startDT.atZone(newzid).withZoneSameInstant(ZoneId.of("UTC"));
-	ZonedDateTime endUTC = endDT.atZone(newzid).withZoneSameInstant(ZoneId.of("UTC"));
-	
-        // Convert to SQL format
-	Timestamp startsqlts = Timestamp.valueOf(startUTC.toLocalDateTime()); //this value can be inserted into database
-	Timestamp endsqlts = Timestamp.valueOf(endUTC.toLocalDateTime()); //this value can be inserted into database        
+	// Convert to UTC for database
+	ZonedDateTime startUTC = startDT.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endDT.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+        // Convert to SQL 
+	Timestamp startsql = Timestamp.valueOf(startUTC.toLocalDateTime()); 
+	Timestamp endsql = Timestamp.valueOf(endUTC.toLocalDateTime());     
 
 	try {
 
-	    PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
+	    PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
 		    + "(customerId, title, type, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
 		    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)");
 	    
-	    pst.setInt(1, comboCustomer.getValue().getCustomerId());
-	    pst.setString(2, txtTitle.getText());
-	    pst.setString(3, comboType.getValue());
-	    pst.setString(4, txtLocation.getText());
-	    pst.setString(5, "");
-	    pst.setString(6, "");
-	    pst.setTimestamp(7, startsqlts);
-	    pst.setTimestamp(8, endsqlts);
-	    pst.setString(9, currentUser.getUserName());
-	    pst.setString(10, currentUser.getUserName());
-	    int result = pst.executeUpdate();
-	    if (result == 1) {//one row was affected; namely the one that was inserted!
-		System.out.println("YAY! New Appointment Save");
-		System.out.println("saved " + comboCustomer.getValue().getCustomerName());
+	    ps.setInt(1, comboCustomer.getValue().getCustomerId());
+	    ps.setString(2, txtTitle.getText());
+	    ps.setString(3, comboType.getValue());
+	    ps.setString(4, txtLocation.getText());
+	    ps.setString(5, "");
+	    ps.setString(6, "");
+	    ps.setTimestamp(7, startsql);
+	    ps.setTimestamp(8, endsql);
+	    ps.setString(9, currentUser.getUserName());
+	    ps.setString(10, currentUser.getUserName());
+	    int result = ps.executeUpdate();
+	    
+	    if (result == 1) {
+		logger.log(Level.INFO, "Appointment save complete for " + comboCustomer.getValue().getCustomerName());
 		mainApp.showAppointmentScreen(currentUser);
-		
 	    } else {
-		System.out.println("BOO! New Appointment Save");
+		logger.log(Level.WARNING, "Appointment save was unsuccessful");
 	    }
 	} catch (SQLException ex) {
 	    ex.printStackTrace();
 	}
 
     }
-
-
-    
-    
     
 }
