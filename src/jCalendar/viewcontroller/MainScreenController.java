@@ -50,14 +50,7 @@ public class MainScreenController {
     @FXML    private Menu menuReports;
     @FXML    private Menu menuAppointment;
     @FXML    private Menu menuCustomer;
-    @FXML    private MenuItem menuReportAppt;
-    @FXML    private MenuItem menuReportSchedule;
-    @FXML    private MenuItem menuReportCustomer;
-
-    @FXML    private TabPane tabMenu;
-    @FXML    private Tab tabScheduleDetails;
-    @FXML    private Tab tabApptType;
-    @FXML    private Tab tabCustomerDetail;
+    @FXML    private MenuItem menuItemReports;
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     private final ZoneId newzid = ZoneId.systemDefault();
@@ -92,17 +85,14 @@ public class MainScreenController {
 	menuAppointment.setOnAction((evt) -> {
 	    this.mainApp.showAppointmentScreen(this.currentUser);
 	});
-	menuReportAppt.setOnAction((evt) -> {
+	menuItemReports.setOnAction((evt) -> {
 	    this.mainApp.showReportScreen(this.currentUser);
+
 	});
-	menuReportCustomer.setOnAction((evt) -> {
-	    this.mainApp.showReportScreen(this.currentUser);
-	});
-	menuReportSchedule.setOnAction((evt) -> {
-	    this.mainApp.showReportScreen(this.currentUser);
-	});
+
 	menuLogout.setOnAction((evt) -> {
 	    this.mainApp.showLoginScreen();
+	    
 	});
     }
 

@@ -57,6 +57,7 @@ public class AppointmentScreenController {
     @FXML    private TableColumn<Appointment, String> tLocation;
     @FXML    private TableColumn<Appointment, String> tType;
     @FXML    private TableColumn<Appointment, String> tTitle;
+    @FXML    private TableColumn<Appointment, String> tUser;
     @FXML    private TableColumn<Appointment, LocalDateTime> tEndDate;
     @FXML    private TableColumn<Appointment, ZonedDateTime> tStartDate;
     @FXML    private TableColumn<Appointment, String> tCustomer;
@@ -87,9 +88,9 @@ public class AppointmentScreenController {
     private jCalendar mainApp;
     private User currentUser;
 
-    private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
-    private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-    private final DateTimeFormatter labelDTF = DateTimeFormatter.ofPattern("E MMM d, yyyy");
+    private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
     private final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private final ObservableList<String> endTimes = FXCollections.observableArrayList();
     private final ZoneId newZoneId = ZoneId.systemDefault();
@@ -173,20 +174,42 @@ public class AppointmentScreenController {
 
     @FXML
     void handleApptSave(ActionEvent event) {
+	
 	apptVBox.setVisible(false);
 	btnApptUpdate.setDisable(false);
 	btnApptAdd.setDisable(false);
 	btnApptDel.setDisable(false);
 	ApptTable.setDisable(false);
 
-	if (labelAppt.getText().contains("Edit")) {
-	    System.out.println("Updating..");
-	    updateAppointment();
+	LocalDate localDate = datePicker.getValue();
 
-	} else if (labelAppt.getText().contains("Add")) {
-	    System.out.println("Adding..");
-	    saveAppointment();
+	LocalTime startTime = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeformat);
+	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
+	LocalDateTime startDate = LocalDateTime.of(localDate, startTime);
+	LocalDateTime endDate = LocalDateTime.of(localDate, endTime);
+	ZonedDateTime startUTC = startDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+
+
+	if (validateApptOverlap(startUTC, endUTC, currentUser)) {
+	    Alert alert = new Alert(Alert.AlertType.WARNING);
+	    alert.setTitle("Appointment Overlap");
+	    alert.setHeaderText("Warning: Appointment was not saved");
+	    alert.setContentText("Overlaps with existing appointment. Please check again.");
+	    alert.showAndWait();
+
+	} else {
+
+	    if (labelAppt.getText().contains("Edit")) {
+		System.out.println("Updating..");
+		updateAppointment();
+
+	    } else if (labelAppt.getText().contains("Add")) {
+		System.out.println("Adding..");
+		saveAppointment();
+	    }
 	}
+
     }
 
     
@@ -220,6 +243,7 @@ public class AppointmentScreenController {
 	tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
 	tEndDate.setCellValueFactory(new PropertyValueFactory<>("end"));
 	tTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+	tUser.setCellValueFactory(new PropertyValueFactory<>("user"));
 	tType.setCellValueFactory(new PropertyValueFactory<>("type"));
 	tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
 	appointmentList = FXCollections.observableArrayList();
@@ -324,54 +348,54 @@ public class AppointmentScreenController {
     
     private void nextMonth(LocalDate cbStartDate) {
 	
-
+	// Lambda expression used to filter data
 	currDate = currDate.plusMonths(1);
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
 	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateDTF);
+	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
 	    return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
 	});
 	ApptTable.setItems(filteredData);
 
-	labelStartBound.setText(cbStartDate.format(labelDTF));
-	labelEndBound.setText(currDate.format(labelDTF));
+	labelStartBound.setText(cbStartDate.format(labelformat));
+	labelEndBound.setText(currDate.format(labelformat));
     }
     
     private void previousMonth(LocalDate cbEndDate) {
 	currDate = currDate.minusMonths(1);
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
 	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateDTF);
+	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
 	    return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
 	});
 	ApptTable.setItems(filteredData);
 
-	labelStartBound.setText(currDate.format(labelDTF));
-	labelEndBound.setText(cbEndDate.format(labelDTF));
+	labelStartBound.setText(currDate.format(labelformat));
+	labelEndBound.setText(cbEndDate.format(labelformat));
     }
 
      private void nextWeek(LocalDate cbStartDate) {
 	currDate = currDate.plusWeeks(1);
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
 	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateDTF);
+	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
 	    return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
 	});
 	ApptTable.setItems(filteredData);
-	labelStartBound.setText(cbStartDate.format(labelDTF));
-	labelEndBound.setText(currDate.format(labelDTF));
+	labelStartBound.setText(cbStartDate.format(labelformat));
+	labelEndBound.setText(currDate.format(labelformat));
     }
     
     private void previousWeek(LocalDate cbEndDate) {
 	currDate = currDate.minusWeeks(1);
 	FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
 	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateDTF);
+	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
 	    return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
 	});
 	ApptTable.setItems(filteredData);
-	labelStartBound.setText(currDate.format(labelDTF));
-	labelEndBound.setText(cbEndDate.format(labelDTF));
+	labelStartBound.setText(currDate.format(labelformat));
+	labelEndBound.setText(cbEndDate.format(labelformat));
     }
     
     protected ObservableList<Customer> populateCustomers() {
@@ -408,15 +432,15 @@ public class AppointmentScreenController {
 
 	String start = appointment.getStart();
 	String end = appointment.getEnd();
-	LocalDateTime startLDT = LocalDateTime.parse(start, dateDTF);
-	LocalDateTime endLDT = LocalDateTime.parse(end, dateDTF);
+	LocalDateTime startLDT = LocalDateTime.parse(start, dateformat);
+	LocalDateTime endLDT = LocalDateTime.parse(end, dateformat);
   
 	txtTitle.setText(appointment.getTitle());
-	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateDTF));
+	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateformat));
 	txtLocation.setText(appointment.getLocation());
 
-	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeDTF));
-	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeDTF));
+	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeformat));
+	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeformat));
 	comboCustomer.getSelectionModel().select(appointment.getCustomer());
 	comboType.getSelectionModel().select(appointment.getType());
     }
@@ -460,7 +484,7 @@ public class AppointmentScreenController {
 
 		String sContact = rs.getString("appointment.createdBy");
 
-		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateDTF), newLocalEnd.format(dateDTF), tTitle, tType, tLocation, sCustomer, sContact));
+		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateformat), newLocalEnd.format(dateformat), tTitle, tType, tLocation, sCustomer, sContact));
 	    }
 	} catch (SQLException ex) {
 	    logger.log(Level.SEVERE,"Check SQL exception");
@@ -487,8 +511,8 @@ public class AppointmentScreenController {
 	
 	LocalDate localDate = datePicker.getValue();
 	
-	LocalTime startTime = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeDTF);
-	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeDTF);
+	LocalTime startTime = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeformat);
+	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
 	LocalDateTime startDate = LocalDateTime.of(localDate, startTime);
 	LocalDateTime endDate = LocalDateTime.of(localDate, endTime);
 	
@@ -528,8 +552,8 @@ public class AppointmentScreenController {
     private void clearApptFields(){
 
 	comboCustomer.setValue(null);
-	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
-	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
+	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeformat));
+	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeformat));
 	datePicker.setValue(LocalDate.now());
 	txtTitle.setText("");
 	comboType.setValue(null);
@@ -537,13 +561,41 @@ public class AppointmentScreenController {
 		
 	
     }
+   
+    public static Boolean validateApptOverlap(ZonedDateTime sDate, ZonedDateTime eDate, User user) {
+	Boolean overlap = false;
+	try {
+	    PreparedStatement ps = DBConnection.getConn().prepareStatement(
+		    "SELECT * FROM appointment "
+		    + "WHERE (? BETWEEN start AND end OR ? BETWEEN start AND end OR ? < start AND ? > end) "
+	    		    + "AND (createdBy = ?)"
+	    );
+	    ps.setTimestamp(1, Timestamp.valueOf(sDate.toLocalDateTime()));
+	    ps.setTimestamp(2, Timestamp.valueOf(eDate.toLocalDateTime()));
+	    ps.setTimestamp(3, Timestamp.valueOf(sDate.toLocalDateTime()));
+	    ps.setTimestamp(4, Timestamp.valueOf(eDate.toLocalDateTime()));
+	    ps.setString(5, user.getUserName());
+	    ResultSet rs = ps.executeQuery();
+
+	    if (rs.absolute(1)) {
+		overlap = true;
+	    }
+
+	} catch (SQLException ex) {
+	    System.out.println("Check SQL Exception " + ex);
+	}
+
+	return overlap;
+
+    }
+	
     private void saveAppointment() {
 	System.out.println(editClicked);
 	
 	LocalDate selDate = datePicker.getValue();
 	
-	LocalTime selStart = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeDTF);
-	LocalTime selEnd = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeDTF);
+	LocalTime selStart = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeformat);
+	LocalTime selEnd = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
 
 	LocalDateTime startDT = LocalDateTime.of(selDate, selStart);
 	LocalDateTime endDT = LocalDateTime.of(selDate, selEnd);

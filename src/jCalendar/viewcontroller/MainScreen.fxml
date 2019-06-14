@@ -9,7 +9,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
    <top>
-      <MenuBar prefHeight="35.0" prefWidth="1000.0">
+      <MenuBar prefHeight="25.0" prefWidth="1000.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -29,15 +29,10 @@
           </Menu>
             <Menu fx:id="menuReports" mnemonicParsing="false" text="Reports">
               <items>
-                <MenuItem fx:id="menuReportSchedule" mnemonicParsing="false" text="Schedule Details" />
-                  <MenuItem fx:id="menuReportAppt" mnemonicParsing="false" text="Appointment Types by Month" />
-                  <MenuItem fx:id="menuReportCustomer" mnemonicParsing="false" text="Customer Metrics" />
+                <MenuItem fx:id="menuItemReports" mnemonicParsing="false" text="View Reports" />
               </items>
             </Menu>
         </menus>
-         <padding>
-            <Insets bottom="5.0" left="5.0" top="10.0" />
-         </padding>
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>

@@ -20,7 +20,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.HashMap;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -77,7 +76,7 @@ public class ReportScreenController {
     @FXML    private TableColumn<Customer, String> colCustCount;
     @FXML    private TableColumn<Customer, City> colCustCity;
     
-    private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dtformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final ZoneId newZoneId = ZoneId.systemDefault();
     private ObservableList<Appointment> apptList;
     private ObservableList<Customer> custList;
@@ -130,7 +129,7 @@ public class ReportScreenController {
     private void filterMonth(String month) {
 	FilteredList<Appointment> filteredData = new FilteredList<>(schedule);
 	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dateDTF);
+	    LocalDate rowDate = LocalDate.parse(row.getStart(), dtformat);
 	    String rowMonth = rowDate.getMonth().name();
 	    return rowMonth.equals(month);
 	});
@@ -228,7 +227,7 @@ public class ReportScreenController {
 		String sType = rs.getString("appointment.type");
 		String sLocation = rs.getString("appointment.location");
 
-		schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dateDTF), newLocalEnd.format(dateDTF), sTitle, sType, sLocation, sCustomer, sUser));
+		schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dtformat), newLocalEnd.format(dtformat), sTitle, sType, sLocation, sCustomer, sUser));
 		monthSet.add(newLocalStart.getMonth().name());
 
 	    }
