@@ -6,11 +6,10 @@
 package jCalendar.viewcontroller;
 
 import jCalendar.DAO.DBConnection;
-import jCalendar.model.User;
-import javafx.fxml.FXML;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Customer;
+import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,10 +25,9 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 
 /**
@@ -91,7 +89,7 @@ public class MainScreenController {
 	});
 
 	menuLogout.setOnAction((evt) -> {
-	    this.mainApp.showLoginScreen();
+	    this.mainApp.showLoginScreen2();
 	    
 	});
     }
