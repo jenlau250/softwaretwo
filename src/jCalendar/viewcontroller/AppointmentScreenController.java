@@ -15,13 +15,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleObjectProperty;
@@ -94,12 +100,13 @@ public class AppointmentScreenController {
     private final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private final ObservableList<String> endTimes = FXCollections.observableArrayList();
     private final ZoneId newZoneId = ZoneId.systemDefault();
+//    private final ZoneId newZoneId = ZoneId.of("US/Mountain");
     private LocalDate currDate;
 
     private boolean editClicked;
 
     private Appointment selectedAppt;
-    private ObservableList<Appointment> appointmentList;
+    private ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
     private ObservableList<Customer> masterData = FXCollections.observableArrayList();
     private ObservableList<String> typeOptions = FXCollections.observableArrayList();
     
@@ -187,9 +194,11 @@ public class AppointmentScreenController {
 	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
 	LocalDateTime startDate = LocalDateTime.of(localDate, startTime);
 	LocalDateTime endDate = LocalDateTime.of(localDate, endTime);
-	ZonedDateTime startUTC = startDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-	ZonedDateTime endUTC = endDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-
+	
+	ZoneId zid = ZoneId.systemDefault();
+	ZonedDateTime startUTC = startDate.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endDate.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+	
 
 	if (validateApptOverlap(startUTC, endUTC, currentUser)) {
 	    Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -209,6 +218,14 @@ public class AppointmentScreenController {
 		saveAppointment();
 	    }
 	}
+	
+	
+	Calendar c = Calendar.getInstance();
+          
+        //get current TimeZone using
+        TimeZone tz = c.getTimeZone();
+          
+        System.out.println("Current TimeZone is : " + tz.getDisplayName());
 
     }
 
@@ -238,7 +255,7 @@ public class AppointmentScreenController {
 
 	this.mainApp = mainApp;
 	this.currentUser = currentUser;
-	
+
 	tCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
 	tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
 	tEndDate.setCellValueFactory(new PropertyValueFactory<>("end"));
@@ -246,37 +263,42 @@ public class AppointmentScreenController {
 	tUser.setCellValueFactory(new PropertyValueFactory<>("user"));
 	tType.setCellValueFactory(new PropertyValueFactory<>("type"));
 	tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-	appointmentList = FXCollections.observableArrayList();
-	
+
 	populateAppointments();
 	ApptTable.getItems().setAll(appointmentList);
 
-	// Load Appointment Details
-	ApptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-	    if (newSelection != null) {
-		showAppointmentDetails(newSelection);
-	    }
-	});
-
-	
 	// Create list of appointment start and end times
 	// EXCEPTION: Scheduling hours are only allowed between 8am and 5pm local time.
-	DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
-		LocalTime time = LocalTime.of(8, 0);
-		
-	do {
-		startTimes.add(time.format(timeDTF));
-		endTimes.add(time.format(timeDTF));
-		time = time.plusMinutes(15);
-	} while(!time.equals(LocalTime.of(17, 15)));
-		startTimes.remove(startTimes.size() - 1);
-		endTimes.remove(0);
-        
-        datePicker.setValue(LocalDate.now());
+//	DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+//
+//	LocalTime time = LocalTime.of(8, 0);
+//
+//	do {
+//	    startTimes.add(time.format(timeDTF));
+//	    endTimes.add(time.format(timeDTF));
+//	    time = time.plusMinutes(15);
+//	} while (!time.equals(LocalTime.of(17, 15)));
+//	startTimes.remove(startTimes.size() - 1);
+//	endTimes.remove(0);
 
-        comboStart.setItems(startTimes);
+        LocalTime appointmentStartTime = LocalTime.of( 8, 0 );
+        LocalTime appointmentEndTime = LocalTime.of( 8, 15 );
+                
+        while ( !appointmentStartTime.equals( LocalTime.of( 17, 0 ) ) ) {
+            startTimes.add( appointmentStartTime.format( timeformat ) );
+            appointmentStartTime = appointmentStartTime.plusMinutes(15);
+            appointmentEndTime = appointmentEndTime.plusMinutes(15);
+	    endTimes.add( appointmentStartTime.format( timeformat ) );
+	}
+
+	// Set up the time pickers
+	comboEnd.setItems(null);
+
+	comboStart.setItems(startTimes);
+
+
 	comboEnd.setItems(endTimes);
-	
+
 	// Load customer details
 	masterData = populateCustomers();
 	comboCustomer.setItems(masterData);
@@ -291,9 +313,19 @@ public class AppointmentScreenController {
 	    }
 	});
 
-	// SET DEFAULTS
-	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
-	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
+
+
+	// Load Appointment Details
+	ApptTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+	    if (newSelection != null) {
+		showAppointmentDetails(newSelection);
+	    }
+	});
+	
+		// SET DEFAULTS
+	datePicker.setValue(LocalDate.now());
+//	comboStart.getSelectionModel().select(LocalTime.of(8, 0).format(timeDTF));
+//	comboEnd.getSelectionModel().select(LocalTime.of(8, 15).format(timeDTF));
 
 	btnApptCancel.setDisable(true);
 	btnApptSave.setDisable(true);
@@ -343,6 +375,15 @@ public class AppointmentScreenController {
 	// create combo type box
 	typeOptions.addAll("New", "Follow-up", "Resolution", "Final", "Other");
 	comboType.setItems(typeOptions);
+	
+	
+	
+	
+	
+	
+	
+	
+	
     }
 
     
@@ -434,15 +475,20 @@ public class AppointmentScreenController {
 	String end = appointment.getEnd();
 	LocalDateTime startLDT = LocalDateTime.parse(start, dateformat);
 	LocalDateTime endLDT = LocalDateTime.parse(end, dateformat);
-  
-	txtTitle.setText(appointment.getTitle());
+
 	datePicker.setValue(LocalDate.parse(appointment.getStart(), dateformat));
-	txtLocation.setText(appointment.getLocation());
 
 	comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeformat));
 	comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeformat));
+
+	txtTitle.setText(appointment.getTitle());
+	txtLocation.setText(appointment.getLocation());
 	comboCustomer.getSelectionModel().select(appointment.getCustomer());
 	comboType.getSelectionModel().select(appointment.getType());
+
+
+
+	
     }
 
     private void populateAppointments() {
@@ -468,15 +514,22 @@ public class AppointmentScreenController {
 	    while (rs.next()) {
 
 		String tAppointmentId = rs.getString("appointment.appointmentId");
-		Timestamp tsStart = rs.getTimestamp("appointment.start");
-		Timestamp tsEnd = rs.getTimestamp("appointment.end");
+		// get utc timestamps from database
+		String tsStart = rs.getString("appointment.start");
+		String tsEnd = rs.getString("appointment.end");
+		
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime rDate = LocalDateTime.parse(tsStart, df);
+		LocalDateTime rDate2 = LocalDateTime.parse(tsEnd, df);
+		// date stored as UTC
+		ZonedDateTime zonedDate = rDate.atZone(ZoneId.of("UTC"));
+		ZonedDateTime zonedDate2 = rDate2.atZone(ZoneId.of("UTC"));
 
-		ZonedDateTime newzdtStart = tsStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
-		ZonedDateTime newzdtEnd = tsEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
-
-		ZonedDateTime newLocalStart = newzdtStart.withZoneSameInstant(newZoneId);
-		ZonedDateTime newLocalEnd = newzdtEnd.withZoneSameInstant(newZoneId);
-
+		// now convert for local time
+		ZoneId zid = ZoneId.systemDefault();
+		ZonedDateTime newLocalStart = zonedDate.withZoneSameInstant(zid);
+		ZonedDateTime newLocalEnd = zonedDate2.withZoneSameInstant(zid);
+		
 		String tTitle = rs.getString("appointment.title");
 		String tType = rs.getString("appointment.type");
 		String tLocation = rs.getString("appointment.location");
@@ -485,6 +538,9 @@ public class AppointmentScreenController {
 		String sContact = rs.getString("appointment.createdBy");
 
 		appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateformat), newLocalEnd.format(dateformat), tTitle, tType, tLocation, sCustomer, sContact));
+		
+		
+		
 	    }
 	} catch (SQLException ex) {
 	    logger.log(Level.SEVERE,"Check SQL exception");
@@ -493,6 +549,8 @@ public class AppointmentScreenController {
 	}
 
     }
+    
+  
 
     private void deleteAppointment(Appointment appointment) {
 	try {
@@ -508,19 +566,26 @@ public class AppointmentScreenController {
     private void updateAppointment() {
 	
 	editClicked = true;
+
+	DateTimeFormatter tf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+	String localDate = datePicker.getValue().toString();
+	String sDateTime = localDate + " " + comboStart.getValue();
+	String eDateTime = localDate + " " + comboEnd.getValue();
+
+	LocalDateTime startTime = LocalDateTime.parse(sDateTime, tf);
+	LocalDateTime endTime = LocalDateTime.parse(eDateTime, tf);
 	
-	LocalDate localDate = datePicker.getValue();
-	
-	LocalTime startTime = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeformat);
-	LocalTime endTime = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
-	LocalDateTime startDate = LocalDateTime.of(localDate, startTime);
-	LocalDateTime endDate = LocalDateTime.of(localDate, endTime);
-	
-	ZonedDateTime startUTC = startDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-	ZonedDateTime endUTC = endDate.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-	
+	ZoneId zid = ZoneId.systemDefault();
+	ZonedDateTime startUTC = startTime.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endTime.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+
 	Timestamp startsql = Timestamp.valueOf(startUTC.toLocalDateTime()); 
 	Timestamp endsql = Timestamp.valueOf(endUTC.toLocalDateTime());       
+
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	String stringStart = dateFormatter.format(startsql);
+	String stringEnd = dateFormatter.format(endsql);
+
 
 	try {
 
@@ -532,8 +597,8 @@ public class AppointmentScreenController {
 	    pst.setString(2, txtTitle.getText());
 	    pst.setString(3, comboType.getValue());
 	    pst.setString(4, txtLocation.getText());
-	    pst.setTimestamp(5, startsql);
-	    pst.setTimestamp(6, endsql);
+	    pst.setString(5, stringStart);
+	    pst.setString(6, stringEnd);
 	    pst.setString(7, currentUser.getUserName());
 	    pst.setString(8, selectedAppt.getAppointmentId());
 	    int result = pst.executeUpdate();
@@ -590,22 +655,31 @@ public class AppointmentScreenController {
     }
 	
     private void saveAppointment() {
-	System.out.println(editClicked);
-	
-	LocalDate selDate = datePicker.getValue();
-	
-	LocalTime selStart = LocalTime.parse(comboStart.getSelectionModel().getSelectedItem(), timeformat);
-	LocalTime selEnd = LocalTime.parse(comboEnd.getSelectionModel().getSelectedItem(), timeformat);
+//	System.out.println(editClicked);
 
-	LocalDateTime startDT = LocalDateTime.of(selDate, selStart);
-	LocalDateTime endDT = LocalDateTime.of(selDate, selEnd);
-	// Convert to UTC for database
-	ZonedDateTime startUTC = startDT.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-	ZonedDateTime endUTC = endDT.atZone(newZoneId).withZoneSameInstant(ZoneId.of("UTC"));
-        // Convert to SQL 
+	DateTimeFormatter tf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+	String selDate = datePicker.getValue().toString();
+	String selStart = selDate + " " + comboStart.getValue();
+	String selEnd = selDate + " " + comboEnd.getValue();
+
+	LocalDateTime startTime = LocalDateTime.parse(selStart, tf);
+	LocalDateTime endTime = LocalDateTime.parse(selEnd, tf);
+	
+	ZoneId zid = ZoneId.systemDefault();
+	ZonedDateTime startUTC = startTime.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+	ZonedDateTime endUTC = endTime.atZone(zid).withZoneSameInstant(ZoneId.of("UTC"));
+
 	Timestamp startsql = Timestamp.valueOf(startUTC.toLocalDateTime()); 
-	Timestamp endsql = Timestamp.valueOf(endUTC.toLocalDateTime());     
+	Timestamp endsql = Timestamp.valueOf(endUTC.toLocalDateTime());       
 
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	String stringStart = dateFormatter.format(startsql);
+	String stringEnd = dateFormatter.format(endsql);
+
+	
+	System.out.println("Appointment times to save :" + stringStart + " and " + stringEnd);
+
+	
 	try {
 
 	    PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
@@ -618,8 +692,8 @@ public class AppointmentScreenController {
 	    ps.setString(4, txtLocation.getText());
 	    ps.setString(5, "");
 	    ps.setString(6, "");
-	    ps.setTimestamp(7, startsql);
-	    ps.setTimestamp(8, endsql);
+	    ps.setString(7, stringStart);
+	    ps.setString(8, stringEnd);
 	    ps.setString(9, currentUser.getUserName());
 	    ps.setString(10, currentUser.getUserName());
 	    int result = ps.executeUpdate();

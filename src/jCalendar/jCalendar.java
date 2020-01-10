@@ -6,30 +6,25 @@
 package jCalendar;
 
 import jCalendar.DAO.DBConnection;
-import jCalendar.model.Appointment;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
 import jCalendar.viewcontroller.AppointmentScreenController;
 import jCalendar.viewcontroller.CustomerScreenController;
 import jCalendar.viewcontroller.LoginScreenController;
+import jCalendar.viewcontroller.LoginScreenController2;
 import jCalendar.viewcontroller.MainScreenController;
 import jCalendar.viewcontroller.ReportScreenController;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -41,6 +36,7 @@ public class jCalendar extends Application {
     private Stage mainStage;
     private BorderPane mainScreen;
     private AnchorPane loginScreen;
+    private AnchorPane loginScreen2;
     private AnchorPane appointmentScreen;
     private AnchorPane customerScreen;
     private AnchorPane reportScreen;
@@ -55,8 +51,8 @@ public class jCalendar extends Application {
     public void start(Stage mainStage) {
 	this.mainStage= mainStage;
 	this.mainStage.setTitle("Calendar App");
-	showLoginScreen();
-
+	//showLoginScreen2();
+        showMain(currUser);
 	//showCustomerScreen(user);
 
     }
@@ -124,6 +120,26 @@ public class jCalendar extends Application {
 
     }
 
+     public void showLoginScreen2() {
+
+	try {
+	    FXMLLoader loader = new FXMLLoader();
+	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen2.fxml"));
+	    loginScreen2 = (AnchorPane) loader.load();
+
+	    LoginScreenController2 controller = loader.getController();
+	    controller.setLogin(this);
+
+	    Scene scene = new Scene(loginScreen2);
+	    mainStage.setScene(scene);
+	    mainStage.show();
+	    
+	} catch (IOException ex) {
+	    ex.printStackTrace();
+	}
+
+    }
+     
     public void showCustomerScreen(User currentUser) {
 
 	try {

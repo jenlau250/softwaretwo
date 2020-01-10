@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package jCalendar.viewcontroller;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import jCalendar.DAO.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.User;
@@ -19,42 +17,34 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 
-
-/**
- * FXML Controller class
- *
- * @author jlau2
- */
-public class LoginScreenController {
+public class LoginScreenController2 {
 
     private jCalendar mainApp;
-    
-    @FXML    private Label labelUserId;
-    @FXML    private Button buttonLogin;
-    @FXML    private Button buttonCancel;
-    @FXML    private TextField textUserId;
-    @FXML    private TextField textUserPw;
-    @FXML    private Label labelUserPw;
-    
-    ObservableList<User> Users= FXCollections.observableArrayList();
+
+    @FXML
+    private JFXTextField textUserId;
+    @FXML
+    private JFXPasswordField textUserPw;
+    @FXML
+    private JFXButton buttonLogin;
+    @FXML
+    private JFXButton buttonCancel;
+
+    ObservableList<User> Users = FXCollections.observableArrayList();
+
     User user = new User();
-    
+
     // Reference back to main screen
     ResourceBundle rb = ResourceBundle.getBundle("jCalendar/utilities/rb");
-    
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
-    
-    
-    public LoginScreenController() {
-	
+
+    public LoginScreenController2() {
+
     }
-    
-    @FXML
+
+@FXML
     void handleActionLogin(ActionEvent event) {
 
 // Show error message If user name or password is blank
@@ -116,22 +106,19 @@ public class LoginScreenController {
 
     /**
      * Initializes the controller class.
+     *
      * @param mainApp
      */
     public void setLogin(jCalendar mainApp) {
-	this.mainApp = mainApp;
-	buttonLogin.setText(rb.getString("loginbutton"));
-	buttonCancel.setText(rb.getString("cancelbutton"));
-	labelUserId.setText(rb.getString("labelusername"));
-	labelUserPw.setText(rb.getString("labeluserpw"));
-	
+        this.mainApp = mainApp;
+        buttonLogin.setText(rb.getString("loginbutton"));
+        buttonCancel.setText(rb.getString("cancelbutton"));
+
 //	Lambda use - set exit action to cancel button
-	buttonCancel.setOnAction((evt) -> {
-	    System.exit(0);
-	});
+        buttonCancel.setOnAction((evt) -> {
+            System.exit(0);
+        });
 
     }
-	
-  
-    
+
 }
