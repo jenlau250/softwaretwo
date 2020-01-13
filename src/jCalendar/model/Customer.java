@@ -5,12 +5,6 @@
  */
 package jCalendar.model;
 
-import java.util.Calendar;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 /**
  *
  * @author jlau2
@@ -124,6 +118,11 @@ public class Customer {
 
     public void setCitycount(String citycount) {
 	this.citycount = citycount;
+    }
+    
+    @Override
+    public String toString() {
+	return String.valueOf(customerName);
     }
 
 }

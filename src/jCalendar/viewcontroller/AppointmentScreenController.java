@@ -64,70 +64,40 @@ import javafx.util.StringConverter;
  */
 public class AppointmentScreenController {
 
-    @FXML
-    private TableView<Appointment> ApptTable;
-    @FXML
-    private TableColumn<Appointment, String> tLocation;
-    @FXML
-    private TableColumn<Appointment, String> tType;
-    @FXML
-    private TableColumn<Appointment, String> tTitle;
-    @FXML
-    private TableColumn<Appointment, String> tUser;
-    @FXML
-    private TableColumn<Appointment, LocalDateTime> tEndDate;
-    @FXML
-    private TableColumn<Appointment, ZonedDateTime> tStartDate;
-    @FXML
-    private TableColumn<Appointment, String> tCustomer;
-    @FXML
-    private Label labelAppt;
-    @FXML
-    private Label labelMainAppt;
-    @FXML
-    private Label labelStartBound;
-    @FXML
-    private Label labelEndBound;
-    @FXML
-    private VBox apptVBox;
+    @FXML    private TableView<Appointment> ApptTable;
+    @FXML    private TableColumn<Appointment, String> tLocation;
+    @FXML    private TableColumn<Appointment, String> tType;
+    @FXML    private TableColumn<Appointment, String> tTitle;
+    @FXML    private TableColumn<Appointment, String> tUser;
+    @FXML    private TableColumn<Appointment, LocalDateTime> tEndDate;
+    @FXML    private TableColumn<Appointment, ZonedDateTime> tStartDate;
+    @FXML    private TableColumn<Appointment, String> tCustomer;
+    @FXML    private Label labelAppt;
+    @FXML    private Label labelMainAppt;
+    @FXML    private Label labelStartBound;
+    @FXML    private Label labelEndBound;
+    @FXML    private VBox apptVBox;
 
     //add/edit pane
-    @FXML
-    private DatePicker datePicker;
-    @FXML
-    private ComboBox<String> comboEnd;
-    @FXML
-    private ComboBox<String> comboStart;
-    @FXML
-    private ComboBox<Customer> comboCustomer;
-    @FXML
-    private ComboBox<String> comboType;
-    @FXML
-    private TextField type;
-    @FXML
-    private TextField txtLocation;
-    @FXML
-    private TextField txtTitle;
-    @FXML
-    private Button btnApptSave;
-    @FXML
-    private Button btnApptCancel;
+    @FXML    private DatePicker datePicker;
+    @FXML    private ComboBox<String> comboEnd;
+    @FXML    private ComboBox<String> comboStart;
+    @FXML    private ComboBox<Customer> comboCustomer;
+    @FXML    private ComboBox<String> comboType;
+    @FXML    private TextField type;
+    @FXML    private TextField txtLocation;
+    @FXML    private TextField txtTitle;
+    @FXML    private Button btnApptSave;
+    @FXML    private Button btnApptCancel;
 
-    @FXML
-    private ChoiceBox<String> choiceWeekMonth;
-    @FXML
-    private Button btnBack;
-    @FXML
-    private Button btnNext;
-    @FXML
-    private Button btnApptDel;
-    @FXML
-    private Button btnApptAdd;
-    @FXML
-    private Button btnApptUpdate;
+    @FXML    private ChoiceBox<String> choiceWeekMonth;
+    @FXML    private Button btnBack;
+    @FXML    private Button btnNext;
+    @FXML    private Button btnApptDel;
+    @FXML    private Button btnApptAdd;
+    @FXML    private Button btnApptUpdate;
 
-    @FXML
-    private Button btnNewAdd;
+    @FXML    private Button btnNewAdd;
 
     private jCalendar mainApp;
     private User currentUser;
@@ -137,7 +107,6 @@ public class AppointmentScreenController {
     private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
     private final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private final ObservableList<String> endTimes = FXCollections.observableArrayList();
-    private final ZoneId newZoneId = ZoneId.systemDefault();
 //    private final ZoneId newZoneId = ZoneId.of("US/Mountain");
     private LocalDate currDate;
 
@@ -178,33 +147,13 @@ public class AppointmentScreenController {
         }
     }
 
-    public void showAppointmentAddScreen(User currentUser) {
 
-        try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/jCalendar/viewcontroller/Appointment_Add.fxml"));
-            AnchorPane rootPane = (AnchorPane) loader.load();
-            Stage stage = new Stage(StageStyle.UNDECORATED);
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Pass main controller reference to view
-            Appointment_AddController eventController = loader.getController();
-            eventController.setMainController(this, currentUser);
-
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootPane);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     @FXML
     void handleApptAddNew(ActionEvent event) {
 
         showAppointmentAddScreen(currentUser);
+//        mainApp.showAppointmentAddScreen(currentUser);
     }
 
     @FXML
@@ -743,6 +692,29 @@ public class AppointmentScreenController {
             ex.printStackTrace();
         }
 
+    }
+    
+        public void showAppointmentAddScreen(User currentUser) {
+
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/jCalendar/viewcontroller/Appointment_Add.fxml"));
+            AnchorPane rootPane = (AnchorPane) loader.load();
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // Pass main controller reference to view
+            Appointment_AddController eventController = loader.getController();
+            eventController.setMainController(this, currentUser);
+
+            // Show the scene containing the root layout.
+            Scene scene = new Scene(rootPane);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 //    public static ObservableList<Appointment> getApptData() {
