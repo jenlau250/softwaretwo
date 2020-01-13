@@ -5,7 +5,6 @@
  */
 package jCalendar;
 
-import jCalendar.DAO.DBConnection;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
 import jCalendar.viewcontroller.AppointmentScreenController;
@@ -17,7 +16,6 @@ import jCalendar.viewcontroller.ReportScreenController;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Locale;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,47 +30,42 @@ import javafx.stage.Stage;
  * @author jlau2
  */
 public class jCalendar extends Application {
-    
+
     private Stage mainStage;
     private BorderPane mainScreen;
     private AnchorPane loginScreen;
     private AnchorPane loginScreen2;
     private AnchorPane appointmentScreen;
+    private AnchorPane appointmentAddScreen;
     private AnchorPane customerScreen;
     private AnchorPane reportScreen;
     private Tab selTab;
     private TabPane selTabPane;
-    
+
     private static Connection connection;
     private Stage dialogStage;
     private User currUser;
-    
+
     @Override
     public void start(Stage mainStage) {
-	this.mainStage= mainStage;
-	this.mainStage.setTitle("Calendar App");
-	//showLoginScreen2();
+        this.mainStage = mainStage;
+        this.mainStage.setTitle("Calendar App");
+//        showLoginScreen2();
         showMain(currUser);
-	//showCustomerScreen(user);
+        //showCustomerScreen(user);
 
     }
-    
-        
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, Exception {
-	DBConnection.init();
-	Loggerutil.init();
-	connection = DBConnection.getConn();
+//        DBConnection.init();
+        Loggerutil.init();
+//        connection = DBConnection.getConn();
 
-	// Uncomment to change language back to English
-//	Locale.setDefault(new Locale("jp", "JP"));
-
-	System.out.println(Locale.getDefault());
-
-	launch(args);
-	DBConnection.closeConnection();
+        launch(args);
+//        DBConnection.closeConnection();
     }
 
     /**
@@ -80,117 +73,120 @@ public class jCalendar extends Application {
      * @param currentUser
      */
     public void showMain(User currentUser) {
-	try {
-	    // Load root layout from fxml file.
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/MainScreen.fxml"));
-	    mainScreen = (BorderPane) loader.load();
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/MainScreen.fxml"));
+            mainScreen = (BorderPane) loader.load();
 
-	    // Show the scene containing the root layout.
-	    Scene scene = new Scene(mainScreen);
-	    mainStage.setScene(scene);
-	    // Give the controller access to the main app.
-	    MainScreenController controller = loader.getController();
-	    controller.setMenu(this, currentUser);
+            // Show the scene containing the root layout.
+            Scene scene = new Scene(mainScreen);
+            mainStage.setScene(scene);
+            // Give the controller access to the main app.
+            MainScreenController controller = loader.getController();
+            controller.setMenu(this, currentUser);
 
-	    mainStage.show();
-	} catch (IOException e) {
-	    e.getCause().printStackTrace();
-	}
-    
-    }
-    
-     public void showLoginScreen() {
-
-	try {
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
-	    loginScreen = (AnchorPane) loader.load();
-
-	    LoginScreenController controller = loader.getController();
-	    controller.setLogin(this);
-
-	    Scene scene = new Scene(loginScreen);
-	    mainStage.setScene(scene);
-	    mainStage.show();
-	    
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+            mainStage.show();
+        } catch (IOException e) {
+            e.getCause().printStackTrace();
+        }
 
     }
 
-     public void showLoginScreen2() {
+    public void showLoginScreen() {
 
-	try {
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen2.fxml"));
-	    loginScreen2 = (AnchorPane) loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
+            loginScreen = (AnchorPane) loader.load();
 
-	    LoginScreenController2 controller = loader.getController();
-	    controller.setLogin(this);
+            LoginScreenController controller = loader.getController();
+            controller.setLogin(this);
 
-	    Scene scene = new Scene(loginScreen2);
-	    mainStage.setScene(scene);
-	    mainStage.show();
-	    
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+            Scene scene = new Scene(loginScreen);
+            mainStage.setScene(scene);
+            mainStage.show();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
     }
-     
+
+    public void showLoginScreen2() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen2.fxml"));
+            loginScreen2 = (AnchorPane) loader.load();
+
+            LoginScreenController2 controller = loader.getController();
+            controller.setLogin(this);
+
+            Scene scene = new Scene(loginScreen2);
+            mainStage.setScene(scene);
+            mainStage.show();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     public void showCustomerScreen(User currentUser) {
 
-	try {
+        try {
 
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
-	    customerScreen = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
+            customerScreen = (AnchorPane) loader.load();
 
-	    mainScreen.setCenter(customerScreen);
+            mainScreen.setCenter(customerScreen);
 
-	    CustomerScreenController controller = loader.getController();
-	    controller.setCustomerScreen(this, currentUser);
+            CustomerScreenController controller = loader.getController();
+            controller.setCustomerScreen(this, currentUser);
 
-
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void showAppointmentScreen(User currentUser) {
 
-	try {
+        try {
 
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
-	    appointmentScreen = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
+            appointmentScreen = (AnchorPane) loader.load();
 
-	    mainScreen.setCenter(appointmentScreen);
-	    
-	    AppointmentScreenController controller = loader.getController();
-	    controller.setAppointmentScreen(this, currentUser);
+            mainScreen.setCenter(appointmentScreen);
 
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+            AppointmentScreenController controller = loader.getController();
+            controller.setAppointmentScreen(this, currentUser);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
-    
+
+  
+
     public void showReportScreen(User currentUser) {
 
-	try {
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/ReportScreen.fxml"));
-	    reportScreen = (AnchorPane) loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/ReportScreen.fxml"));
+            reportScreen = (AnchorPane) loader.load();
 
-	    mainScreen.setCenter(reportScreen);
-	    ReportScreenController controller = loader.getController();
-	    controller.setReportScreen(this, currentUser);
+            mainScreen.setCenter(reportScreen);
+            ReportScreenController controller = loader.getController();
+            controller.setReportScreen(this, currentUser);
 
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
+
     
+       
 }
