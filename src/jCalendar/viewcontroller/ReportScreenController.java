@@ -8,8 +8,10 @@ package jCalendar.viewcontroller;
 import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
-import jCalendar.model.City;
+import jCalendar.model.Barber;
+import jCalendar.model.Calendar;
 import jCalendar.model.Customer;
+import jCalendar.model.Pet;
 import jCalendar.model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,34 +50,56 @@ public class ReportScreenController {
     private jCalendar mainApp;
     private User currentUser;
     private MenuItem menu;
-    
-    @FXML    private Label labelReportMenu;
-    @FXML    private Label labelSub;
-    
-    @FXML    private TabPane tabMenu;
-    @FXML    private Tab tabScheduleDetails;
-    @FXML    private Tab selTab;
-    @FXML    private Tab tabApptType;
-    @FXML    private Tab tabCustomerDetail;
-    
-    @FXML    private DatePicker reportDatePicker;
-    @FXML    private TableView<Appointment> tblSchedule;
-    @FXML    private TableColumn<Appointment, String> colEnd;
-    @FXML    private TableColumn<Appointment, String> colType;
-    @FXML    private TableColumn<Appointment, String> colStart;
-    @FXML    private TableColumn<Appointment, String> colTitle;
-    @FXML    private TableColumn<Appointment, String> colCustomer;
-    @FXML    private ComboBox comboMonth;
-    
-    @FXML    private TableView<Appointment> tblApptType;
-    @FXML    private TableColumn<Appointment, String> colApptType;
-    @FXML    private TableColumn<Appointment, String> colApptMonth;
-    @FXML    private TableColumn<Appointment, String> colApptCount;
-    
-    @FXML    private TableView<Customer> tblCustData;
-    @FXML    private TableColumn<Customer, String> colCustCount;
-    @FXML    private TableColumn<Customer, City> colCustCity;
-    
+
+    @FXML
+    private Label labelReportMenu;
+    @FXML
+    private Label labelSub;
+
+    @FXML
+    private TabPane tabMenu;
+    @FXML
+    private Tab tabScheduleDetails;
+    @FXML
+    private Tab selTab;
+    @FXML
+    private Tab tabApptType;
+    @FXML
+    private Tab tabCustomerDetail;
+
+    @FXML
+    private DatePicker reportDatePicker;
+    @FXML
+    private TableView<Appointment> tblSchedule;
+    @FXML
+    private TableColumn<Appointment, String> colEnd;
+    @FXML
+    private TableColumn<Appointment, String> colType;
+    @FXML
+    private TableColumn<Appointment, String> colStart;
+    @FXML
+    private TableColumn<Appointment, String> colTitle;
+    @FXML
+    private TableColumn<Appointment, String> colCustomer;
+    @FXML
+    private ComboBox comboMonth;
+
+    @FXML
+    private TableView<Appointment> tblApptType;
+    @FXML
+    private TableColumn<Appointment, String> colApptType;
+    @FXML
+    private TableColumn<Appointment, String> colApptMonth;
+    @FXML
+    private TableColumn<Appointment, String> colApptCount;
+
+    @FXML
+    private TableView<Customer> tblCustData;
+    @FXML
+    private TableColumn<Customer, String> colCustCount;
+    @FXML
+    private TableColumn<Customer, Barber> colCustCity;
+
     private final DateTimeFormatter dtformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final ZoneId newZoneId = ZoneId.systemDefault();
     private ObservableList<Appointment> apptList;
@@ -84,161 +108,172 @@ public class ReportScreenController {
     private ObservableSet<String> monthSet;
     FilteredList<Appointment> filteredData;
 
-
     public ReportScreenController() {
-	
+
     }
-    
+
     /**
      * Initializes the controller class.
      */
     public void setReportScreen(jCalendar mainApp, User currentUser) {
 
-	this.mainApp = mainApp;
-	this.currentUser = currentUser;
-	
+        this.mainApp = mainApp;
+        this.currentUser = currentUser;
+
         populateApptTypeList();
         populateCustReport();
-        populateSchedule();      
-        
+        populateSchedule();
+
         colStart.setCellValueFactory(new PropertyValueFactory<>("start"));
         colEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-	colCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
-        colApptMonth.setCellValueFactory(new PropertyValueFactory<>("Month"));
-        colApptType.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        colApptCount.setCellValueFactory(new PropertyValueFactory<>("Count"));
-	colCustCount.setCellValueFactory(new PropertyValueFactory<>("citycount"));
-	colCustCity.setCellValueFactory(new PropertyValueFactory<>("city"));
-  
-	ObservableList<String> newList = FXCollections.observableArrayList(monthSet);
-	comboMonth.setItems(newList);
-	// Update month filter data
-        comboMonth.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>()
-        {
+        colCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
+        colApptMonth.setCellValueFactory(new PropertyValueFactory<>("month"));
+        colApptType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        colApptCount.setCellValueFactory(new PropertyValueFactory<>("count"));
+        colCustCount.setCellValueFactory(new PropertyValueFactory<>("count"));
+        colCustCity.setCellValueFactory(new PropertyValueFactory<>("pet"));
+
+        ObservableList<String> newList = FXCollections.observableArrayList(monthSet);
+        comboMonth.setItems(newList);
+        // Update month filter data
+        comboMonth.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> ov,
-                    final String oldvalue, final String newvalue)
-            {
-		filterMonth(newvalue);
-		
-        }});
-	
+                    final String oldvalue, final String newvalue) {
+                filterMonth(newvalue);
+
+            }
+        });
+
     }
-    
+
     private void filterMonth(String month) {
-	FilteredList<Appointment> filteredData = new FilteredList<>(schedule);
-	filteredData.setPredicate(row -> {
-	    LocalDate rowDate = LocalDate.parse(row.getStart(), dtformat);
-	    String rowMonth = rowDate.getMonth().name();
-	    return rowMonth.equals(month);
-	});
+        FilteredList<Appointment> filteredData = new FilteredList<>(schedule);
+        filteredData.setPredicate(row -> {
+            LocalDate rowDate = LocalDate.parse(row.getStart(), dtformat);
+            String rowMonth = rowDate.getMonth().name();
+            return rowMonth.equals(month);
+        });
 
-	tblSchedule.setItems(filteredData);
+        tblSchedule.setItems(filteredData);
     }
-    
+
     private void populateApptTypeList() {
-	
-	apptList = FXCollections.observableArrayList();
-	try {
 
-	    PreparedStatement statement = DBConnection.getConn().prepareStatement(
-		    "SELECT MONTHNAME(`start`) AS \"month\", type AS \"type\", COUNT(*) as \"count\" "
-		    + "FROM appointment "
-		    + "GROUP BY MONTHNAME(`start`), type");
-	    
-	    ResultSet rs = statement.executeQuery();
+        apptList = FXCollections.observableArrayList();
+        try {
 
-	    while (rs.next()) {
+            PreparedStatement statement = DBConnection.getConn().prepareStatement(
+                    "SELECT MONTHNAME(`start`) AS \"month\", type AS \"type\", COUNT(*) as \"count\" "
+                    + "FROM appointment "
+                    + "GROUP BY MONTHNAME(`start`), type");
 
-		String month = rs.getString("month");
-		String type = rs.getString("type");
-		String count = rs.getString("count");
-		apptList.add(new Appointment(month, type, count));
-	    }
+            ResultSet rs = statement.executeQuery();
 
-	} catch (SQLException sqe) {
-	    sqe.printStackTrace();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-	tblApptType.getItems().setAll(apptList);
+            while (rs.next()) {
+
+                String month = rs.getString("month");
+                String type = rs.getString("type");
+                String count = rs.getString("count");
+                apptList.add(new Appointment(month, type, count));
+            }
+
+        } catch (SQLException sqe) {
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tblApptType.getItems().setAll(apptList);
     }
-    
- 
+
     private void populateCustReport() {
-        
+
         custList = FXCollections.observableArrayList();
-      
-            try { PreparedStatement pst = DBConnection.getConn().prepareStatement(
-                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
-                + "FROM customer, address, city "
-                + "WHERE customer.addressId = address.addressId "
-                + "AND address.cityId = city.cityId "
-                + "GROUP BY city"); 
-	    
-                ResultSet rs = pst.executeQuery();
 
-                while (rs.next()) {
-                        City city = new City(rs.getInt("cityId"), rs.getString("city"));
-                        String count = rs.getString("count");
-                        custList.add(new Customer(city, count));
-                }
+        try {
+            PreparedStatement pst = DBConnection.getConn().prepareStatement(
+                    "SELECT pet.petId, pet.petName, COUNT(pet.petName) as \"count\" "
+                    + "FROM customer, pet "
+                    + "WHERE customer.petId = pet.petId "
+                    + "GROUP BY petName");
+//                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
+//                + "FROM customer, address, city "
+//                + "WHERE customer.addressId = customer.phoneId "
+//                + "AND address.cityId = city.cityId "
+//                + "GROUP BY city"); 
 
-            } catch (SQLException sqe) {
-                sqe.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }             
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Pet pet = new Pet(rs.getInt("petId"), rs.getString("petName"));
+                String count = rs.getString("count");
+                custList.add(new Customer(pet, count));
+            }
+
+        } catch (SQLException sqe) {
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         tblCustData.setItems(custList);
     }
-    
+
     private void populateSchedule() {
 
-	schedule = FXCollections.observableArrayList();
-	monthSet = FXCollections.observableSet();
+        schedule = FXCollections.observableArrayList();
+        monthSet = FXCollections.observableSet();
 
-	try {
+        try {
 
-	    PreparedStatement pst = DBConnection.getConn().prepareStatement(
-		    "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
-		    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
-		    + "FROM appointment, customer "
-		    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
-		    + "ORDER BY `start`");
-	    
-	    pst.setString(1, currentUser.getUserName());
-	    ResultSet rs = pst.executeQuery();
+            PreparedStatement pst = DBConnection.getConn().prepareStatement(
+                    "SELECT appointment.appointmentId, appointment.customerId, appointment.barberId, appointment.calendarId, appointment.title, appointment.type, appointment.location, "
+                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
+                    + "FROM appointment, customer "
+                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
+                    + "ORDER BY `start`");
+            
+//                "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
+//                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
+//                    + "FROM appointment, customer "
+//                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
+//                    + "ORDER BY `start`");
 
-	    while (rs.next()) {
 
-		Timestamp sStart = rs.getTimestamp("appointment.start");
-		Timestamp sEnd = rs.getTimestamp("appointment.end");
-		ZonedDateTime newZoneStart = sStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
-		ZonedDateTime newZoneEnd = sEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
-		ZonedDateTime newLocalStart = newZoneStart.withZoneSameInstant(newZoneId);
-		ZonedDateTime newLocalEnd = newZoneEnd.withZoneSameInstant(newZoneId);
+            pst.setString(1, currentUser.getUserName());
+            ResultSet rs = pst.executeQuery();
 
-		String sAppointmentId = rs.getString("appointment.appointmentId");
-		String sTitle = rs.getString("appointment.title");
-		Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
-		String sUser = rs.getString("appointment.createdBy");
-		String sType = rs.getString("appointment.type");
-		String sLocation = rs.getString("appointment.location");
+            while (rs.next()) {
 
-		schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dtformat), newLocalEnd.format(dtformat), sTitle, sType, sLocation, sCustomer, sUser));
-		monthSet.add(newLocalStart.getMonth().name());
+                Timestamp sStart = rs.getTimestamp("appointment.start");
+                Timestamp sEnd = rs.getTimestamp("appointment.end");
+                ZonedDateTime newZoneStart = sStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                ZonedDateTime newZoneEnd = sEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                ZonedDateTime newLocalStart = newZoneStart.withZoneSameInstant(newZoneId);
+                ZonedDateTime newLocalEnd = newZoneEnd.withZoneSameInstant(newZoneId);
 
-	    }
+                String sAppointmentId = rs.getString("appointment.appointmentId");
+                String sTitle = rs.getString("appointment.title");
+                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
+                Barber sBarber = new Barber(rs.getInt("appointment.barberId"), rs.getString("barber.barberName"));
+                Calendar sCalendar = new Calendar(rs.getInt("appointment.calendarId"), rs.getString("calendar.name"));
+                String sUser = rs.getString("appointment.createdBy");
+                String sType = rs.getString("appointment.type");
+                String sLocation = rs.getString("appointment.location");
 
-	} catch (SQLException sqe) {
-	    System.out.println("Check SQL exception");
-	    sqe.printStackTrace();
-	} catch (Exception e) {
-	    System.out.println("Exception error");
-	}
+                schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dtformat), newLocalEnd.format(dtformat), sTitle, sType, sLocation, sCustomer, sUser, sBarber, sCalendar));
+                monthSet.add(newLocalStart.getMonth().name());
 
-	tblSchedule.getItems().setAll(schedule);
+            }
+
+        } catch (SQLException sqe) {
+            System.out.println("Check SQL exception");
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception error");
+        }
+
+        tblSchedule.getItems().setAll(schedule);
     }
 }

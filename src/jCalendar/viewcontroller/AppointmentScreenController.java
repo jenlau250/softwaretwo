@@ -443,9 +443,12 @@ public class AppointmentScreenController {
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
         try (
                  PreparedStatement statement = DBConnection.getConn().prepareStatement(
-                        "SELECT customer.customerId, customer.customerName "
-                        + "FROM customer, address, city, country "
-                        + "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");  ResultSet rs = statement.executeQuery();) {
+                         "SELECT customer.customerId, customer.customerName "
+                        + "FROM customer, pet "
+                        + "WHERE customer.petId = pet.petId");  ResultSet rs = statement.executeQuery();) {
+//                        "SELECT customer.customerId, customer.customerName "
+//                        + "FROM customer, pet, city, country "
+//                        + "WHERE customer.addressId = customer.phoneId AND address.cityId = city.cityId AND city.countryId = country.countryId");  ResultSet rs = statement.executeQuery();) {
             while (rs.next()) {
                 pCustomerId = rs.getInt("customer.customerId");
                 pCustomerName = rs.getString("customer.customerName");
@@ -487,19 +490,34 @@ public class AppointmentScreenController {
 
         try {
             PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                    "SELECT appointment.appointmentId, "
+                      "SELECT appointment.appointmentId, "
                     + "appointment.customerId, "
                     + "appointment.title, "
                     + "appointment.type, "
                     + "appointment.location, "
                     + "appointment.start, "
                     + "appointment.end, "
+                    + "appointment.createdBy "
+                              
                     + "customer.customerId, "
                     + "customer.customerName, "
-                    + "appointment.createdBy "
+                              
                     + "FROM appointment, customer "
                     + "WHERE appointment.customerId = customer.customerId "
                     + "ORDER BY `start`");
+//                    "SELECT appointment.appointmentId, "
+//                    + "appointment.customerId, "
+//                    + "appointment.title, "
+//                    + "appointment.type, "
+//                    + "appointment.location, "
+//                    + "appointment.start, "
+//                    + "appointment.end, "
+//                    + "customer.customerId, "
+//                    + "customer.customerName, "
+//                    + "appointment.createdBy "
+//                    + "FROM appointment, customer "
+//                    + "WHERE appointment.customerId = customer.customerId "
+//                    + "ORDER BY `start`");
 
             ResultSet rs = ps.executeQuery();
 
@@ -667,9 +685,10 @@ public class AppointmentScreenController {
         try {
 
             PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
-                    + "(customerId, title, type, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
+                    + "(customerId, title, type, location, month, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)");
 
+            //**CHANGED CONTACT TO MONTH
             ps.setInt(1, comboCustomer.getValue().getCustomerId());
             ps.setString(2, txtTitle.getText());
             ps.setString(3, comboType.getValue());

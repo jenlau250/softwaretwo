@@ -5,9 +5,8 @@
  */
 package jCalendar.dao;
 
-import jCalendar.model.City;
-import jCalendar.model.Country;
 import jCalendar.model.Customer;
+import jCalendar.model.Pet;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,10 +26,20 @@ public class CustomerDaoImpl {
 	ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 	
 	DBConnection.init();
-	String sqlStatement = 
-		("SELECT customer.customerId, customer.customerName, address.address, address.address2, address.postalCode, city.cityId, city.city, country.country, address.phone "
-		+ "FROM customer, address, city, country "
-		+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
+        String sqlStatement = 
+		("SELECT customer.customerId, "
+                + "customer.customerName, "
+                + "customer.phone, "
+                + "customer.email, "
+                + "customer.notes "
+                + "customer.active "
+                + "pet.petId, "
+                + "pet.petName, "
+                
+		+ "FROM customer, "
+                + "customer, "
+                + "pet, "
+		+ "WHERE customer.petId = pet.petId"
 		+ "ORDER BY customer.customerId");
 	
 	Query.makeQuery(sqlStatement);
@@ -39,15 +48,47 @@ public class CustomerDaoImpl {
 	while (result.next()) {
 	    int customerId = result.getInt("customerId");
 	    String customerNameG = result.getString("customerName");
-	    String address = result.getString("address.address");
-	    String address2 = result.getString("address.address2");
-	    City city = new City(result.getInt("city.cityId"), result.getString("city.city"));
-	    String countryG = result.getString("country.country");
-	    String zipcode = result.getString("address.postalCode");
-	    String phone = result.getString("address.phone");
+	    String phone = result.getString("customer.phone");
+	    String email = result.getString("customer.email");
+	    String notes = result.getString("customer.notes");
+	    String active = result.getString("customer.active");
+	    Pet pet = new Pet(result.getInt("pet.petId"), result.getString("pet.petName"));
+//	    String zipcode = result.getString("pet.postalCode")
 
-	    Customer customerResult = new Customer(customerId, customerNameG, address, address2, city, countryG, zipcode, phone);
+	    Customer customerResult = new Customer(customerId, customerNameG, phone, email, notes, active, pet);
   
+//	String sqlStatement = 
+//		("SELECT customer.customerId, "
+//                + "customer.customerName, "
+//                + "customer.phone, "
+//                + "customer.email, "
+//                + "pet.postalCode, "
+//                + "city.cityId, "
+//                + "city.city, "
+//                + "calendar.calendar, "
+//                + "customer.notes "
+//		+ "FROM customer, "
+//                + "pet, "
+//                + "city, "
+//                + "calendar "
+//		+ "WHERE customer.petId = customer.phoneId AND pet.cityId = city.cityId AND city.countryId = calendar.countryId "
+//		+ "ORDER BY customer.customerId");
+//	
+//	Query.makeQuery(sqlStatement);
+//	ResultSet result = Query.getResult(); 
+//
+//	while (result.next()) {
+//	    int customerId = result.getInt("customerId");
+//	    String customerNameG = result.getString("customerName");
+//	    String pet = result.getString("customer.phone");
+//	    String address2 = result.getString("customer.email");
+//	    Barber city = new Barber(result.getInt("city.cityId"), result.getString("city.city"));
+//	    String countryG = result.getString("calendar.calendar");
+//	    String zipcode = result.getString("pet.postalCode");
+//	    String phone = result.getString("customer.notes");
+//
+//	    Customer customerResult = new Customer(customerId, customerNameG, pet, address2, city, countryG, zipcode, phone);
+//  
 	    allCustomers.add(customerResult);
 	}
 	
@@ -55,25 +96,25 @@ public class CustomerDaoImpl {
 	return allCustomers;
     }
 
-    public static ObservableList<Country> getCountries() throws SQLException, Exception {
-	
-	DBConnection.init();
-	ObservableList<Country> countries = FXCollections.observableArrayList();
-	String sql = "SELECT country FROM country;";
-	try {
-
-	    Query.makeQuery(sql);
-	    ResultSet rs = Query.getResult();
-	    while (rs.next()) {
-		countries.add(new Country(rs.getInt("country.countryId"), rs.getString("country.country")));
-	    }
-	} catch (SQLException e) {
-	    e.printStackTrace();
-	}
-	DBConnection.closeConnection();
-	return countries;
-	
-    }
+//    public static ObservableList<Calendar> getCountries() throws SQLException, Exception {
+//	
+//	DBConnection.init();
+//	ObservableList<Calendar> countries = FXCollections.observableArrayList();
+//	String sql = "SELECT calendar FROM calendar;";
+//	try {
+//
+//	    Query.makeQuery(sql);
+//	    ResultSet rs = Query.getResult();
+//	    while (rs.next()) {
+//		countries.add(new Calendar(rs.getInt("calendar.countryId"), rs.getString("calendar.calendar")));
+//	    }
+//	} catch (SQLException e) {
+//	    e.printStackTrace();
+//	}
+//	DBConnection.closeConnection();
+//	return countries;
+//	
+//    }
 
         public ObservableList<Customer> populateCustomerList() {
 
@@ -84,8 +125,8 @@ public class CustomerDaoImpl {
 	try (
 		PreparedStatement statement = DBConnection.getConn().prepareStatement(
 			"SELECT customer.customerId, customer.customerName "
-			+ "FROM customer, address, city, country "
-			+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
+			+ "FROM customer, pet "
+			+ "WHERE customer.petId = pet.petId "
 			+ "ORDER BY customer.customerId");
 		
 		ResultSet rs = statement.executeQuery()) {

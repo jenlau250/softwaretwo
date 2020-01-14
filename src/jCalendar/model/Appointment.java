@@ -26,6 +26,9 @@ public class Appointment {
     private String start;
     private String end;
     private String user;
+    private String barber;
+    private String calendar;
+    
     private static final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
 
@@ -55,6 +58,21 @@ public class Appointment {
         this.location = location;
         this.customer = customer;
         this.user = user;
+    }
+
+   
+
+    public Appointment(String sAppointmentId, String format, String format0, String sTitle, String sType, String sLocation, Customer sCustomer, String sUser, Barber sBarber, Calendar sCalendar) {
+        this.appointmentId = appointmentId;
+        this.start = start;
+        this.end = end;
+        this.title = title;
+        this.type = type;
+        this.location = location;
+        this.customer = customer;
+        this.user = user;
+        this.barber = barber;
+        this.calendar = calendar;
     }
 
     public String getAppointmentId() {
@@ -164,9 +182,24 @@ public class Appointment {
         }
         return endTimes;
     }
-    
 
-    
+    public String getBarber() {
+        return barber;
+    }
 
+    public void setBarber(String barber) {
+        this.barber = barber;
+    }
+
+    public String getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(String calendar) {
+        this.calendar = calendar;
+    }
+    
+    
+    
 
 }

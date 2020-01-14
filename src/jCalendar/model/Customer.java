@@ -11,118 +11,98 @@ package jCalendar.model;
  */
 public class Customer {
 
-
     private int customerId;
     private String customerName;
-    private String address;
-    private String address2;
-    private City city;
-    private String country;
-    private String zipCode;
     private String phone;
-    private String citycount;
+    private String email;
+    private String active;
+    private String notes;
+    private Pet pet;
+    private String count;
 
-    
-    
-   public Customer(){
-        
+    public Customer() {
+
     }
 
-    public Customer(int customerId, String customerName, String address, String address2, City city, String country, String zipCode, String phone) {
+    public Customer(int customerId, String customerName) {
         this.customerId = customerId;
         this.customerName = customerName;
-        this.address = address;
-        this.address2 = address2;
-        this.city = city;
-        this.country = country;
-        this.zipCode = zipCode;
+    }
+
+    public Customer(Pet pet, String count) {
+        this.pet = pet;
+        this.count = count;
+    }
+
+    public Customer(int customerId, String customerNameG, String phone, String email, String notes, String active, Pet pet) {
+        this.customerId = customerId;
+        this.customerName = customerNameG;
         this.phone = phone;
+        this.email = email;
+        this.notes = notes;
+        this.active = active;
+        this.pet = pet;
+                
+               
     }
-
-
-    public Customer (int customerId, String customerName) {
-	this.customerId = customerId;
-	this.customerName = customerName;
-    }
-
-    public Customer(City city, String citycount) {
-	this.city = city;
-	this.citycount = citycount;
-    }
-    
 
     public int getCustomerId() {
-	return customerId;
+        return customerId;
     }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
     public String getCustomerName() {
-	return customerName;
+        return customerName;
     }
 
     public void setCustomerName(String customerName) {
-	this.customerName = customerName;
-    }
-
-    public String getAddress() {
-	return address;
-    }
-
-    public void setAddress(String address) {
-	this.address = address;
-    }
-
-    public String getAddress2() {
-	return address2;
-    }
-    public void setAddress2(String address2) {
-	this.address2 = address2;
-    }
-
-    public City getCity() {
-	return city;
-    }
-
-    public void setCityName(City city) {
-	this.city = city;
-    }
-
-    public int getCityId() {
-	return city.getCityId();
-    }
-    public String getCountry() {
-	return country;
-    }
-
-    public void setCountry(String country) {
-	this.country = country;
-    }
-
-    public String getZipCode() {
-	return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-	this.zipCode = zipCode;
+        this.customerName = customerName;
     }
 
     public String getPhone() {
-	return phone;
+        return phone;
     }
 
     public void setPhone(String phone) {
-	this.phone = phone;
+        this.phone = phone;
     }
 
-    public String getCitycount() {
-	return citycount;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCitycount(String citycount) {
-	this.citycount = citycount;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
     
+    
+    public Pet getPet() {
+	return pet;
+        
+    }
+
     @Override
     public String toString() {
-	return String.valueOf(customerName);
+        return String.valueOf(customerName);
     }
 
 }

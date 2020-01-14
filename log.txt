@@ -192,3 +192,11 @@ Jan 13, 2020 9:55:01 AM LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 13, 2020 9:55:01 AM
 Jan 13, 2020 10:04:17 AM LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 13, 2020 10:04:17 AM
+Jan 13, 2020 9:39:09 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception
+Jan 13, 2020 10:16:07 PM jCalendar.viewcontroller.CustomerScreenController setCustomerScreen
+SEVERE: Exception error with getting all customer data
+Jan 13, 2020 11:38:41 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception
+Jan 13, 2020 11:47:08 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception

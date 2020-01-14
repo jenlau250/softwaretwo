@@ -283,7 +283,7 @@ public class Appointment_AddController implements Initializable {
         try {
 
             String query = "INSERT INTO appointment "
-                    + "(customerId, title, type, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
+                    + "(customerId, title, type, location, month, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
             PreparedStatement ps = DBConnection.getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
