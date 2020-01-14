@@ -3,7 +3,7 @@ package jCalendar.viewcontroller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import jCalendar.DAO.DBConnection;
+import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;

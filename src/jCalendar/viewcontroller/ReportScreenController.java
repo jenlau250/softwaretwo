@@ -5,7 +5,7 @@
  */
 package jCalendar.viewcontroller;
 
-import jCalendar.DAO.DBConnection;
+import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.City;

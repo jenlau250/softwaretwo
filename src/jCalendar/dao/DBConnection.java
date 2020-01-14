@@ -1,4 +1,4 @@
-package jCalendar.DAO;
+package jCalendar.dao;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jCalendar.DAO;
+package jCalendar.dao;
 
 import jCalendar.model.City;
 import jCalendar.model.Country;
@@ -88,7 +88,7 @@ public class CustomerDaoImpl {
 			+ "WHERE customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId "
 			+ "ORDER BY customer.customerId");
 		
-		ResultSet rs = statement.executeQuery();) {
+		ResultSet rs = statement.executeQuery()) {
 
 	    while (rs.next()) {
 		tCustomerId = rs.getInt("customer.customerId");

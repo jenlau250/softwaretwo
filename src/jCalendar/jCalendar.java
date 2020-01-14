@@ -7,15 +7,11 @@ package jCalendar;
 
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
-import jCalendar.viewcontroller.AppointmentScreenController;
-import jCalendar.viewcontroller.CustomerScreenController;
-import jCalendar.viewcontroller.LoginScreenController;
-import jCalendar.viewcontroller.LoginScreenController2;
-import jCalendar.viewcontroller.MainScreenController;
-import jCalendar.viewcontroller.ReportScreenController;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import jCalendar.viewcontroller.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -100,7 +96,8 @@ public class jCalendar extends Application {
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
             loginScreen = (AnchorPane) loader.load();
 
-            LoginScreenController controller = loader.getController();
+            LoginScreenController controller;
+            controller = loader.getController();
             controller.setLogin(this);
 
             Scene scene = new Scene(loginScreen);

@@ -1,68 +1,194 @@
-Jun 13, 2019 10:51:20 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 13, 2019 10:51:20 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 13, 2019 10:51:20 PM
-Jun 16, 2019 12:05:39 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 12:05:39 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 12:05:39 PM
-Jun 16, 2019 12:06:18 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 12:06:18 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Arya Snow
-Jun 16, 2019 12:25:50 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 12:25:50 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 12:25:50 PM
-Jun 16, 2019 12:26:51 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 12:26:51 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Arya Snow
-Jun 16, 2019 12:27:33 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 12:27:33 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 12:35:30 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 12:35:30 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 12:35:30 PM
-Jun 16, 2019 12:43:26 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 12:43:26 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 12:43:26 PM
-Jun 16, 2019 12:43:51 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 12:43:51 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Arya Snow
-Jun 16, 2019 12:44:55 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 12:44:55 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 12:45:12 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 12:45:12 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 1:50:52 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 1:50:52 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 1:50:52 PM
-Jun 16, 2019 1:52:53 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 1:52:53 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 2:38:54 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 2:38:54 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 2:38:54 PM
-Jun 16, 2019 2:40:11 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 2:40:11 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Kevin Yu
-Jun 16, 2019 2:45:57 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 2:45:57 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 2:45:57 PM
-Jun 16, 2019 2:51:00 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 2:51:00 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 2:51:00 PM
-Jun 16, 2019 5:25:07 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 5:25:07 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 5:25:07 PM
-Jun 16, 2019 5:25:33 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 5:25:33 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Tyrion
-Jun 16, 2019 5:26:15 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 5:26:15 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 5:26:47 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 5:26:47 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for New Customer
-Jun 16, 2019 5:29:31 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 5:29:31 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 6:32:16 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 6:32:16 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 6:32:16 PM
-Jun 16, 2019 6:32:34 PM jCalendar.viewcontroller.AppointmentScreenController saveAppointment
+Jun 16, 2019 6:32:34 PM AppointmentScreenController saveAppointment
 INFO: Appointment save complete for Sansa Snow
-Jun 16, 2019 6:35:13 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 6:35:13 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 5:37:17 PM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jun 16, 2019 5:37:17 PM LoginScreenController handleActionLogin
 INFO: test logged in on Jun 16, 2019 5:37:17 PM
-Jun 16, 2019 5:37:38 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 5:37:38 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jun 16, 2019 5:37:54 PM jCalendar.viewcontroller.AppointmentScreenController updateAppointment
+Jun 16, 2019 5:37:54 PM AppointmentScreenController updateAppointment
 INFO: Customer update complete
-Jan 09, 2020 11:37:58 AM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jan 09, 2020 11:37:58 AM LoginScreenController handleActionLogin
 INFO: test logged in on Jan 9, 2020 11:37:58 AM
-Jan 09, 2020 11:47:06 AM jCalendar.viewcontroller.LoginScreenController handleActionLogin
+Jan 09, 2020 11:47:06 AM LoginScreenController handleActionLogin
 INFO: test logged in on Jan 9, 2020 11:47:06 AM
-Jan 09, 2020 4:25:38 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+Jan 09, 2020 4:25:38 PM LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 9, 2020 4:25:38 PM
-Jan 09, 2020 4:27:19 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+Jan 09, 2020 4:27:19 PM LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 9, 2020 4:27:18 PM
-Jan 09, 2020 5:09:44 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+Jan 09, 2020 5:09:44 PM LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 9, 2020 5:09:44 PM
-Jan 09, 2020 6:39:50 PM jCalendar.viewcontroller.MainScreenController populateReminderList
+Jan 09, 2020 6:39:50 PM MainScreenController populateReminderList
 SEVERE: Check Exception Error
+Jan 09, 2020 7:47:56 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 7:52:01 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 7:52:52 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 7:53:35 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 7:57:54 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 7:58:50 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:04:37 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:05:12 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:05:39 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:08:20 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:22:57 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 9, 2020 8:22:57 PM
+Jan 09, 2020 8:26:38 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:29:40 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 09, 2020 8:30:12 PM MainScreenController populateReminderList
+SEVERE: Check Exception Error
+Jan 11, 2020 3:18:47 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 11, 2020 3:18:47 PM
+Jan 11, 2020 3:31:04 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 11, 2020 3:31:04 PM
+Jan 11, 2020 3:51:14 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 11, 2020 3:51:14 PM
+Jan 11, 2020 7:16:28 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 11, 2020 7:16:28 PM
+Jan 11, 2020 7:17:17 PM AppointmentScreenController saveAppointment
+INFO: Appointment save complete for Jon Snow
+Jan 12, 2020 1:19:17 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 1:19:17 PM
+Jan 12, 2020 1:29:25 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 1:29:25 PM
+Jan 12, 2020 1:31:45 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 1:31:45 PM
+Jan 12, 2020 1:38:37 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 1:38:37 PM
+Jan 12, 2020 1:50:02 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 1:50:02 PM
+Jan 12, 2020 2:56:41 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 2:56:41 PM
+Jan 12, 2020 2:57:48 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 2:57:48 PM
+Jan 12, 2020 3:06:39 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 3:06:39 PM
+Jan 12, 2020 5:28:09 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 5:28:09 PM
+Jan 12, 2020 5:28:29 PM AppointmentScreenController saveAppointment
+INFO: Appointment save complete for Jon Snow
+Jan 12, 2020 5:30:13 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 5:30:13 PM
+Jan 12, 2020 7:40:45 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 7:40:45 PM
+Jan 12, 2020 8:09:15 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:09:15 PM
+Jan 12, 2020 8:17:36 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:17:36 PM
+Jan 12, 2020 8:20:51 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:20:51 PM
+Jan 12, 2020 8:24:14 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:24:14 PM
+Jan 12, 2020 8:28:05 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:28:05 PM
+Jan 12, 2020 8:29:26 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:29:26 PM
+Jan 12, 2020 8:31:39 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:31:39 PM
+Jan 12, 2020 8:41:09 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 8:41:09 PM
+Jan 12, 2020 9:36:32 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 9:36:32 PM
+Jan 12, 2020 9:36:54 PM Appointment_AddController saveAppointment
+INFO: User User@6085a7c8 saved new appointment for Arya Snow
+Jan 12, 2020 9:51:40 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 9:51:40 PM
+Jan 12, 2020 9:51:58 PM Appointment_AddController saveAppointment
+INFO: User User@6085a7c8 saved new appointment for 123
+Jan 12, 2020 10:18:33 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 10:18:33 PM
+Jan 12, 2020 10:18:56 PM Appointment_AddController saveAppointment
+INFO: User User@6572cb88 saved new appointment for Arya Snow
+Jan 12, 2020 11:15:42 PM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 12, 2020 11:15:42 PM
+Jan 12, 2020 11:15:59 PM Appointment_AddController saveAppointment
+INFO: User User@1552ddc1 saved new appointment for Jon Snow
+Jan 13, 2020 12:02:31 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 12:02:31 AM
+Jan 13, 2020 12:02:54 AM Appointment_AddController saveAppointment
+INFO: User User@70e230e1 saved new appointment for 123
+Jan 13, 2020 12:09:33 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 12:09:33 AM
+Jan 13, 2020 12:09:50 AM Appointment_AddController saveAppointment
+INFO: User User@2acacf0a saved new appointment for Jon Snow
+Jan 13, 2020 1:24:48 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:24:48 AM
+Jan 13, 2020 1:36:18 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:36:18 AM
+Jan 13, 2020 1:38:48 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:38:48 AM
+Jan 13, 2020 1:39:51 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:39:51 AM
+Jan 13, 2020 1:40:36 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:40:36 AM
+Jan 13, 2020 1:46:13 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:46:13 AM
+Jan 13, 2020 1:47:55 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:47:55 AM
+Jan 13, 2020 1:56:58 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:56:58 AM
+Jan 13, 2020 1:59:49 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 1:59:49 AM
+Jan 13, 2020 2:02:26 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 2:02:26 AM
+Jan 13, 2020 9:55:01 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 9:55:01 AM
+Jan 13, 2020 10:04:17 AM LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 13, 2020 10:04:17 AM
