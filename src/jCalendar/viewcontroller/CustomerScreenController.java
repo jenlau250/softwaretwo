@@ -79,12 +79,10 @@ public class CustomerScreenController {
     @FXML
     private TextField txtCustomerNotes; //Phone
 
-//    @FXML
-//    private ComboBox<Barber> comboBarber;
     @FXML
-    private ComboBox<Pet> petCombo;
+    private ComboBox<Pet> comboPet;
     @FXML
-    private ComboBox<String> barberCombo;
+    private ComboBox<Barber> comboBarber;
 
     @FXML
     private ComboBox<String> comboPetType;
@@ -92,12 +90,10 @@ public class CustomerScreenController {
     @FXML
     private TextField txtPetDescription;
 
-    @FXML
-    ObservableList<Customer> Customers = FXCollections.observableArrayList();
-    @FXML
-    ObservableList<Pet> Pets = FXCollections.observableArrayList(); //Cities
-    ObservableList<Pet> selectedPets = FXCollections.observableArrayList(); //selectedCountries
-    ObservableList<Barber> barbers = FXCollections.observableArrayList(); //Countries
+    private ObservableList<Customer> Customers = FXCollections.observableArrayList();
+    private ObservableList<Pet> Pets = FXCollections.observableArrayList(); //Cities
+    private ObservableList<Pet> selectedPets = FXCollections.observableArrayList(); //selectedCountries
+    private ObservableList<Barber> barbers = FXCollections.observableArrayList(); //Countries
     private boolean editMode;
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
@@ -106,58 +102,104 @@ public class CustomerScreenController {
 
     }
 
-    @FXML
-    private void handlePopulatePets(ActionEvent event) {
-        populatePetList();
+    protected ObservableList<Barber> populateBarbers() {
+
+        int barberId;
+        String barberName;
+
+        ObservableList<Barber> barberList = FXCollections.observableArrayList();
+        try (
+                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                        "SELECT barber.barberId, barber.barberName "
+                        + "FROM barber, appointment "
+                        + "WHERE barber.barberId = appointment.barberId"
+                );  ResultSet rs = ps.executeQuery();) {
+
+                    while (rs.next()) {
+                        barberId = rs.getInt("barber.barberId");
+                        barberName = rs.getString("barber.barberName");
+                        barberList.add(new Barber(barberId, barberName));
+                    }
+                } catch (SQLException sqe) {
+                    System.out.println("Check SQL Exception with populateBarbers");
+                    sqe.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("Check Exception");
+                }
+                return barberList;
+
     }
 
-    private void populatePetList() {
+    protected ObservableList<Pet> populatePets() {
 
-//	Pet pet = petCombo.getValue();
-        String sql = "SELECT pet.petId, pet.petName"
-                + "FROM pet ";
+        int petId;
+        String petName;
 
-        Query.makeQuery(sql);
-        ResultSet result = Query.getResult();
-        petCombo.getItems().clear();
+        ObservableList<Pet> petList = FXCollections.observableArrayList();
+        try (
+                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                        "SELECT pet.petId, pet.petName "
+                        + "FROM pet, customer "
+                        + "WHERE pet.petId = customer.petId"
+                );  ResultSet rs = ps.executeQuery();) {
 
-        try {
-            while (result.next()) {
-                selectedPets.add(new Pet(result.getInt("pet.petId"), result.getString("pet.petName")));
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "SQL Exception with populating city combo box.");
-        }
-        // Set city options in cb.
-        petCombo.setItems(selectedPets);
+                    while (rs.next()) {
+                        petId = rs.getInt("pet.petId");
+                        petName = rs.getString("pet.petName");
+                        petList.add(new Pet(petId, petName));
+                    }
+                } catch (SQLException sqe) {
+                    System.out.println("Check SQL Exception");
+                    sqe.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("Check Exception");
+                }
+                return petList;
 
     }
 
     @FXML
     private void initializeBarber() {
 
-        Query.makeQuery("SELECT barberName FROM barber");
+//        Query.makeQuery("SELECT barberName FROM barber");
+//        ResultSet rs = Query.getResult();
+//        try {
+//            while (rs.next()) {
+//                comboBarber.getItems().add(rs.getString(1));
+//            }
+//        } catch (SQLException ex) {
+//            logger.log(Level.SEVERE, "SQL Exception with populating barber combo box.");
+//        }
+    }
+
+    @FXML
+    private void initializePetTypes() {
+
+        Query.makeQuery("SELECT petType FROM pet");
         ResultSet rs = Query.getResult();
         try {
             while (rs.next()) {
-                barberCombo.getItems().add(rs.getString(1));
+                comboPetType.getItems().add(rs.getString(1));
             }
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "SQL Exception with populating barber combo box.");
+            logger.log(Level.SEVERE, "SQL Exception with populating pet types.");
         }
     }
 
     @FXML
     private void showCustomerDetails(Customer selectedCustomer) {
 
+        //populate customer details based on selection
         //**need to rename FXML FIELDS, need to show barber
         txtCustomerName.setText(selectedCustomer.getCustomerName());
         txtCustomerPhone.setText(selectedCustomer.getPhone());
         txtCustomerEmail.setText(selectedCustomer.getEmail());
 //	countryCombo.setValue(selectedCustomer.getPet());
-        petCombo.setValue(selectedCustomer.getPet());
+        comboPet.setValue(selectedCustomer.getPet());
+        comboPetType.setValue(selectedCustomer.getPet().getPetType());
+        txtPetDescription.setText(selectedCustomer.getPet().getPetDescription());
         txtCustomerStatus.setText(selectedCustomer.getActive());
-        txtCustomerPhone.setText(selectedCustomer.getNotes());
+        txtCustomerNotes.setText(selectedCustomer.getNotes());
         labelCusID.setText(String.valueOf(selectedCustomer.getCustomerId()));
 
     }
@@ -230,7 +272,7 @@ public class CustomerScreenController {
     void handleSaveCustomer(ActionEvent event) {
 
         Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-
+        System.out.println("Debug handleSaveCustomer: editMode: " + editMode);
         if (validateCustomer()) {
             if (editMode) {
                 updateCustomer(selectedCustomer);
@@ -282,14 +324,15 @@ public class CustomerScreenController {
         customerLabel.setText("Customer Details");
         colCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("phone")); //as named in Customer
 
-        initializeBarber();
-        populatePetList();
+//        initializeBarber();
+        initializePetTypes();
 
-        // Show pet name in combo box
-        petCombo.setConverter(new StringConverter<Pet>() {
-
+        // Query pet list and add to list
+        selectedPets = populatePets();
+        comboPet.setItems(selectedPets);
+        comboPet.setConverter(new StringConverter<Pet>() {
             @Override
             public String toString(Pet object) {
                 return object.getPetName();
@@ -297,10 +340,37 @@ public class CustomerScreenController {
 
             @Override
             public Pet fromString(String string) {
-                return petCombo.getItems().stream().filter(ap -> ap.getPetName().equals(string)).findFirst().orElse(null);
+                return comboPet.getItems().stream().filter(ap -> ap.getPetName().equals(string)).findFirst().orElse(null);
             }
         });
 
+        barbers = populateBarbers();
+        comboBarber.setItems(barbers);
+        comboBarber.setConverter(new StringConverter<Barber>() {
+            @Override
+            public String toString(Barber object) {
+                return object.getBarberName();
+            }
+
+            @Override
+            public Barber fromString(String string) {
+                return comboBarber.getItems().stream().filter(ap -> ap.getBarberName().equals(string)).findFirst().orElse(null);
+            }
+        });
+
+        // Show pet name in combo box
+//        comboPet.setConverter(new StringConverter<Pet>() {
+//
+//            @Override
+//            public String toString(Pet object) {
+//                return object.getPetName();
+//            }
+//
+//            @Override
+//            public Pet fromString(String string) {
+//                return comboPet.getItems().stream().filter(ap -> ap.getPetName().equals(string)).findFirst().orElse(null);
+//            }
+//        });
         try {
             Customers.addAll(CustomerDaoImpl.getallCustomers());
         } catch (Exception ex) {
@@ -328,7 +398,11 @@ public class CustomerScreenController {
         txtCustomerPhone.setEditable(true);
         txtCustomerEmail.setEditable(true);
         txtCustomerStatus.setEditable(true);
-        txtCustomerPhone.setEditable(true);
+        txtCustomerNotes.setEditable(true);
+        comboBarber.setEditable(true);
+        comboPet.setEditable(true);
+        comboPetType.setEditable(true);
+        txtPetDescription.setEditable(true);
     }
 
     private void disableEdits() {
@@ -337,7 +411,11 @@ public class CustomerScreenController {
         txtCustomerPhone.setEditable(false);
         txtCustomerEmail.setEditable(false);
         txtCustomerStatus.setEditable(false);
-        txtCustomerPhone.setEditable(false);
+        txtCustomerNotes.setEditable(false);
+        comboBarber.setEditable(false);
+        comboPet.setEditable(false);
+        comboPetType.setEditable(false);
+        txtPetDescription.setEditable(false);
     }
 
     private void clearFields() {
@@ -345,10 +423,12 @@ public class CustomerScreenController {
         txtCustomerName.clear();
         txtCustomerPhone.clear();
         txtCustomerEmail.clear();
-        barberCombo.setValue(null);
-        petCombo.setValue(null);
+        comboBarber.setValue(null);
+        comboPet.setValue(null);
         txtCustomerStatus.clear();
-        txtCustomerPhone.clear();
+        txtCustomerNotes.clear();
+        comboPetType.setValue(null);
+        txtPetDescription.clear();
     }
 
     /**
@@ -357,31 +437,18 @@ public class CustomerScreenController {
     private void saveNewCustomer() {
         System.out.println("currently commented out saving new customer");
         try {
-//    PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO address ("
-//                    + "address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) "
-//		    + "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", Statement.RETURN_GENERATED_KEYS);
 
 //LEFT OUT PET IMAGES FOR NOW
-            PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO pet ("
-                    + "petName, petType, petDescription, createDate, createdBy, lastUpdate, lastUpdateBy) "
-                    + "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, petCombo.getValue().getPetId());
+            PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO pet "
+                    + "(petName, petType, petDescription, createDate, createdBy, lastUpdate, lastUpdateBy) "
+                    + " VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, comboPet.getValue().getPetName());
             ps.setString(2, comboPetType.getValue());
             ps.setString(3, txtPetDescription.getText());
             ps.setString(4, currentUser.getUserName());
             ps.setString(5, currentUser.getUserName());
-//	    PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO pet ("
-//                    + "customerPhone, customerEmail, petId, active, notes, createDate, createdBy, lastUpdate, lastUpdateBy) "
-//		    + "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", Statement.RETURN_GENERATED_KEYS);
-//	    ps.setString(1, txtCustomerPhone.getText());
-//	    ps.setString(2, txtCustomerEmail.getText());
-//	    ps.setInt(3, petCombo.getValue().getPetId());
-//	    ps.setString(4, txtCustomerStatus.getText());
-//	    ps.setString(5, txtCustomerNotes.getText());
-//	    ps.setString(6, currentUser.getUserName());
-//	    ps.setString(7, currentUser.getUserName());
 
-            boolean res = ps.execute();
+            ps.executeUpdate();
 
             int newPetId = -1;
             int newCustomerId = -1;
@@ -393,8 +460,8 @@ public class CustomerScreenController {
             }
 
             PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO customer "
-                    + "(petId, customerName, customerPhone, customerEmail, notes, active, createDate, createdBy, lastUpdate, lastUpdateBy, customerId)"
-                    + "VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?, ?)");
+                    + "(petId, customerName, customerPhone, customerEmail, notes, active, createDate, createdBy, lastUpdate, lastUpdateBy, customerId) "
+                    + " VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?, ?)");
 
             pst.setInt(1, newPetId);
             pst.setString(2, txtCustomerName.getText());
@@ -402,19 +469,9 @@ public class CustomerScreenController {
             pst.setString(4, txtCustomerEmail.getText());
             pst.setString(5, txtCustomerNotes.getText());
             pst.setInt(6, 1);
-            pst.setString(4, currentUser.getUserName());
-            pst.setString(5, currentUser.getUserName());
-            pst.setInt(6, newCustomerId);
-//            PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO customer "
-//                    + "(customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy, customerId)"
-//                    + "VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?, ?)");
-//
-//            pst.setString(1, txtCustomerName.getText());
-//            pst.setInt(2, newAddressId);
-//            pst.setInt(3, 1);
-//            pst.setString(4, currentUser.getUserName());
-//            pst.setString(5, currentUser.getUserName());
-//            pst.setInt(6, newCustomerId);
+            pst.setString(7, currentUser.getUserName());
+            pst.setString(8, currentUser.getUserName());
+            pst.setInt(9, newCustomerId);
 
             int result = pst.executeUpdate();
 
@@ -433,7 +490,7 @@ public class CustomerScreenController {
 //
 //	     PreparedStatement ps = DBConnection.getConn().prepareStatement("UPDATE address, customer, city, country "
 //                        + "SET address = ?, address2 = ?, address.cityId = ?, postalCode = ?, phone = ?, address.lastUpdate = CURRENT_TIMESTAMP, address.lastUpdateBy = ? "
-//                        + "WHERE customer.customerId = ? AND customer.addressId = customer.phoneId AND address.cityId = city.cityId AND city.countryId = country.countryId");
+//                        + "WHERE customer.customerId = ? AND customer.addressId = customer.customerPhoneId AND address.cityId = city.cityId AND city.countryId = country.countryId");
 //
 //                ps.setString(1, txtCustomerAddress.getText());
 //                ps.setString(2, txtCustomerAddress2.getText());
@@ -447,7 +504,7 @@ public class CustomerScreenController {
 //                             
 //                PreparedStatement psc = DBConnection.getConn().prepareStatement("UPDATE customer, address, city "
 //                + "SET customerName = ?, customer.lastUpdate = CURRENT_TIMESTAMP, customer.lastUpdateBy = ? "
-//                + "WHERE customer.customerId = ? AND customer.addressId = customer.phoneId AND address.cityId = city.cityId");
+//                + "WHERE customer.customerId = ? AND customer.addressId = customer.customerPhoneId AND address.cityId = city.cityId");
 //            
 //                psc.setString(1, txtCustomerName.getText());
 //                psc.setString(2, currentUser.getUserName());
@@ -512,14 +569,14 @@ public class CustomerScreenController {
         String name = txtCustomerName.getText();
         String phone = txtCustomerPhone.getText();
         String email = txtCustomerEmail.getText();
-        Pet pet = petCombo.getValue();
-        String barber = barberCombo.getValue();
+        Pet pet = comboPet.getValue();
+        Barber barber = comboBarber.getValue();
         String status = txtCustomerStatus.getText();
-        String notes = txtCustomerPhone.getText();
+        String notes = txtCustomerNotes.getText();
         String petType = comboPetType.getValue();
         String petDesc = txtPetDescription.getText();
 
-        String errorMessage = "pause";
+        String errorMessage = "";
 //
 //        if (name == null || name.length() == 0) {
 //            errorMessage += "Please enter customer name.\n";

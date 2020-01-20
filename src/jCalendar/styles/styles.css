@@ -13,22 +13,20 @@ and open the template in the editor.
     -fx-secondary: #9baec8;
     -fx-lightblue: #d9e1e8;
     -fx-darkblue: #2b90d9;
-    
+
 }
 
 
 .myButton:hover {
-  -fx-text-fill: -fx-primary;
-  -fx-border-color: -fx-lightblue;
-  -fx-border-width: 0px 0px 4px 0px;
-  -fx-line-spacing: 1px;
-  -fx-font-size: 15px;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-lightblue;
+    -fx-border-width: 0px 0px 4px 0px;
+    -fx-line-spacing: 1px;
+    -fx-font-size: 15px;
 }
 
 .normalButton {
-  -fx-text-fill: white;
-  -fx-background-color: -fx-darkblue;
-  -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-background-color: -fx-darkblue;
+    -fx-font-size: 14px;
 }
-
-

@@ -200,3 +200,27 @@ Jan 13, 2020 11:38:41 PM jCalendar.viewcontroller.AppointmentScreenController po
 SEVERE: Check SQL exception
 Jan 13, 2020 11:47:08 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
 SEVERE: Check SQL exception
+Jan 14, 2020 7:07:41 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception
+Jan 14, 2020 7:20:21 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 14, 2020 7:50:33 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 14, 2020 7:52:06 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 14, 2020 8:58:03 PM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 15, 2020 9:31:44 AM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 15, 2020 9:44:15 AM jCalendar.viewcontroller.AppointmentScreenController populateAppointments
+SEVERE: Check SQL exception/ issue with populateAppointment()
+Jan 16, 2020 8:59:47 PM jCalendar.viewcontroller.Appointment_AddController populateCustomerCombo
+SEVERE: SQL Exception with populating country combo box.
+Jan 16, 2020 9:00:41 PM jCalendar.viewcontroller.Appointment_AddController populateCustomerCombo
+SEVERE: SQL Exception with populating country combo box.
+Jan 16, 2020 9:02:00 PM jCalendar.viewcontroller.Appointment_AddController populateCustomerCombo
+SEVERE: SQL Exception with populating country combo box.
+Jan 16, 2020 9:05:46 PM jCalendar.viewcontroller.Appointment_AddController populateCustomerCombo
+SEVERE: SQL Exception with populating country combo box.
+Jan 16, 2020 9:08:09 PM jCalendar.viewcontroller.Appointment_AddController populateCustomerCombo
+SEVERE: SQL Exception with populating country combo box.

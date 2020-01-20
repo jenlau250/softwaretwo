@@ -10,15 +10,15 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
-import jCalendar.dao.CustomerDaoImpl;
 import jCalendar.dao.DBConnection;
+import jCalendar.dao.Query;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Customer;
+import jCalendar.model.Pet;
 import jCalendar.model.User;
 import jCalendar.utilities.DateTimeUtil;
 import jCalendar.utilities.Loggerutil;
-import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,13 +30,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
@@ -44,40 +43,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
  *
  * @author Jen
  */
-public class Appointment_AddController implements Initializable {
+public class Appointment_AddController {
 
     // Controllers
-    private AppointmentScreenController mainController;
+//    private AppointmentScreenController mainController;
     private jCalendar mainApp;
     private User currentUser;
-
-    private ObservableList<Appointment> data;
-//
-//    public void setApptData(ObservableList<Appointment> data) {
-//        this.data = data ;
-//    }
-    //--------------------------------------------------------------------
-    //---------Database Object -------------------------------------------
-    DBConnection databaseHandler;
-    //--------------------------------------------------------------------
-
-    //Set main controller
-    public void setMainController(AppointmentScreenController mainController, User currentUser) {
-//        this.mainController = mainController;
-        this.mainController = mainController;
-        this.currentUser = currentUser;
-
-        System.out.println("Current user for Appt ADD Screen " + currentUser);
-
-    }
-
-    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     @FXML
     private AnchorPane rootPane;
@@ -113,10 +91,27 @@ public class Appointment_AddController implements Initializable {
 
     @FXML
     private JFXComboBox<Customer> comboExistCustomer;
+
+    @FXML
+    private JFXComboBox<Pet> comboPet;
     @FXML
     private VBox vBoxCustomer;
     @FXML
     private JFXTextField txtNewCustomer;
+
+    @FXML
+    private JFXTextField txtPhone;
+
+    @FXML
+    private JFXTextField txtEmail;
+
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
+
+    private ObservableList<Appointment> data;
+    private ObservableList<Pet> selectedPets = FXCollections.observableArrayList();
+    private ObservableList<Customer> customers = FXCollections.observableArrayList();
+
+    Customer customer;
 
     @FXML
     void handleApptCancel(ActionEvent event) {
@@ -168,15 +163,19 @@ public class Appointment_AddController implements Initializable {
     }
 
     /**
-     * // * Initializes the controller class. //
+     * Initializes the controller class.
+     *
+     * @param mainApp
+     * @param currentUser
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb
-    ) {
+    public void setMainController(jCalendar mainApp, User currentUser) {
 
-        System.out.println("TEST: Add Appointment class is showing user " + currentUser);
+        this.mainApp = mainApp;
+        this.currentUser = currentUser;
+
+        System.out.println("Current user for Appt ADD Screen " + currentUser);
         //*** Instantiate DBHandler object *******************
-        databaseHandler = new DBConnection();
+//        databaseHandler = new DBConnection();
         //****************************************************
 
         topLabel.setText("Add a New Appointment");
@@ -186,29 +185,8 @@ public class Appointment_AddController implements Initializable {
             stage.close();
         });
 
-        //get list of start and end times, appointment type, customer, and barber
-//Get the list of customers from the database and show them in the correspondent drop-down menu
-        try {
-            //Get terms from database and store them in the ObservableList variable "terms"
-            ObservableList<Customer> customers = CustomerDaoImpl.getListofCustomers();
-            //Show list of terms in the drop-down menu
-            comboExistCustomer.setItems(customers);
-
-            //Convert customer combo box to show customer name
-//            comboCustomer.setConverter(new StringConverter<Customer>() {
-//                @Override
-//                public String toString(Customer object) {
-//                    return object.getCustomerName();
-//                }
-//
-//                @Override
-//                public Customer fromString(String string) {
-//                    return comboCustomer.getItems().stream().filter(ap -> ap.getCustomerName().equals(string)).findFirst().orElse(null);
-//                }
-//            });
-        } catch (SQLException ex) {
-            Logger.getLogger(Appointment_AddController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        populateCustomerCombo();
+//        populatePetsLists();
 
         //Get the list of appointment types
         comboType.setItems(Appointment.getApptTypes());
@@ -224,7 +202,6 @@ public class Appointment_AddController implements Initializable {
 
         txtNewCustomer.managedProperty().bind(txtNewCustomer.visibleProperty());
         comboExistCustomer.managedProperty().bind(comboExistCustomer.visibleProperty());
-
 
         choiceExistingCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
             if (isSelected) {
@@ -242,9 +219,71 @@ public class Appointment_AddController implements Initializable {
             }
         });
 
-
     }
 
+    @FXML
+    private void populateCustomerCombo() {
+//        comboExistCustomer.setValue(null);
+//        comboExistCustomer.getItems().clear();
+
+        Query.makeQuery("SELECT customerId, customerName FROM customer");
+        ResultSet rs = Query.getResult();
+
+        try {
+            while (rs.next()) {
+                customers.add(new Customer(rs.getInt("customerId"), rs.getString("customerName")));
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "SQL Exception with populating country combo box.");
+        }
+
+        comboExistCustomer.setItems(customers);
+
+        comboExistCustomer.setConverter(new StringConverter<Customer>() {
+            @Override
+            public String toString(Customer object) {
+                if (object == null) {
+                    return null;
+                } else {
+                    return object.customerNameProperty().get();
+                }
+            }
+
+            @Override
+            public Customer fromString(String string) {
+                return null;
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+    }
+
+//    private void populatePetsLists() {
+//
+//        int selectedPetId = comboPet.getValue().getPetId();
+//        System.out.println(selectedPetId);
+//
+//        String sql = "SELECT pet.petId, pet.petName "
+//                + "FROM pet "
+//                + "WHERE petId = \"" + selectedPetId + "\"";
+//
+//        Query.makeQuery(sql);
+//        System.out.println("Sql statement is "+ sql);
+//        ResultSet result = Query.getResult();
+//        
+//        //clear and load pet box
+//        comboPet.getItems().clear();
+//
+//        try {
+//            while (result.next()) {
+//                selectedPets.add(new Pet(result.getInt("pet.petId"), result.getString("pet.petName")));
+//            }
+//        } catch (SQLException ex) {
+//            logger.log(Level.SEVERE, "SQL Exception with populating pet combo box.");
+//        }
+//        // Set city options in cb.
+//        comboPet.setItems(selectedPets);
+//
+//    }
     private void updateAppointment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -356,4 +395,10 @@ public class Appointment_AddController implements Initializable {
 
     }
 
+    //constructor is called first, The initialize method is called after all @FXML annotated members have been injected
+    @FXML
+    public void initialize() {
+//        tableView.getItems().addAll(getDataFromSource());
+
+    }
 }

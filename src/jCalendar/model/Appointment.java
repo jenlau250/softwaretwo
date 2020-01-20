@@ -6,7 +6,12 @@
 package jCalendar.model;
 
 import jCalendar.utilities.DateTimeUtil;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -16,19 +21,101 @@ import javafx.collections.ObservableList;
  */
 public class Appointment {
 
-    private String appointmentId;
-    private Customer customer;
-    private String title;
+    private int appointmentId;
+    private int customerId;
+    private int barberId;
+
+    private final StringProperty title = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
+    private final ObjectProperty<LocalDateTime> start2 = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDateTime> end2 = new SimpleObjectProperty();
+
+    private String sTitle;
     private String type;
     private String location;
     private String month;
     private String count;
     private String start;
     private String end;
+
+    private Customer customer;
+    private Pet pet;
     private String user;
-    private String barber;
+    private Barber barber;
     private String calendar;
-    
+
+    //FOR TABLEVIEW
+    public Appointment(int appointmentId, int customerId, String title, String description, LocalDateTime start, LocalDateTime end, Barber barber) {
+        this.appointmentId = appointmentId;
+//        this.barberId = barberId;
+        this.customerId = customerId;
+        this.title.set(title);
+        this.description.set(description);
+        this.start2.set(start);
+        this.end2.set(end);
+        this.barber = barber;
+    }
+
+    public Appointment(int customerId, String title) {
+        this.customerId = customerId;
+        this.title.set(title);
+
+    }
+
+    public int getCustomerId() {
+        return customerId;
+
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public int getBarberId() {
+        return barberId;
+
+    }
+
+    public void setBarberId(int barberId) {
+        this.barberId = barberId;
+    }
+
+    public String getTitle() {
+        return title.get();
+    }
+
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
+
+    public StringProperty titleProperty() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+
+    public ObjectProperty startProperty() {
+        return start2;
+    }
+
+    public ObjectProperty endProperty() {
+        return end2;
+    }
+
+    public LocalDateTime getStart2() {
+        return start2.get();
+    }
+
     private static final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
 
@@ -45,28 +132,42 @@ public class Appointment {
         this.count = count;
     }
 
-    public Appointment(String appointmentId) {
+    public Appointment(int appointmentId) {
         this.appointmentId = appointmentId;
     }
 
-    public Appointment(String appointmentId, String start, String end, String title, String type, String location, Customer customer, String user) {
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getsTitle() {
+        return sTitle;
+    }
+
+    public void setsTitle(String sTitle) {
+        this.sTitle = sTitle;
+    }
+
+    public Appointment(int appointmentId, String start, String end, String sTitle, String type, String location, Customer customer, String user) {
         this.appointmentId = appointmentId;
         this.start = start;
         this.end = end;
-        this.title = title;
+        this.sTitle = sTitle;
         this.type = type;
         this.location = location;
         this.customer = customer;
         this.user = user;
     }
 
-   
-
-    public Appointment(String sAppointmentId, String format, String format0, String sTitle, String sType, String sLocation, Customer sCustomer, String sUser, Barber sBarber, Calendar sCalendar) {
+    public Appointment(int sAppointmentId, String format, String format0, String sTitle, String sType, String sLocation, Customer sCustomer, String sUser, Barber sBarber, Calendar sCalendar) {
         this.appointmentId = appointmentId;
         this.start = start;
         this.end = end;
-        this.title = title;
+        this.sTitle = sTitle;
         this.type = type;
         this.location = location;
         this.customer = customer;
@@ -75,13 +176,23 @@ public class Appointment {
         this.calendar = calendar;
     }
 
-    public String getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(String appointmentId) {
+    public Appointment(int appointmentId, String title, String type, String location, String month, String start, String end, Customer customer, Pet pet) {
         this.appointmentId = appointmentId;
+        this.sTitle = title;
+        this.type = type;
+        this.location = location;
+        this.month = month;
+        this.start = start;
+        this.end = end;
+        this.customer = customer;
+        this.pet = pet;
     }
+//    public int getAppointmentId() {
+//        return appointmentId;
+//    }
+//    public void setAppointmentId(int appointmentId) {
+//        this.appointmentId = appointmentId;
+//    }
 
     public String getLocation() {
         return location;
@@ -91,14 +202,13 @@ public class Appointment {
         this.location = location;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
     public String getType() {
         return type;
     }
@@ -183,11 +293,11 @@ public class Appointment {
         return endTimes;
     }
 
-    public String getBarber() {
+    public Barber getBarber() {
         return barber;
     }
 
-    public void setBarber(String barber) {
+    public void setBarber(Barber barber) {
         this.barber = barber;
     }
 
@@ -198,8 +308,13 @@ public class Appointment {
     public void setCalendar(String calendar) {
         this.calendar = calendar;
     }
-    
-    
-    
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
 
 }

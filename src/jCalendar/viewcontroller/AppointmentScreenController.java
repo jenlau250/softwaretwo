@@ -5,6 +5,7 @@
  */
 package jCalendar.viewcontroller;
 
+import jCalendar.dao.AppointmentDaoImpl;
 import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
@@ -12,7 +13,6 @@ import jCalendar.model.Customer;
 import jCalendar.model.User;
 import jCalendar.utilities.DateTimeUtil;
 import jCalendar.utilities.Loggerutil;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +37,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -50,12 +48,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
@@ -64,40 +57,70 @@ import javafx.util.StringConverter;
  */
 public class AppointmentScreenController {
 
-    @FXML    private TableView<Appointment> ApptTable;
-    @FXML    private TableColumn<Appointment, String> tLocation;
-    @FXML    private TableColumn<Appointment, String> tType;
-    @FXML    private TableColumn<Appointment, String> tTitle;
-    @FXML    private TableColumn<Appointment, String> tUser;
-    @FXML    private TableColumn<Appointment, LocalDateTime> tEndDate;
-    @FXML    private TableColumn<Appointment, ZonedDateTime> tStartDate;
-    @FXML    private TableColumn<Appointment, String> tCustomer;
-    @FXML    private Label labelAppt;
-    @FXML    private Label labelMainAppt;
-    @FXML    private Label labelStartBound;
-    @FXML    private Label labelEndBound;
-    @FXML    private VBox apptVBox;
+    @FXML
+    private TableView<Appointment> ApptTable;
+    @FXML
+    private TableColumn<Appointment, String> tLocation;
+    @FXML
+    private TableColumn<Appointment, String> tType;
+    @FXML
+    private TableColumn<Appointment, String> tTitle;
+    @FXML
+    private TableColumn<Appointment, String> tUser;
+    @FXML
+    private TableColumn<Appointment, LocalDateTime> tEndDate;
+    @FXML
+    private TableColumn<Appointment, ZonedDateTime> tStartDate;
+    @FXML
+    private TableColumn<Appointment, String> tCustomer;
+    @FXML
+    private Label labelAppt;
+    @FXML
+    private Label labelMainAppt;
+    @FXML
+    private Label labelStartBound;
+    @FXML
+    private Label labelEndBound;
+    @FXML
+    private VBox apptVBox;
 
     //add/edit pane
-    @FXML    private DatePicker datePicker;
-    @FXML    private ComboBox<String> comboEnd;
-    @FXML    private ComboBox<String> comboStart;
-    @FXML    private ComboBox<Customer> comboCustomer;
-    @FXML    private ComboBox<String> comboType;
-    @FXML    private TextField type;
-    @FXML    private TextField txtLocation;
-    @FXML    private TextField txtTitle;
-    @FXML    private Button btnApptSave;
-    @FXML    private Button btnApptCancel;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private ComboBox<String> comboEnd;
+    @FXML
+    private ComboBox<String> comboStart;
+    @FXML
+    private ComboBox<Customer> comboCustomer;
+    @FXML
+    private ComboBox<String> comboType;
+    @FXML
+    private TextField type;
+    @FXML
+    private TextField txtLocation;
+    @FXML
+    private TextField txtTitle;
+    @FXML
+    private Button btnApptSave;
+    @FXML
+    private Button btnApptCancel;
 
-    @FXML    private ChoiceBox<String> choiceWeekMonth;
-    @FXML    private Button btnBack;
-    @FXML    private Button btnNext;
-    @FXML    private Button btnApptDel;
-    @FXML    private Button btnApptAdd;
-    @FXML    private Button btnApptUpdate;
+    @FXML
+    private ChoiceBox<String> choiceWeekMonth;
+    @FXML
+    private Button btnBack;
+    @FXML
+    private Button btnNext;
+    @FXML
+    private Button btnApptDel;
+    @FXML
+    private Button btnApptAdd;
+    @FXML
+    private Button btnApptUpdate;
 
-    @FXML    private Button btnNewAdd;
+    @FXML
+    private Button btnNewAdd;
 
     private jCalendar mainApp;
     private User currentUser;
@@ -147,12 +170,10 @@ public class AppointmentScreenController {
         }
     }
 
-
-
     @FXML
     void handleApptAddNew(ActionEvent event) {
 
-        showAppointmentAddScreen(currentUser);
+        mainApp.showAppointmentAddScreen(currentUser);
 //        mainApp.showAppointmentAddScreen(currentUser);
     }
 
@@ -282,7 +303,15 @@ public class AppointmentScreenController {
         tType.setCellValueFactory(new PropertyValueFactory<>("type"));
         tLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
 
-        populateAppointments();
+//        populateAppointments();
+//getAllAppointments()
+        try {
+            appointmentList.addAll(AppointmentDaoImpl.populateAppointments());
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception error with getting all appointment data");
+            Logger.getLogger(AppointmentScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         ApptTable.getItems().setAll(appointmentList);
 
         LocalTime appointmentStartTime = LocalTime.of(8, 0);
@@ -302,20 +331,20 @@ public class AppointmentScreenController {
 
         comboEnd.setItems(endTimes);
 
-        // Load customer details
-        masterData = populateCustomers();
-        comboCustomer.setItems(masterData);
-        comboCustomer.setConverter(new StringConverter<Customer>() {
-            @Override
-            public String toString(Customer object) {
-                return object.getCustomerName();
-            }
-
-            @Override
-            public Customer fromString(String string) {
-                return comboCustomer.getItems().stream().filter(ap -> ap.getCustomerName().equals(string)).findFirst().orElse(null);
-            }
-        });
+//        // Load customer details
+//        masterData = populateCustomers();
+//        comboCustomer.setItems(masterData);
+//        comboCustomer.setConverter(new StringConverter<Customer>() {
+//            @Override
+//            public String toString(Customer object) {
+//                return object.getCustomerName();
+//            }
+//
+//            @Override
+//            public Customer fromString(String string) {
+//                return comboCustomer.getItems().stream().filter(ap -> ap.getCustomerName().equals(string)).findFirst().orElse(null);
+//            }
+//        });
 
         // // Listen for selection changes and show the appt details when changed.
         ApptTable.getSelectionModel().selectedItemProperty().addListener(
@@ -435,34 +464,34 @@ public class AppointmentScreenController {
         labelEndBound.setText(cbEndDate.format(labelformat));
     }
 
-    protected ObservableList<Customer> populateCustomers() {
-
-        int pCustomerId;
-        String pCustomerName;
-
-        ObservableList<Customer> customerList = FXCollections.observableArrayList();
-        try (
-                 PreparedStatement statement = DBConnection.getConn().prepareStatement(
-                         "SELECT customer.customerId, customer.customerName "
-                        + "FROM customer, pet "
-                        + "WHERE customer.petId = pet.petId");  ResultSet rs = statement.executeQuery();) {
+//    protected ObservableList<Customer> populateCustomers() {
+//
+//        int pCustomerId;
+//        String pCustomerName;
+//
+//        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+//        try (
+//                 PreparedStatement statement = DBConnection.getConn().prepareStatement(
 //                        "SELECT customer.customerId, customer.customerName "
-//                        + "FROM customer, pet, city, country "
-//                        + "WHERE customer.addressId = customer.phoneId AND address.cityId = city.cityId AND city.countryId = country.countryId");  ResultSet rs = statement.executeQuery();) {
-            while (rs.next()) {
-                pCustomerId = rs.getInt("customer.customerId");
-                pCustomerName = rs.getString("customer.customerName");
-                customerList.add(new Customer(pCustomerId, pCustomerName));
-            }
-        } catch (SQLException sqe) {
-            System.out.println("Check SQL Exception");
-            sqe.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Check Exception");
-        }
-        return customerList;
-
-    }
+//                        + "FROM customer, pet "
+//                        + "WHERE customer.petId = pet.petId");  ResultSet rs = statement.executeQuery();) {
+////                        "SELECT customer.customerId, customer.customerName "
+////                        + "FROM customer, pet, city, country "
+////                        + "WHERE customer.addressId = customer.customerPhoneId AND address.cityId = city.cityId AND city.countryId = country.countryId");  ResultSet rs = statement.executeQuery();) {
+//            while (rs.next()) {
+//                pCustomerId = rs.getInt("customer.customerId");
+//                pCustomerName = rs.getString("customer.customerName");
+//                customerList.add(new Customer(pCustomerId, pCustomerName));
+//            }
+//        } catch (SQLException sqe) {
+//            System.out.println("Check SQL Exception");
+//            sqe.printStackTrace();
+//        } catch (Exception e) {
+//            System.out.println("Check Exception");
+//        }
+//        return customerList;
+//
+//    }
 
     public void showAppointmentDetails(Appointment appointment) {
         editClicked = true;
@@ -485,83 +514,83 @@ public class AppointmentScreenController {
         comboType.getSelectionModel().select(appointment.getType());
 
     }
-
-    public void populateAppointments() {
-
-        try {
-            PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                      "SELECT appointment.appointmentId, "
-                    + "appointment.customerId, "
-                    + "appointment.title, "
-                    + "appointment.type, "
-                    + "appointment.location, "
-                    + "appointment.start, "
-                    + "appointment.end, "
-                    + "appointment.createdBy "
-                              
-                    + "customer.customerId, "
-                    + "customer.customerName, "
-                              
-                    + "FROM appointment, customer "
-                    + "WHERE appointment.customerId = customer.customerId "
-                    + "ORDER BY `start`");
-//                    "SELECT appointment.appointmentId, "
+//
+//    public void populateAppointments() {
+////*need to add barberId
+//        try {
+//            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+//                      "SELECT appointment.appointmentId, "
 //                    + "appointment.customerId, "
 //                    + "appointment.title, "
 //                    + "appointment.type, "
 //                    + "appointment.location, "
 //                    + "appointment.start, "
 //                    + "appointment.end, "
+//                    + "appointment.createdBy "
+//                              
 //                    + "customer.customerId, "
 //                    + "customer.customerName, "
-//                    + "appointment.createdBy "
+//                              
 //                    + "FROM appointment, customer "
 //                    + "WHERE appointment.customerId = customer.customerId "
 //                    + "ORDER BY `start`");
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                String tAppointmentId = rs.getString("appointment.appointmentId");
-                // get utc timestamps from database
-                String tsStart = rs.getString("appointment.start");
-                String tsEnd = rs.getString("appointment.end");
-
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime rDate = LocalDateTime.parse(tsStart, df);
-                LocalDateTime rDate2 = LocalDateTime.parse(tsEnd, df);
-                // date stored as UTC
-                ZonedDateTime zonedDate = rDate.atZone(ZoneId.of("UTC"));
-                ZonedDateTime zonedDate2 = rDate2.atZone(ZoneId.of("UTC"));
-
-                // now convert for local time
-                ZoneId zid = ZoneId.systemDefault();
-                ZonedDateTime newLocalStart = zonedDate.withZoneSameInstant(zid);
-                ZonedDateTime newLocalEnd = zonedDate2.withZoneSameInstant(zid);
-
-                String tTitle = rs.getString("appointment.title");
-                String tType = rs.getString("appointment.type");
-                String tLocation = rs.getString("appointment.location");
-                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
-
-                String sContact = rs.getString("appointment.createdBy");
-
-                appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateformat), newLocalEnd.format(dateformat), tTitle, tType, tLocation, sCustomer, sContact));
-
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Check SQL exception");
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Check exception");
-        }
-
-    }
+////                    "SELECT appointment.appointmentId, "
+////                    + "appointment.customerId, "
+////                    + "appointment.title, "
+////                    + "appointment.type, "
+////                    + "appointment.location, "
+////                    + "appointment.start, "
+////                    + "appointment.end, "
+////                    + "customer.customerId, "
+////                    + "customer.customerName, "
+////                    + "appointment.createdBy "
+////                    + "FROM appointment, customer "
+////                    + "WHERE appointment.customerId = customer.customerId "
+////                    + "ORDER BY `start`");
+//
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//
+//                String tAppointmentId = rs.getString("appointment.appointmentId");
+//                // get utc timestamps from database
+//                String tsStart = rs.getString("appointment.start");
+//                String tsEnd = rs.getString("appointment.end");
+//
+//                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//                LocalDateTime rDate = LocalDateTime.parse(tsStart, df);
+//                LocalDateTime rDate2 = LocalDateTime.parse(tsEnd, df);
+//                // date stored as UTC
+//                ZonedDateTime zonedDate = rDate.atZone(ZoneId.of("UTC"));
+//                ZonedDateTime zonedDate2 = rDate2.atZone(ZoneId.of("UTC"));
+//
+//                // now convert for local time
+//                ZoneId zid = ZoneId.systemDefault();
+//                ZonedDateTime newLocalStart = zonedDate.withZoneSameInstant(zid);
+//                ZonedDateTime newLocalEnd = zonedDate2.withZoneSameInstant(zid);
+//
+//                String tTitle = rs.getString("appointment.title");
+//                String tType = rs.getString("appointment.type");
+//                String tLocation = rs.getString("appointment.location");
+//                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
+//
+//                String sContact = rs.getString("appointment.createdBy");
+//
+//                appointmentList.add(new Appointment(tAppointmentId, newLocalStart.format(dateformat), newLocalEnd.format(dateformat), tTitle, tType, tLocation, sCustomer, sContact));
+//
+//            }
+//        } catch (SQLException ex) {
+//            logger.log(Level.SEVERE, "Check SQL exception/ issue with populateAppointment()");
+//        } catch (Exception e) {
+//            logger.log(Level.SEVERE, "Check exception");
+//        }
+//
+//    }
 
     private void deleteAppointment(Appointment appointment) {
         try {
             PreparedStatement pst = DBConnection.getConn().prepareStatement("DELETE appointment.* FROM appointment WHERE appointment.appointmentId = ?");
-            pst.setString(1, appointment.getAppointmentId());
+            pst.setInt(1, appointment.getAppointmentId());
             pst.executeUpdate();
 
         } catch (SQLException e) {
@@ -605,7 +634,7 @@ public class AppointmentScreenController {
             pst.setString(5, stringStart);
             pst.setString(6, stringEnd);
             pst.setString(7, currentUser.getUserName());
-            pst.setString(8, selectedAppt.getAppointmentId());
+            pst.setInt(8, selectedAppt.getAppointmentId());
             int result = pst.executeUpdate();
             if (result == 1) {
                 logger.log(Level.INFO, "Customer update complete");
@@ -712,30 +741,8 @@ public class AppointmentScreenController {
         }
 
     }
-    
-        public void showAppointmentAddScreen(User currentUser) {
 
-        try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/jCalendar/viewcontroller/Appointment_Add.fxml"));
-            AnchorPane rootPane = (AnchorPane) loader.load();
-            Stage stage = new Stage(StageStyle.UNDECORATED);
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Pass main controller reference to view
-            Appointment_AddController eventController = loader.getController();
-            eventController.setMainController(this, currentUser);
-
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootPane);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+  
 //    public static ObservableList<Appointment> getApptData() {
 //        return appointmentList;
 //    }
@@ -743,5 +750,4 @@ public class AppointmentScreenController {
 //    public void updateApptData(Appointment appt) {
 //        AppointmentScreenController.appointmentList.add(appt);
 //    }
-
 }

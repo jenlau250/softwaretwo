@@ -18,50 +18,164 @@ import javafx.collections.ObservableList;
  * @author jlau2
  */
 public class CustomerDaoImpl {
-    
-    
 
+    public static ObservableList<Customer> addCustomers2() {
+
+        //adding customer notes and active to this might it not work, so make sure it's exactly
+        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                    "SELECT customerId, customerName, customerPhone, customerEmail, pet.petId, petName, petType, petDescription "
+                    + "FROM customer, pet "
+                    + "WHERE customer.petId = pet.petId");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("customerId");
+                String name = rs.getString("customerName");
+                String phone = rs.getString("customerPhone");
+                String email = rs.getString("customerEmail");
+//                String notes = rs.getString("notes");
+//                String active = rs.getString("active");
+                Pet pet = new Pet(rs.getInt("pet.petId"), rs.getString("pet.petName"), rs.getString("pet.petType"), rs.getString("pet.petDescription"));
+//                int petId = rs.getInt("petId");
+//                String petName = rs.getString("petName");
+//                String petType = rs.getString("petType");
+//                String petDescription = rs.getString("petDescription");
+
+                customerList.add(new Customer(id, name, phone, email, pet));
+//                customerList.add(new Customer(id, name, phone, email, petId, petName, petType, petDescription));
+
+            }
+
+        } catch (SQLException sqe) {
+            System.out.println("Check SQL Exception with add customers2");
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Check Exception");
+        }
+        return customerList;
+
+    }
+
+//    public static ObservableList<Customer> populateCustomerCombo() {
+//
+//        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+//
+//        try {
+//            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+//                    "SELECT customerId, customerName, customerPhone, customerEmail, pet.petId, petName, petType, petDescription "
+//                    + "FROM customer, pet "
+//                    + "WHERE customer.petId = pet.petId");
+//
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                int id = rs.getInt("customerId");
+//                String name = rs.getString("customerName");
+//                String phone = rs.getString("customerPhone");
+//                String email = rs.getString("customerEmail");
+////                Pet pet = new Pet(rs.getInt("pet.petId"), rs.getString("pet.petName"), rs.getString("pet.petType"), rs.getString("pet.petDescription"));
+//                int petId = rs.getInt("petId");
+////                String petName = rs.getString("petName");
+////                String petType = rs.getString("petType");
+////                String petDescription = rs.getString("petDescription");
+//
+//                customerList.add(new Customer(id, name, phone, email, petId));
+////                customerList.add(new Customer(id, name, phone, email, petId, petName, petType, petDescription));
+//
+//            }
+//
+//        } catch (SQLException sqe) {
+//            System.out.println("Check SQL Exception with add customers2");
+//            sqe.printStackTrace();
+//        } catch (Exception e) {
+//            System.out.println("Check Exception");
+//        }
+//        return customerList;
+//
+//    }
+
+//    public void listCustomers() {
+//
+//        try {
+//            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+//                    "SELECT customerId, customerName, customerPhone, customerEmail, pet.petId, petName, petType, petDescription "
+//                    + "FROM customer, pet "
+//                    + "WHERE customer.petId = pet.petId");
+//
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                int id = rs.getInt("customerId");
+//                String name = rs.getString("customerName");
+//                String phone = rs.getString("customerPhone");
+//                String email = rs.getString("customerEmail");
+////                Pet pet = new Pet(rs.getInt("pet.petId"), rs.getString("pet.petName"), rs.getString("pet.petType"), rs.getString("pet.petDescription"));
+//                int petId = rs.getInt("petId");
+////                String petName = rs.getString("petName");
+////                String petType = rs.getString("petType");
+////                String petDescription = rs.getString("petDescription");
+//
+//                customerList.add(new Customer(id, name, phone, email, petId));
+////                customerList.add(new Customer(id, name, phone, email, petId, petName, petType, petDescription));
+//
+//            }
+//
+//        } catch (SQLException sqe) {
+//            System.out.println("Check SQL Exception with add customers2");
+//            sqe.printStackTrace();
+//        } catch (Exception e) {
+//            System.out.println("Check Exception");
+//        }
+//        return customerList;
+//
+//    }
+//
     public static ObservableList<Customer> getallCustomers() throws SQLException, Exception {
-	
-	ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-	
-	DBConnection.init();
-        String sqlStatement = 
-		("SELECT customer.customerId, "
+        //can delete DB init and close
+        ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
+
+//	DBConnection.init();
+        String sqlStatement
+                = ("SELECT customer.customerId, "
                 + "customer.customerName, "
-                + "customer.phone, "
-                + "customer.email, "
-                + "customer.notes "
-                + "customer.active "
+                + "customer.customerPhone, "
+                + "customer.customerEmail, "
+                + "customer.notes, "
+                + "customer.active, "
                 + "pet.petId, "
                 + "pet.petName, "
-                
-		+ "FROM customer, "
-                + "customer, "
-                + "pet, "
-		+ "WHERE customer.petId = pet.petId"
-		+ "ORDER BY customer.customerId");
-	
-	Query.makeQuery(sqlStatement);
-	ResultSet result = Query.getResult(); 
+                + "pet.petType, "
+                + "pet.petDescription "
+                //                + "barber.barberId "
 
-	while (result.next()) {
-	    int customerId = result.getInt("customerId");
-	    String customerNameG = result.getString("customerName");
-	    String phone = result.getString("customer.phone");
-	    String email = result.getString("customer.email");
-	    String notes = result.getString("customer.notes");
-	    String active = result.getString("customer.active");
-	    Pet pet = new Pet(result.getInt("pet.petId"), result.getString("pet.petName"));
+                + "FROM customer, pet "
+                + "WHERE customer.petId = pet.petId ");
+
+        Query.makeQuery(sqlStatement);
+        ResultSet result = Query.getResult();
+
+        while (result.next()) {
+            int customerId = result.getInt("customerId");
+            String customerNameG = result.getString("customerName");
+            String phone = result.getString("customerPhone");
+            String email = result.getString("customerEmail");
+            String notes = result.getString("notes");
+            String active = result.getString("active");
+            Pet pet = new Pet(result.getInt("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
+//            int barberId = result.getInt("barberId");
 //	    String zipcode = result.getString("pet.postalCode")
 
-	    Customer customerResult = new Customer(customerId, customerNameG, phone, email, notes, active, pet);
-  
+            Customer customerResult = new Customer(customerId, customerNameG, phone, email, notes, active, pet);
+
 //	String sqlStatement = 
 //		("SELECT customer.customerId, "
 //                + "customer.customerName, "
-//                + "customer.phone, "
-//                + "customer.email, "
+//                + "customer.customerPhone, "
+//                + "customer.customerEmail, "
 //                + "pet.postalCode, "
 //                + "city.cityId, "
 //                + "city.city, "
@@ -71,7 +185,7 @@ public class CustomerDaoImpl {
 //                + "pet, "
 //                + "city, "
 //                + "calendar "
-//		+ "WHERE customer.petId = customer.phoneId AND pet.cityId = city.cityId AND city.countryId = calendar.countryId "
+//		+ "WHERE customer.petId = customer.customerPhoneId AND pet.cityId = city.cityId AND city.countryId = calendar.countryId "
 //		+ "ORDER BY customer.customerId");
 //	
 //	Query.makeQuery(sqlStatement);
@@ -80,8 +194,8 @@ public class CustomerDaoImpl {
 //	while (result.next()) {
 //	    int customerId = result.getInt("customerId");
 //	    String customerNameG = result.getString("customerName");
-//	    String pet = result.getString("customer.phone");
-//	    String address2 = result.getString("customer.email");
+//	    String pet = result.getString("customer.customerPhone");
+//	    String address2 = result.getString("customer.customerEmail");
 //	    Barber city = new Barber(result.getInt("city.cityId"), result.getString("city.city"));
 //	    String countryG = result.getString("calendar.calendar");
 //	    String zipcode = result.getString("pet.postalCode");
@@ -89,13 +203,12 @@ public class CustomerDaoImpl {
 //
 //	    Customer customerResult = new Customer(customerId, customerNameG, pet, address2, city, countryG, zipcode, phone);
 //  
-	    allCustomers.add(customerResult);
-	}
-	
-	DBConnection.closeConnection();
-	return allCustomers;
-    }
+            allCustomers.add(customerResult);
+        }
 
+//	DBConnection.closeConnection();
+        return allCustomers;
+    }
 //    public static ObservableList<Calendar> getCountries() throws SQLException, Exception {
 //	
 //	DBConnection.init();
@@ -116,66 +229,87 @@ public class CustomerDaoImpl {
 //	
 //    }
 
-        public ObservableList<Customer> populateCustomerList() {
+    public ObservableList<Customer> populateCustomerList() {
 
-	int tCustomerId;
-	String tCustomerName;
+        int tCustomerId;
+        String tCustomerName;
 
-	ObservableList<Customer> customerList = FXCollections.observableArrayList();
-	try (
-		PreparedStatement statement = DBConnection.getConn().prepareStatement(
-			"SELECT customer.customerId, customer.customerName "
-			+ "FROM customer, pet "
-			+ "WHERE customer.petId = pet.petId "
-			+ "ORDER BY customer.customerId");
-		
-		ResultSet rs = statement.executeQuery()) {
-
-	    while (rs.next()) {
-		tCustomerId = rs.getInt("customer.customerId");
-		tCustomerName = rs.getString("customer.customerName");
-		customerList.add(new Customer(tCustomerId, tCustomerName));
-	    }
-	} catch (SQLException sqe) {
-	    sqe.printStackTrace();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-
-	return customerList;
-
-    }
-        
-        
-
-    public static ObservableList<Customer> getListofCustomers() throws SQLException {
-
-        //initialize new list
-        
-        ObservableList<Customer> listOfCustomers = FXCollections.observableArrayList();
-
-        //SQL query for all Appointment data from Appointments table
-        String queryListOfCustomers = "SELECT customerId, customerName FROM customer";
-        PreparedStatement ps = DBConnection.getConn().prepareStatement(queryListOfCustomers);
-        //store results of query
-        ResultSet rs = ps.executeQuery();
-
-        try {
+        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+        try (
+                 PreparedStatement statement = DBConnection.getConn().prepareStatement(
+                        "SELECT customer.customerId, customer.customerName "
+                        + "FROM customer, pet "
+                        + "WHERE customer.petId = pet.petId "
+                        + "ORDER BY customer.customerId");  ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
-
-                int custId = rs.getInt("customerId");
-                String customerName = rs.getString("customerName");
-                listOfCustomers.add(new Customer(custId, customerName));
-
+                tCustomerId = rs.getInt("customer.customerId");
+                tCustomerName = rs.getString("customer.customerName");
+                customerList.add(new Customer(tCustomerId, tCustomerName));
             }
-        } catch (SQLException ex) {
-
-            System.out.println("error with getting getListofCustomers() in DBConnection");
+        } catch (SQLException sqe) {
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return listOfCustomers;
+
+        return customerList;
+
     }
 
-    
-}
+//    public static ObservableList<Customer> getListofCustomers() throws SQLException {
+//
+//        //initialize new list
+//        ObservableList<Customer> listOfCustomers = FXCollections.observableArrayList();
+//
+//        //SQL query for all Appointment data from Appointments table
+//        String queryListOfCustomers = "SELECT customerId, customerName FROM customer";
+//        PreparedStatement ps = DBConnection.getConn().prepareStatement(queryListOfCustomers);
+//        //store results of query
+//        ResultSet rs = ps.executeQuery();
+//
+//        try {
+//
+//            while (rs.next()) {
+//
+//                int custId = rs.getInt("customerId");
+//                String customerName = rs.getString("customerName");
+//                listOfCustomers.add(new Customer(custId, customerName));
+//
+//            }
+//        } catch (SQLException ex) {
+//
+//            System.out.println("error with getting getListofCustomers() in DBConnection");
+//        }
+//        return listOfCustomers;
+//    }
 
+    public static ObservableList<Pet> populatePets() {
+
+        int petId;
+        String petName;
+
+        ObservableList<Pet> petList = FXCollections.observableArrayList();
+        try (
+                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                        "SELECT pet.petId, pet.petName "
+                        + "FROM pet, customer "
+                        + "WHERE pet.petId = customer.petId"
+                );  ResultSet rs = ps.executeQuery();) {
+
+                    while (rs.next()) {
+                        petId = rs.getInt("pet.petId");
+                        petName = rs.getString("pet.petName");
+                        petList.add(new Pet(petId, petName));
+                    }
+                } catch (SQLException sqe) {
+                    System.out.println("Check SQL Exception");
+                    sqe.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("Check Exception");
+                }
+                return petList;
+
+    }
+
+}

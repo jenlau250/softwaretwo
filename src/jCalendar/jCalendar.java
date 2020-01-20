@@ -7,11 +7,10 @@ package jCalendar;
 
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
+import jCalendar.viewcontroller.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import jCalendar.viewcontroller.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,7 +18,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -35,12 +36,15 @@ public class jCalendar extends Application {
     private AnchorPane appointmentAddScreen;
     private AnchorPane customerScreen;
     private AnchorPane reportScreen;
+    private AnchorPane appointmentListScreen;
+
     private Tab selTab;
     private TabPane selTabPane;
 
     private static Connection connection;
     private Stage dialogStage;
     private User currUser;
+
 
     @Override
     public void start(Stage mainStage) {
@@ -166,8 +170,6 @@ public class jCalendar extends Application {
         }
     }
 
-  
-
     public void showReportScreen(User currentUser) {
 
         try {
@@ -184,6 +186,47 @@ public class jCalendar extends Application {
         }
     }
 
-    
-       
+    public void showAppointmentListScreen(User currentUser) {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentList.fxml"));
+            appointmentListScreen = (AnchorPane) loader.load();
+
+            mainScreen.setCenter(appointmentListScreen);
+
+            AppointmentListController controller = loader.getController();
+            controller.setAppointmentListScreen(this, currentUser);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void showAppointmentAddScreen(User currentUser) {
+
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/jCalendar/viewcontroller/Appointment_Add.fxml"));
+            AnchorPane rootPane = (AnchorPane) loader.load();
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // Pass main controller reference to view
+            Appointment_AddController controller = loader.getController();
+            controller.setMainController(this, currentUser);
+
+            // Show the scene containing the root layout.
+            Scene scene = new Scene(rootPane);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+//            Logger.getLogger(MainScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+    }
+
+
 }

@@ -9,17 +9,13 @@ import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
-import jCalendar.model.Calendar;
 import jCalendar.model.Customer;
-import jCalendar.model.Pet;
 import jCalendar.model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import javafx.beans.property.SimpleObjectProperty;
@@ -189,91 +185,91 @@ public class ReportScreenController {
 
     private void populateCustReport() {
 
-        custList = FXCollections.observableArrayList();
-
-        try {
-            PreparedStatement pst = DBConnection.getConn().prepareStatement(
-                    "SELECT pet.petId, pet.petName, COUNT(pet.petName) as \"count\" "
-                    + "FROM customer, pet "
-                    + "WHERE customer.petId = pet.petId "
-                    + "GROUP BY petName");
-//                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
-//                + "FROM customer, address, city "
-//                + "WHERE customer.addressId = customer.phoneId "
-//                + "AND address.cityId = city.cityId "
-//                + "GROUP BY city"); 
-
-            ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-                Pet pet = new Pet(rs.getInt("petId"), rs.getString("petName"));
-                String count = rs.getString("count");
-                custList.add(new Customer(pet, count));
-            }
-
-        } catch (SQLException sqe) {
-            sqe.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        tblCustData.setItems(custList);
+//        custList = FXCollections.observableArrayList();
+//
+//        try {
+//            PreparedStatement pst = DBConnection.getConn().prepareStatement(
+//                    "SELECT pet.petId, pet.petName, COUNT(pet.petName) as \"count\" "
+//                    + "FROM customer, pet "
+//                    + "WHERE customer.petId = pet.petId "
+//                    + "GROUP BY petName");
+////                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
+////                + "FROM customer, address, city "
+////                + "WHERE customer.addressId = customer.customerPhoneId "
+////                + "AND address.cityId = city.cityId "
+////                + "GROUP BY city"); 
+//
+//            ResultSet rs = pst.executeQuery();
+//
+//            while (rs.next()) {
+//                Pet pet = new Pet(rs.getInt("petId"), rs.getString("petName"));
+//                String count = rs.getString("count");
+//                custList.add(new Customer(pet, count));
+//            }
+//
+//        } catch (SQLException sqe) {
+//            sqe.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        tblCustData.setItems(custList);
     }
 
     private void populateSchedule() {
 
-        schedule = FXCollections.observableArrayList();
-        monthSet = FXCollections.observableSet();
-
-        try {
-
-            PreparedStatement pst = DBConnection.getConn().prepareStatement(
-                    "SELECT appointment.appointmentId, appointment.customerId, appointment.barberId, appointment.calendarId, appointment.title, appointment.type, appointment.location, "
-                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
-                    + "FROM appointment, customer "
-                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
-                    + "ORDER BY `start`");
-            
-//                "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
+//        schedule = FXCollections.observableArrayList();
+//        monthSet = FXCollections.observableSet();
+//
+//        try {
+//
+//            PreparedStatement pst = DBConnection.getConn().prepareStatement(
+//                    "SELECT appointment.appointmentId, appointment.customerId, appointment.barberId, appointment.calendarId, appointment.title, appointment.type, appointment.location, "
 //                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
 //                    + "FROM appointment, customer "
 //                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
 //                    + "ORDER BY `start`");
-
-
-            pst.setString(1, currentUser.getUserName());
-            ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-
-                Timestamp sStart = rs.getTimestamp("appointment.start");
-                Timestamp sEnd = rs.getTimestamp("appointment.end");
-                ZonedDateTime newZoneStart = sStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
-                ZonedDateTime newZoneEnd = sEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
-                ZonedDateTime newLocalStart = newZoneStart.withZoneSameInstant(newZoneId);
-                ZonedDateTime newLocalEnd = newZoneEnd.withZoneSameInstant(newZoneId);
-
-                String sAppointmentId = rs.getString("appointment.appointmentId");
-                String sTitle = rs.getString("appointment.title");
-                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
-                Barber sBarber = new Barber(rs.getInt("appointment.barberId"), rs.getString("barber.barberName"));
-                Calendar sCalendar = new Calendar(rs.getInt("appointment.calendarId"), rs.getString("calendar.name"));
-                String sUser = rs.getString("appointment.createdBy");
-                String sType = rs.getString("appointment.type");
-                String sLocation = rs.getString("appointment.location");
-
-                schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dtformat), newLocalEnd.format(dtformat), sTitle, sType, sLocation, sCustomer, sUser, sBarber, sCalendar));
-                monthSet.add(newLocalStart.getMonth().name());
-
-            }
-
-        } catch (SQLException sqe) {
-            System.out.println("Check SQL exception");
-            sqe.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Exception error");
-        }
-
-        tblSchedule.getItems().setAll(schedule);
+//            
+////                "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
+////                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
+////                    + "FROM appointment, customer "
+////                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
+////                    + "ORDER BY `start`");
+//
+//
+//            pst.setString(1, currentUser.getUserName());
+//            ResultSet rs = pst.executeQuery();
+//
+//            while (rs.next()) {
+//
+//                Timestamp sStart = rs.getTimestamp("appointment.start");
+//                Timestamp sEnd = rs.getTimestamp("appointment.end");
+//                ZonedDateTime newZoneStart = sStart.toLocalDateTime().atZone(ZoneId.of("UTC"));
+//                ZonedDateTime newZoneEnd = sEnd.toLocalDateTime().atZone(ZoneId.of("UTC"));
+//                ZonedDateTime newLocalStart = newZoneStart.withZoneSameInstant(newZoneId);
+//                ZonedDateTime newLocalEnd = newZoneEnd.withZoneSameInstant(newZoneId);
+//
+//                int sAppointmentId = rs.getInt("appointment.appointmentId");
+//                String sTitle = rs.getString("appointment.title");
+//                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
+//                Barber sBarber = new Barber(rs.getInt("appointment.barberId"), rs.getString("barber.barberName"));
+//                Calendar sCalendar = new Calendar(rs.getInt("appointment.calendarId"), rs.getString("calendar.name"));
+//                String sUser = rs.getString("appointment.createdBy");
+//                String sType = rs.getString("appointment.type");
+//                String sLocation = rs.getString("appointment.location");
+//
+//                schedule.add(new Appointment(sAppointmentId, newLocalStart.format(dtformat), newLocalEnd.format(dtformat), sTitle, sType, sLocation, sCustomer, sUser, sBarber, sCalendar));
+//                monthSet.add(newLocalStart.getMonth().name());
+//
+//            }
+//
+//        } catch (SQLException sqe) {
+//            System.out.println("Check SQL exception");
+//            sqe.printStackTrace();
+//        } catch (Exception e) {
+//            System.out.println("Exception error");
+//        }
+//
+//        tblSchedule.getItems().setAll(schedule);
     }
 }

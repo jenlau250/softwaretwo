@@ -45,8 +45,7 @@ public class MainScreenController {
     @FXML
     private JFXButton btnExit;
 
-
-    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
+     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     private final ZoneId newzid = ZoneId.systemDefault();
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     ObservableList<Appointment> reminderList;
@@ -73,7 +72,8 @@ public class MainScreenController {
             this.mainApp.showCustomerScreen(this.currentUser);
         });
         btnAppt.setOnAction((evt) -> {
-            this.mainApp.showAppointmentScreen(this.currentUser);
+            this.mainApp.showAppointmentListScreen(this.currentUser);
+//            this.mainApp.showAppointmentScreen(this.currentUser);
         });
         btnReports.setOnAction((evt) -> {
             this.mainApp.showReportScreen(this.currentUser);
@@ -81,7 +81,6 @@ public class MainScreenController {
         btnExit.setOnAction((evt) -> {
             this.mainApp.showLoginScreen2();
         });
-
 
     }
 
@@ -154,10 +153,6 @@ public class MainScreenController {
 //        }
 //    }
 //    
-     
-    
-    
+
+
 }
-
-
-
