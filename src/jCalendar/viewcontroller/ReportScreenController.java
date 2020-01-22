@@ -10,7 +10,6 @@ import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
 import jCalendar.model.Customer;
-import jCalendar.model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +43,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class ReportScreenController {
 
     private jCalendar mainApp;
-    private User currentUser;
+//    private User currentUser;
     private MenuItem menu;
 
     @FXML
@@ -110,11 +109,13 @@ public class ReportScreenController {
 
     /**
      * Initializes the controller class.
+     *
+     * @param mainApp
      */
-    public void setReportScreen(jCalendar mainApp, User currentUser) {
+    public void setMainController(jCalendar mainApp) {
 
         this.mainApp = mainApp;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
 
         populateApptTypeList();
         populateCustReport();
@@ -197,7 +198,7 @@ public class ReportScreenController {
 ////                + "FROM customer, address, city "
 ////                + "WHERE customer.addressId = customer.customerPhoneId "
 ////                + "AND address.cityId = city.cityId "
-////                + "GROUP BY city"); 
+////                + "GROUP BY city");
 //
 //            ResultSet rs = pst.executeQuery();
 //
@@ -229,7 +230,7 @@ public class ReportScreenController {
 //                    + "FROM appointment, customer "
 //                    + "WHERE appointment.customerId = customer.customerId AND appointment.`start` >= CURRENT_DATE AND appointment.createdBy = ?"
 //                    + "ORDER BY `start`");
-//            
+//
 ////                "SELECT appointment.appointmentId, appointment.customerId, appointment.title, appointment.type, appointment.location, "
 ////                    + "appointment.`start`, appointment.`end`, customer.customerId, customer.customerName, appointment.createdBy "
 ////                    + "FROM appointment, customer "

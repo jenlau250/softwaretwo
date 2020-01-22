@@ -11,9 +11,9 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
-import jCalendar.dao.Query;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
+import jCalendar.model.Barber;
 import jCalendar.model.Customer;
 import jCalendar.model.Pet;
 import jCalendar.model.User;
@@ -22,7 +22,6 @@ import jCalendar.utilities.Loggerutil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -30,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,11 +72,11 @@ public class Appointment_AddController {
     @FXML
     private JFXComboBox<String> comboType;
     @FXML
-    private JFXComboBox<String> comboBarber;
+    private JFXComboBox<Barber> comboBarber;
     @FXML
     private JFXTextField txtTitle;
     @FXML
-    private JFXTextField txtLocation;
+    private JFXTextField txtDesc;
     @FXML
     private ImageView btnClose;
 
@@ -96,14 +94,14 @@ public class Appointment_AddController {
     private JFXComboBox<Pet> comboPet;
     @FXML
     private VBox vBoxCustomer;
-    @FXML
-    private JFXTextField txtNewCustomer;
-
-    @FXML
-    private JFXTextField txtPhone;
-
-    @FXML
-    private JFXTextField txtEmail;
+//    @FXML
+//    private JFXTextField txtNewCustomer;
+//
+//    @FXML
+//    private JFXTextField txtPhone;
+//
+//    @FXML
+//    private JFXTextField txtEmail;
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
@@ -111,7 +109,157 @@ public class Appointment_AddController {
     private ObservableList<Pet> selectedPets = FXCollections.observableArrayList();
     private ObservableList<Customer> customers = FXCollections.observableArrayList();
 
-    Customer customer;
+//    Customer customer;
+    /**
+     * Initializes the controller class.
+     *
+     * @param mainApp
+     */
+    public void setMainController(jCalendar mainApp) {
+
+        this.mainApp = mainApp;
+
+        clearFields();
+        initFields();
+
+        //Add String converter to convert barber and customer objects
+        comboBarber
+                .setConverter(new StringConverter<Barber>() {
+                    @Override
+                    public String toString(Barber object) {
+                        if (object == null) {
+                            return null;
+                        } else {
+                            return object.nameProperty().get();
+                        }
+                    }
+
+                    @Override
+                    public Barber fromString(String string) {
+//                        return null;
+                        return comboBarber.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
+                    }
+                });
+
+        comboExistCustomer.setConverter(new StringConverter<Customer>() {
+            @Override
+            public String toString(Customer object) {
+                if (object == null) {
+                    return null;
+                } else {
+                    return object.customerNameProperty().get();
+                }
+            }
+
+            @Override
+            public Customer fromString(String string) {
+                return null;
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        comboPet.setConverter(new StringConverter<Pet>() {
+            @Override
+            public String toString(Pet object) {
+                if (object == null) {
+                    return null;
+                } else {
+                    return object.nameProperty().get();
+                }
+            }
+
+            @Override
+            public Pet fromString(String string) {
+                return null;
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        //POTENTIAL ISSUE: setting combobox could return null pointer exception
+        //solved by moving initializing data to setMainController() method
+        //Update Pet Combo based on current selection of Existing Customer
+        comboExistCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                System.out.println("old value is: " + oldValue);
+            } else {
+                comboPet.setItems(getPetsByCustomer(newValue.customerIdProperty().get()));
+//                System.out.println("newValue is " + newValue);
+//                int customerId = comboExistCustomer.getValue().customerIdProperty().get();
+//                System.out.println("printing customerId " + customerId);
+
+            }
+        });
+
+        //Add Customer radio button listener
+        //set default
+//        choiceExistingCustomer.setSelected(true);
+//        comboExistCustomer.setVisible(true);
+//        txtNewCustomer.setVisible(false);
+//
+//        txtNewCustomer.managedProperty().bind(txtNewCustomer.visibleProperty());
+        //HIDE - test if this is causing combo box issues
+//        comboExistCustomer.managedProperty().bind(comboExistCustomer.visibleProperty());
+//
+//        choiceExistingCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
+//            if (isSelected) {
+//                comboExistCustomer.setVisible(true);
+//                txtNewCustomer.setVisible(false);
+//                System.out.println("existing customer selected");
+//            }
+//        });
+//
+//        choiceNewCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
+//            if (isSelected) {
+//                comboExistCustomer.setVisible(false);
+//                txtNewCustomer.setVisible(true);
+//                System.out.println("new customer selected");
+//            }
+//        });
+        //Set close button to exit
+        btnClose.setOnMouseClicked((evt) -> {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.close();
+        });
+    }
+
+    @FXML
+    private void clearFields() {
+
+//        comboExistCustomer.setValue(null);
+        comboBarber.getItems().clear();
+        comboType.getItems().clear();
+        comboExistCustomer.getItems().clear();
+        comboStart.getItems().clear();
+        comboEnd.getItems().clear();
+        comboPet.getItems().clear();
+        txtDesc.clear();
+        txtTitle.clear();
+        datePicker.setValue(LocalDate.now());
+    }
+
+    @FXML
+    private void initFields() {
+
+        //CLEAR AND INITIALIZE DEFAULT FIELDS
+//        customers.clear();
+//        customers.addAll(mainApp.getCustomerData());
+//        comboExistCustomer.setItems(mainApp.getCustomerData());
+        comboExistCustomer.getItems().addAll(createCustomerList());
+//        populatePetsLists();
+
+//if not null, change customer list
+//
+//        getPetsByCustomer(customerId);
+        comboBarber.setItems(mainApp.getBarberData());
+
+        //Appointment Type dropdown
+        comboType.setItems(Appointment.getApptTypes());
+
+        //Start and End Times dropdown
+        comboStart.setItems(Appointment.getDefaultStartTimes());
+        comboEnd.setItems(Appointment.getDefaultEndTimes());
+
+    }
 
     @FXML
     void handleApptCancel(ActionEvent event) {
@@ -123,6 +271,7 @@ public class Appointment_AddController {
     @FXML
     void handleApptSave(ActionEvent event) {
 
+        //HANDLE NULL POINTER EXCEPTION AT DATETIMEUTIL
         //Get Fields
         LocalDate localDate = datePicker.getValue();
         String startTime = comboStart.getSelectionModel().getSelectedItem();
@@ -162,128 +311,37 @@ public class Appointment_AddController {
         }
     }
 
-    /**
-     * Initializes the controller class.
-     *
-     * @param mainApp
-     * @param currentUser
-     */
-    public void setMainController(jCalendar mainApp, User currentUser) {
+    private void populatePetsLists() {
 
-        this.mainApp = mainApp;
-        this.currentUser = currentUser;
-
-        System.out.println("Current user for Appt ADD Screen " + currentUser);
-        //*** Instantiate DBHandler object *******************
-//        databaseHandler = new DBConnection();
-        //****************************************************
-
-        topLabel.setText("Add a New Appointment");
-
-        btnClose.setOnMouseClicked((evt) -> {
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            stage.close();
-        });
-
-        populateCustomerCombo();
-//        populatePetsLists();
-
-        //Get the list of appointment types
-        comboType.setItems(Appointment.getApptTypes());
-        comboStart.setItems(Appointment.getDefaultStartTimes());
-        comboEnd.setItems(Appointment.getDefaultEndTimes());
-
-        //toggle new or customer button listener
-        //set default
-        choiceExistingCustomer.setSelected(true);
-
-        comboExistCustomer.setVisible(true);
-        txtNewCustomer.setVisible(false);
-
-        txtNewCustomer.managedProperty().bind(txtNewCustomer.visibleProperty());
-        comboExistCustomer.managedProperty().bind(comboExistCustomer.visibleProperty());
-
-        choiceExistingCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
-            if (isSelected) {
-                comboExistCustomer.setVisible(true);
-                txtNewCustomer.setVisible(false);
-                System.out.println("existing customer selected");
-            }
-        });
-
-        choiceNewCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
-            if (isSelected) {
-                comboExistCustomer.setVisible(false);
-                txtNewCustomer.setVisible(true);
-                System.out.println("new customer selected");
-            }
-        });
-
-    }
-
-    @FXML
-    private void populateCustomerCombo() {
-//        comboExistCustomer.setValue(null);
-//        comboExistCustomer.getItems().clear();
-
-        Query.makeQuery("SELECT customerId, customerName FROM customer");
-        ResultSet rs = Query.getResult();
-
-        try {
-            while (rs.next()) {
-                customers.add(new Customer(rs.getInt("customerId"), rs.getString("customerName")));
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "SQL Exception with populating country combo box.");
-        }
-
-        comboExistCustomer.setItems(customers);
-
-        comboExistCustomer.setConverter(new StringConverter<Customer>() {
-            @Override
-            public String toString(Customer object) {
-                if (object == null) {
-                    return null;
-                } else {
-                    return object.customerNameProperty().get();
-                }
-            }
-
-            @Override
-            public Customer fromString(String string) {
-                return null;
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
-    }
-
-//    private void populatePetsLists() {
-//
-//        int selectedPetId = comboPet.getValue().getPetId();
-//        System.out.println(selectedPetId);
-//
-//        String sql = "SELECT pet.petId, pet.petName "
-//                + "FROM pet "
-//                + "WHERE petId = \"" + selectedPetId + "\"";
-//
-//        Query.makeQuery(sql);
-//        System.out.println("Sql statement is "+ sql);
-//        ResultSet result = Query.getResult();
-//        
-//        //clear and load pet box
+        //clear and load pet box
 //        comboPet.getItems().clear();
 //
-//        try {
-//            while (result.next()) {
-//                selectedPets.add(new Pet(result.getInt("pet.petId"), result.getString("pet.petName")));
-//            }
-//        } catch (SQLException ex) {
-//            logger.log(Level.SEVERE, "SQL Exception with populating pet combo box.");
-//        }
-//        // Set city options in cb.
-//        comboPet.setItems(selectedPets);
+//        int selCustomerId = comboExistCustomer.getValue().customerIdProperty().get();
+//        System.out.println(selCustomerId);
 //
-//    }
+////        comboPet.getItems().removeIf((c) -> !Utils.isEmpty());
+//        //if combo box is not null
+//        comboPet.getItems().addAll(getPetsByCustomer(selCustomerId));
+        //       comboPet.setItems(getPetsByCustomer(selCustomerId));
+        //        String sql = "SELECT pet.petId, pet.petName "
+        //                + "FROM pet "
+        //                + "WHERE petId = \"" + selectedPetId + "\"";
+        //
+        //        Query.makeQuery(sql);
+        //        System.out.println("Sql statement is " + sql);
+        //        ResultSet result = Query.getResult();
+//                / //
+        //        try {
+        //            while (result.next()) {
+        //                selectedPets.add(new Pet(result.getInt("pet.petId"), result.getString("pet.petName")));
+        //            }
+        //        } catch (SQLException ex) {
+        //            logger.log(Level.SEVERE, "SQL Exception with populating pet combo box.");
+        //        }
+        // Set city options in cb.
+        //        comboPet.setItems(selectedPets);
+    }
+
     private void updateAppointment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -311,62 +369,110 @@ public class Appointment_AddController {
         String stringStart = dateFormatter.format(startsql);
         String stringEnd = dateFormatter.format(endsql);
 
-        String tTitle = txtTitle.getText();
-        String tType = comboType.getValue();
-        String tLocation = txtLocation.getText();
-        Customer sCustomer = comboExistCustomer.getValue();
-        String sContact = currentUser.getUserName(); //CHANGE LATER
+        String sType = comboType.getValue();
+        //String sBarber = comboBarber.getValue().toString();
+        int sBarber = comboBarber.getValue().barberIdProperty().get();
+        String sTitle = txtTitle.getText();
+        String sDesc = txtDesc.getText();
+        int sCustomer = comboExistCustomer.getValue().customerIdProperty().get();
+        int sPet = comboPet.getValue().petIdProperty().get();
+//        String sContact = currentUser.getUserName(); //CHANGE LATER
+
+        System.out.println("Printing record to save: "
+                + " Title " + sTitle + " "
+                + " Desc " + sDesc + " "
+                + " Type " + sType + " "
+                + " Barber " + sBarber + " " + comboBarber.getValue().nameProperty().get()
+                + " Customer " + sCustomer + " " + comboExistCustomer.getValue().customerNameProperty().get()
+                + " Pet " + sPet + " " + comboPet.getValue().nameProperty().get()
+        );
+
+        //RESULT:
+//           [java] Printing record to save:  Title Test  Desc test  Type Extended
+//Barber StringProperty [value: Cutty]
+//Customer Customer id 2 name StringProperty [value: Sam] phone StringProperty [value: null] email StringProperty [value: null]
+//Pet jCalendar.model.Pet@654b8b25
+//        Appointment appt = new Appointment(String sTitle, stringStart, stringEnd, sDesc, sType, sBarber, sCustomer);
         //Print appointment times
         System.out.println("Appointment times to save :" + stringStart + " and " + stringEnd);
-
         try {
 
-            String query = "INSERT INTO appointment "
-                    + "(customerId, title, type, location, month, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
-            PreparedStatement ps = DBConnection.getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = DBConnection.getConn().prepareStatement("INSERT INTO appointment "
+                    + "(customerId, barberId, petId, title, start, end, description, type, createDate, createdBy, lastUpdate, lastUpdateBy)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)");
 
-            ps.setInt(1, comboExistCustomer.getValue().getCustomerId());
-            ps.setString(2, txtTitle.getText());
-            ps.setString(3, comboType.getValue());
-            ps.setString(4, txtLocation.getText());
-            ps.setString(5, "");
-            ps.setString(6, "");
-            ps.setString(7, stringStart);
-            ps.setString(8, stringEnd);
-            ps.setString(9, currentUser.getUserName());
-            ps.setString(10, currentUser.getUserName());
-            ps.executeUpdate();
+            pst.setInt(1, sCustomer);
+            pst.setInt(2, sBarber);
+            pst.setInt(3, sPet);
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int last_inserted_id = rs.getInt(1);
+            pst.setString(4, sTitle);
 
-//            if (result == 1) {
-                logger.log(Level.INFO, "User {0} saved new appointment for {1}", new Object[]{currentUser, comboExistCustomer.getValue().getCustomerName()});
-                //Need to create new Appointment and add to appointmentList observable list
+            pst.setTimestamp(5, startsql);
+            pst.setTimestamp(6, endsql);
 
-//                mainController.populateAppointments();
-//                mainController.updateApptData(new Appointment(
-//                        String.valueOf(last_inserted_id),
-//                        stringStart,
-//                        stringEnd,
-//                        tTitle,
-//                        tType,
-//                        tLocation,
-//                        sCustomer,
-//                        sContact));
-                Stage stage = (Stage) rootPane.getScene().getWindow();
-                stage.close();
-//                AppointmentScreenController.showAppointmentScreen(currentUser);
+            pst.setString(7, sDesc);
+            pst.setString(8, sType);
+            pst.setString(9, currentUser.getUserName());
+            pst.setString(10, currentUser.getUserName());
+            int result = pst.executeUpdate();
+            if (result == 1) {//one row was affected; namely the one that was inserted!
+                System.out.println("YAY! New Appointment Save");
+//                System.out.println("saved " + comboCustomer.getValue().getCustomerName());
 //                mainApp.showAppointmentScreen(currentUser);
+
             } else {
-                logger.log(Level.WARNING, "Appointment save was unsuccessful");
+                System.out.println("BOO! New Appointment Save");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
+//        try {
+//
+//            String query = "INSERT INTO appointment "
+//                    + "(customerId, title, type, location, month, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)"
+//                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)";
+//            PreparedStatement ps = DBConnection.getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//
+//            ps.setInt(1, comboExistCustomer.getValue().getCustomerId());
+//            ps.setString(2, txtTitle.getText());
+//            ps.setString(3, comboType.getValue());
+//            ps.setString(4, txtDesc.getText());
+//            ps.setString(5, "");
+//            ps.setString(6, "");
+//            ps.setString(7, stringStart);
+//            ps.setString(8, stringEnd);
+//            ps.setString(9, currentUser.getUserName());
+//            ps.setString(10, currentUser.getUserName());
+//            ps.executeUpdate();
+//
+//            ResultSet rs = ps.getGeneratedKeys();
+//            if (rs.next()) {
+//                int last_inserted_id = rs.getInt(1);
+//
+////            if (result == 1) {
+//                logger.log(Level.INFO, "User {0} saved new appointment for {1}", new Object[]{currentUser, comboExistCustomer.getValue().getCustomerName()});
+//                //Need to create new Appointment and add to appointmentList observable list
+//
+////                mainController.populateAppointments();
+////                mainController.updateApptData(new Appointment(
+////                        String.valueOf(last_inserted_id),
+////                        stringStart,
+////                        stringEnd,
+////                        tTitle,
+////                        tType,
+////                        tLocation,
+////                        sCustomer,
+////                        sContact));
+//                Stage stage = (Stage) rootPane.getScene().getWindow();
+//                stage.close();
+////                AppointmentScreenController.showAppointmentScreen(currentUser);
+////                mainApp.showAppointmentScreen(currentUser);
+//            } else {
+//                logger.log(Level.WARNING, "Appointment save was unsuccessful");
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
 //    }
@@ -398,7 +504,73 @@ public class Appointment_AddController {
     //constructor is called first, The initialize method is called after all @FXML annotated members have been injected
     @FXML
     public void initialize() {
-//        tableView.getItems().addAll(getDataFromSource());
 
     }
+
+    private ObservableList<Pet> getPetsByCustomer(int customerId) {
+
+        ObservableList<Pet> petList = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                    "SELECT pet.petId, petName, petType, petDescription "
+                    + "FROM customer, pet "
+                    + "WHERE customer.petId = pet.petId "
+                    + "AND customerId = \"" + customerId + "\""
+            );
+
+            System.out.println(ps);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("petId");
+                String name = rs.getString("petName");
+                String type = rs.getString("petType");
+                String desc = rs.getString("petDescription");
+
+                petList.add(new Pet(id, name, type, desc));
+
+            }
+
+        } catch (SQLException sqe) {
+            System.out.println("Check SQL Exception with getting pets by customer");
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Check Exception");
+        }
+//        comboPet.setItems(petList);
+        return petList;
+
+    }
+
+    private ObservableList<Customer> createCustomerList() {
+        ObservableList<Customer> customers2 = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                    "SELECT customerId, customerName "
+                    + "FROM customer"
+            );
+
+            System.out.println(ps);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("customerId");
+                String name = rs.getString("customerName");
+
+                customers2.add(new Customer(id, name));
+
+            }
+
+        } catch (SQLException sqe) {
+            System.out.println("Check SQL Exception with getting pets by customer");
+            sqe.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Check Exception");
+        }
+        return customers2;
+
+    }
+
 }

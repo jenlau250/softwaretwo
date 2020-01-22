@@ -24,6 +24,7 @@ public class Appointment {
     private int appointmentId;
     private int customerId;
     private int barberId;
+//    private LocalDate startDate;
 
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
@@ -44,21 +45,53 @@ public class Appointment {
     private Barber barber;
     private String calendar;
 
+//    public void setStartDate(ObjectProperty<LocalDateTime> start2) {
+//        this.start2.set(dateFormatter.format(start2);
+//    }
     //FOR TABLEVIEW
-    public Appointment(int appointmentId, int customerId, String title, String description, LocalDateTime start, LocalDateTime end, Barber barber) {
-        this.appointmentId = appointmentId;
-//        this.barberId = barberId;
-        this.customerId = customerId;
-        this.title.set(title);
-        this.description.set(description);
-        this.start2.set(start);
-        this.end2.set(end);
-        this.barber = barber;
-    }
-
+//    public Appointment(int appointmentId, int customerId, String title, String description, LocalDateTime start, LocalDateTime end, Barber barber) {
+//        this.appointmentId = appointmentId;
+////        this.barberId = barberId;
+//        this.customerId = customerId;
+//        this.title.set(title);
+//        this.description.set(description);
+//        this.start2.set(start);
+//        this.end2.set(end);
+//        this.barber = barber;
+//    }
     public Appointment(int customerId, String title) {
         this.customerId = customerId;
         this.title.set(title);
+
+    }
+
+//current tableview
+    public Appointment(int appointmentId, String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer) {
+
+        this.appointmentId = appointmentId;
+//        this.customerId = customerId;
+        this.title.set(title);
+        this.start2.set(start);
+        this.end2.set(end);
+        this.description.set(desc);
+        this.type = type;
+        this.barber = barber;
+        this.customer = customer;
+
+    }
+
+    //for saving
+    public Appointment(String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer) {
+
+//        this.appointmentId = appointmentId;
+//        this.customerId = customerId;
+        this.title.set(title);
+        this.start2.set(start);
+        this.end2.set(end);
+        this.description.set(desc);
+        this.type = type;
+        this.barber = barber;
+        this.customer = customer;
 
     }
 
@@ -187,6 +220,7 @@ public class Appointment {
         this.customer = customer;
         this.pet = pet;
     }
+//
 //    public int getAppointmentId() {
 //        return appointmentId;
 //    }
@@ -235,6 +269,10 @@ public class Appointment {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public Barber getBarber() {
+        return barber;
     }
 
     public void setCustomer(Customer customer) {
@@ -293,10 +331,6 @@ public class Appointment {
         return endTimes;
     }
 
-    public Barber getBarber() {
-        return barber;
-    }
-
     public void setBarber(Barber barber) {
         this.barber = barber;
     }
@@ -309,12 +343,11 @@ public class Appointment {
         this.calendar = calendar;
     }
 
-    public Pet getPet() {
-        return pet;
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
-
+//    public Pet getPet() {
+//        return pet;
+//    }
+//
+//    public void setCustomer(Customer customer) {
+//        this.customer = customer;
+//    }
 }

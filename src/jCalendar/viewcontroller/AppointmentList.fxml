@@ -15,12 +15,13 @@
                   <TableColumn fx:id="colDate" prefWidth="75.0" text="Date" />
                   <TableColumn fx:id="colStart" prefWidth="75.0" text="Start" />
                   <TableColumn fx:id="colEnd" prefWidth="75.0" text="End" />
+                <TableColumn fx:id="colTitle" prefWidth="70.0" text="Title" />
+                  <TableColumn fx:id="colType" prefWidth="75.0" text="Type" />
+                  <TableColumn fx:id="colBarber" prefWidth="75.0" text="Barber" />
                 <TableColumn fx:id="colCusName" text="Name" />
                   <TableColumn fx:id="colPhone" prefWidth="75.0" text="Phone" />
                   <TableColumn fx:id="colEmail" prefWidth="75.0" text="Email" />
-                  <TableColumn fx:id="colBarber" prefWidth="75.0" text="Barber" />
                   <TableColumn fx:id="colPet" prefWidth="75.0" text="Pet" />
-                <TableColumn fx:id="colTitle" prefWidth="70.0" text="Title" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

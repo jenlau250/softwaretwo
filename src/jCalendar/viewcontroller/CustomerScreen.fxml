@@ -82,10 +82,6 @@
                                  <padding>
                                     <Insets right="10.0" />
                                  </padding></Label>
-                              <Label contentDisplay="TOP" text="Barber" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                                 <padding>
-                                    <Insets right="10.0" />
-                                 </padding></Label>
                               <Label contentDisplay="TOP" text="Notes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                                  <padding>
                                     <Insets right="10.0" />
@@ -95,7 +91,6 @@
                                     <Insets right="10.0" />
                                  </padding></Label>
                               <ComboBox fx:id="comboPet" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                              <ComboBox fx:id="comboBarber" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label fx:id="labelCusID" text="Label" GridPane.columnIndex="2" />
                               <Label contentDisplay="TOP" text="Pet Type" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                                  <padding>

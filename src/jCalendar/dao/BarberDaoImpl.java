@@ -19,7 +19,7 @@ import javafx.collections.ObservableList;
  */
 public class BarberDaoImpl {
     
-     public static ObservableList<Barber> addBarbers() {
+     public static ObservableList<Barber> loadBarberData() {
 
         ObservableList<Barber> barberList = FXCollections.observableArrayList();
 

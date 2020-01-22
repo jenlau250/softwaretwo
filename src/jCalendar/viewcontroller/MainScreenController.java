@@ -45,7 +45,7 @@ public class MainScreenController {
     @FXML
     private JFXButton btnExit;
 
-     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
     private final ZoneId newzid = ZoneId.systemDefault();
     private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     ObservableList<Appointment> reminderList;
@@ -60,23 +60,23 @@ public class MainScreenController {
      * @param mainApp
      * @param currentUser
      */
-    public void setMenu(jCalendar mainApp, User currentUser) throws FileNotFoundException {
+    public void setMenu(jCalendar mainApp) throws FileNotFoundException {
         this.mainApp = mainApp;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
         reminderList = FXCollections.observableArrayList();
 
 //        populateReminderList();
         reminder();
 
         btnCustomers.setOnAction((evt) -> {
-            this.mainApp.showCustomerScreen(this.currentUser);
+            this.mainApp.showCustomerScreen();
         });
         btnAppt.setOnAction((evt) -> {
-            this.mainApp.showAppointmentListScreen(this.currentUser);
+            this.mainApp.showAppointmentListScreen();
 //            this.mainApp.showAppointmentScreen(this.currentUser);
         });
         btnReports.setOnAction((evt) -> {
-            this.mainApp.showReportScreen(this.currentUser);
+            this.mainApp.showReportScreen();
         });
         btnExit.setOnAction((evt) -> {
             this.mainApp.showLoginScreen2();
@@ -152,7 +152,5 @@ public class MainScreenController {
 //            e.printStackTrace();
 //        }
 //    }
-//    
-
-
+//
 }

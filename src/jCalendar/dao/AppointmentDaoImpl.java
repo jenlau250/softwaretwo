@@ -34,32 +34,63 @@ public class AppointmentDaoImpl {
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
-    public static ObservableList<Appointment> addAppointments2() {
+    public static ObservableList<Appointment> loadApptData() {
 
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
         try {
+
+            DBConnection.init();
             PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                    "SELECT appointmentId, customerId, title, description, start, end, "
-                            + "barber.barberId, barber.barberName, barber.notes, barber.active, barber.hireDate "
-                            + "FROM appointment, barber "
-                            + "WHERE appointment.barberId = barber.barberId");
+                    "SELECT * FROM appointment, barber, customer, pet "
+                    + "WHERE appointment.barberId = barber.barberId "
+                    + "AND appointment.customerId = customer.customerId "
+                    + "AND customer.petId = pet.petId");
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 int appointmentId = rs.getInt("appointmentId");
-                int customerId = rs.getInt("customerId");
+//                int customerId = rs.getInt("customerId");
+//                int barberId = rs.getInt("barberId");
                 String title = rs.getString("title");
-                String desc = rs.getString("description");
+
                 LocalDateTime start = rs.getObject("start", LocalDateTime.class);
                 LocalDateTime end = rs.getObject("end", LocalDateTime.class);
-                Barber barber = new Barber(rs.getInt("barber.barberId"), rs.getString("barber.barberName"), rs.getString("barber.notes")
-                , rs.getString("barber.active"), rs.getObject("barber.hireDate", LocalDate.class));
-                
-                apptList.add(new Appointment(appointmentId, customerId, title, desc, start, end, barber));
+                String desc = rs.getString("description");
+                String type = rs.getString("type");
+
+                Barber barber = new Barber(
+                        rs.getInt("barber.barberId"),
+                        rs.getString("barber.barberName"),
+                        rs.getString("barber.notes"),
+                        rs.getString("barber.active"),
+                        rs.getObject("barber.hireDate", LocalDate.class)
+                );
+
+//                Pet pet = new Pet(
+//                        rs.getInt("pet.petId"),
+//                        rs.getString("pet.petName"),
+//                        rs.getString("pet.petType"),
+//                        rs.getString("pet.petDescription")
+//                );
+                Customer customer = new Customer(
+                        rs.getInt("customer.customerId"),
+                        rs.getString("customerName"),
+                        rs.getString("customerPhone"),
+                        rs.getString("customerEmail"),
+                        new Pet(
+                                rs.getInt("pet.petId"),
+                                rs.getString("pet.petName"),
+                                rs.getString("pet.petType"),
+                                rs.getString("pet.petDescription"))
+                );
+
+//                apptList.add(new Appointment(title, start, end, desc, type, barber, customer, pet));
+                apptList.add(new Appointment(appointmentId, title, start, end, desc, type, barber, customer));
 
             }
+            DBConnection.closeConnection();
 
         } catch (SQLException sqe) {
             System.out.println("Check SQL Exception with add Appointments 2");

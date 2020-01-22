@@ -9,8 +9,8 @@ import jCalendar.dao.CustomerDaoImpl;
 import jCalendar.dao.DBConnection;
 import jCalendar.dao.Query;
 import jCalendar.jCalendar;
-import jCalendar.model.Barber;
 import jCalendar.model.Customer;
+import jCalendar.model.CustomerPets;
 import jCalendar.model.Pet;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
@@ -81,8 +81,6 @@ public class CustomerScreenController {
 
     @FXML
     private ComboBox<Pet> comboPet;
-    @FXML
-    private ComboBox<Barber> comboBarber;
 
     @FXML
     private ComboBox<String> comboPetType;
@@ -91,42 +89,14 @@ public class CustomerScreenController {
     private TextField txtPetDescription;
 
     private ObservableList<Customer> Customers = FXCollections.observableArrayList();
+    private ObservableList<CustomerPets> customerPets = FXCollections.observableArrayList();
     private ObservableList<Pet> Pets = FXCollections.observableArrayList(); //Cities
     private ObservableList<Pet> selectedPets = FXCollections.observableArrayList(); //selectedCountries
-    private ObservableList<Barber> barbers = FXCollections.observableArrayList(); //Countries
     private boolean editMode;
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     public CustomerScreenController() {
-
-    }
-
-    protected ObservableList<Barber> populateBarbers() {
-
-        int barberId;
-        String barberName;
-
-        ObservableList<Barber> barberList = FXCollections.observableArrayList();
-        try (
-                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                        "SELECT barber.barberId, barber.barberName "
-                        + "FROM barber, appointment "
-                        + "WHERE barber.barberId = appointment.barberId"
-                );  ResultSet rs = ps.executeQuery();) {
-
-                    while (rs.next()) {
-                        barberId = rs.getInt("barber.barberId");
-                        barberName = rs.getString("barber.barberName");
-                        barberList.add(new Barber(barberId, barberName));
-                    }
-                } catch (SQLException sqe) {
-                    System.out.println("Check SQL Exception with populateBarbers");
-                    sqe.printStackTrace();
-                } catch (Exception e) {
-                    System.out.println("Check Exception");
-                }
-                return barberList;
 
     }
 
@@ -139,8 +109,8 @@ public class CustomerScreenController {
         try (
                  PreparedStatement ps = DBConnection.getConn().prepareStatement(
                         "SELECT pet.petId, pet.petName "
-                        + "FROM pet, customer "
-                        + "WHERE pet.petId = customer.petId"
+                        + "FROM pet, customerpets "
+                        + "WHERE pet.petId = customerpets.petId"
                 );  ResultSet rs = ps.executeQuery();) {
 
                     while (rs.next()) {
@@ -156,20 +126,6 @@ public class CustomerScreenController {
                 }
                 return petList;
 
-    }
-
-    @FXML
-    private void initializeBarber() {
-
-//        Query.makeQuery("SELECT barberName FROM barber");
-//        ResultSet rs = Query.getResult();
-//        try {
-//            while (rs.next()) {
-//                comboBarber.getItems().add(rs.getString(1));
-//            }
-//        } catch (SQLException ex) {
-//            logger.log(Level.SEVERE, "SQL Exception with populating barber combo box.");
-//        }
     }
 
     @FXML
@@ -195,9 +151,9 @@ public class CustomerScreenController {
         txtCustomerPhone.setText(selectedCustomer.getPhone());
         txtCustomerEmail.setText(selectedCustomer.getEmail());
 //	countryCombo.setValue(selectedCustomer.getPet());
-        comboPet.setValue(selectedCustomer.getPet());
-        comboPetType.setValue(selectedCustomer.getPet().getPetType());
-        txtPetDescription.setText(selectedCustomer.getPet().getPetDescription());
+//        comboPet.setValue(selectedCustomer.getPet());
+//        comboPetType.setValue(selectedCustomer.getPet().getPetType());
+//        txtPetDescription.setText(selectedCustomer.getPet().getPetDescription());
         txtCustomerStatus.setText(selectedCustomer.getActive());
         txtCustomerNotes.setText(selectedCustomer.getNotes());
         labelCusID.setText(String.valueOf(selectedCustomer.getCustomerId()));
@@ -235,7 +191,7 @@ public class CustomerScreenController {
                     .filter(response -> response == ButtonType.OK)
                     .ifPresent(response -> {
                         deleteCustomer(selectedCustomer);
-                        mainApp.showCustomerScreen(currentUser);
+                        mainApp.showCustomerScreen();
                     });
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -279,7 +235,7 @@ public class CustomerScreenController {
             } else {
                 saveNewCustomer();
             }
-            mainApp.showCustomerScreen(currentUser);
+            mainApp.showCustomerScreen();
         }
     }
 
@@ -316,17 +272,16 @@ public class CustomerScreenController {
      * @param mainApp
      * @param currentUser
      */
-    public void setCustomerScreen(jCalendar mainApp, User currentUser) {
+    public void setMainController(jCalendar mainApp) {
 
         this.mainApp = mainApp;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
 
         customerLabel.setText("Customer Details");
         colCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("phone")); //as named in Customer
 
-//        initializeBarber();
         initializePetTypes();
 
         // Query pet list and add to list
@@ -335,26 +290,12 @@ public class CustomerScreenController {
         comboPet.setConverter(new StringConverter<Pet>() {
             @Override
             public String toString(Pet object) {
-                return object.getPetName();
+                return object.nameProperty().get();
             }
 
             @Override
             public Pet fromString(String string) {
-                return comboPet.getItems().stream().filter(ap -> ap.getPetName().equals(string)).findFirst().orElse(null);
-            }
-        });
-
-        barbers = populateBarbers();
-        comboBarber.setItems(barbers);
-        comboBarber.setConverter(new StringConverter<Barber>() {
-            @Override
-            public String toString(Barber object) {
-                return object.getBarberName();
-            }
-
-            @Override
-            public Barber fromString(String string) {
-                return comboBarber.getItems().stream().filter(ap -> ap.getBarberName().equals(string)).findFirst().orElse(null);
+                return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
             }
         });
 
@@ -399,7 +340,6 @@ public class CustomerScreenController {
         txtCustomerEmail.setEditable(true);
         txtCustomerStatus.setEditable(true);
         txtCustomerNotes.setEditable(true);
-        comboBarber.setEditable(true);
         comboPet.setEditable(true);
         comboPetType.setEditable(true);
         txtPetDescription.setEditable(true);
@@ -411,8 +351,7 @@ public class CustomerScreenController {
         txtCustomerPhone.setEditable(false);
         txtCustomerEmail.setEditable(false);
         txtCustomerStatus.setEditable(false);
-        txtCustomerNotes.setEditable(false);
-        comboBarber.setEditable(false);
+        txtCustomerNotes.setEditable(false);;
         comboPet.setEditable(false);
         comboPetType.setEditable(false);
         txtPetDescription.setEditable(false);
@@ -423,7 +362,6 @@ public class CustomerScreenController {
         txtCustomerName.clear();
         txtCustomerPhone.clear();
         txtCustomerEmail.clear();
-        comboBarber.setValue(null);
         comboPet.setValue(null);
         txtCustomerStatus.clear();
         txtCustomerNotes.clear();
@@ -442,7 +380,7 @@ public class CustomerScreenController {
             PreparedStatement ps = DBConnection.getConn().prepareStatement("INSERT INTO pet "
                     + "(petName, petType, petDescription, createDate, createdBy, lastUpdate, lastUpdateBy) "
                     + " VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, comboPet.getValue().getPetName());
+            ps.setString(1, comboPet.getValue().nameProperty().get());
             ps.setString(2, comboPetType.getValue());
             ps.setString(3, txtPetDescription.getText());
             ps.setString(4, currentUser.getUserName());
@@ -499,33 +437,33 @@ public class CustomerScreenController {
 //                ps.setString(5, txtCustomerPhone.getText());
 //                ps.setString(6, currentUser.getUserName());
 //                ps.setString(7, labelCusID.getText());
-//                
+//
 //                int result = ps.executeUpdate();
-//                             
+//
 //                PreparedStatement psc = DBConnection.getConn().prepareStatement("UPDATE customer, address, city "
 //                + "SET customerName = ?, customer.lastUpdate = CURRENT_TIMESTAMP, customer.lastUpdateBy = ? "
 //                + "WHERE customer.customerId = ? AND customer.addressId = customer.customerPhoneId AND address.cityId = city.cityId");
-//            
+//
 //                psc.setString(1, txtCustomerName.getText());
 //                psc.setString(2, currentUser.getUserName());
 //                psc.setString(3, labelCusID.getText());
 //                int results = psc.executeUpdate();
-//                
+//
 //            } catch (SQLException ex) {
 //            ex.printStackTrace();
 //            }
 //    }
 //    public int getCountryId(String country, User currentUser) throws SQLException {
-//	
+//
 //	int countryId = 0;
-//	
+//
 //	String sqlstmt = "SELECT countryId FROM country WHERE country = ?";
 //
 //	try {
 //	    PreparedStatement ps = DBConnection.getConn().prepareStatement(sqlstmt);
 //	    ps.setString(1, country);
-//	    
-//	    
+//
+//
 //	    ResultSet countryIdResult = ps.executeQuery();
 //
 //	    if (countryIdResult.next()) {
@@ -570,7 +508,6 @@ public class CustomerScreenController {
         String phone = txtCustomerPhone.getText();
         String email = txtCustomerEmail.getText();
         Pet pet = comboPet.getValue();
-        Barber barber = comboBarber.getValue();
         String status = txtCustomerStatus.getText();
         String notes = txtCustomerNotes.getText();
         String petType = comboPetType.getValue();
@@ -616,7 +553,6 @@ public class CustomerScreenController {
                     + "Phone: " + phone + "\n"
                     + "Email: " + email + "\n"
                     + "Pet: " + pet + "\n"
-                    + "Barber: " + barber + "\n"
                     + "Status: " + status + "\n"
                     + "Notes: " + notes + "\n"
                     + "Pet Type: " + petType + "\n"

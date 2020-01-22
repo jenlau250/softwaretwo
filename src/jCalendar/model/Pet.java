@@ -20,11 +20,12 @@ public class Pet {
     private final StringProperty petName2 = new SimpleStringProperty();
     private final StringProperty petType2 = new SimpleStringProperty();
     private final StringProperty petDescription2 = new SimpleStringProperty();
+    private CustomerPets customerPet;
 
-    private int petId;
-    private String petName;
-    private String petType;
-    private String petDescription;
+//    private int petId;
+//    private String petName;
+//    private String petType;
+//    private String petDescription;
     private String image;
 
     //FOR TABLEVIEW
@@ -56,8 +57,8 @@ public class Pet {
     }
 
     public Pet(int petId, String petName) {
-        this.petId = petId;
-        this.petName = petName;
+        this.petId2.set(petId);
+        this.petName2.set(petName);
     }
 
 //    public Pet(int petId, String petName, String petType, String petDescription) {
@@ -66,47 +67,45 @@ public class Pet {
 //        this.petType = petType;
 //        this.petDescription = petDescription;
 //    }
-
-    public Pet(int petId, String petName, String petType, String petDescription, String image) {
-        this.petId = petId;
-        this.petName = petName;
-        this.petType = petType;
-        this.petDescription = petDescription;
-        this.image = image;
-    }
-
-    public int getPetId() {
-        return petId;
-    }
-
-    public void setPetId(int petId) {
-        this.petId = petId;
-    }
-
-    public String getPetName() {
-        return petName;
-    }
-
-    public void setPetName(String petName) {
-        this.petName = petName;
-    }
-
-    public String getPetType() {
-        return petType;
-    }
-
-    public void setPetType(String petType) {
-        this.petType = petType;
-    }
-
-    public String getPetDescription() {
-        return petDescription;
-    }
-
-    public void setPetDescription(String petDescription) {
-        this.petDescription = petDescription;
-    }
-
+//    public Pet(int petId, String petName, String petType, String petDescription, String image) {
+//        this.petId = petId;
+//        this.petName = petName;
+//        this.petType = petType;
+//        this.petDescription = petDescription;
+//        this.image = image;
+//    }
+//
+//    public int getPetId() {
+//        return petId;
+//    }
+//
+//    public void setPetId(int petId) {
+//        this.petId = petId;
+//    }
+//
+//    public String getPetName() {
+//        return petName;
+//    }
+//
+//    public void setPetName(String petName) {
+//        this.petName = petName;
+//    }
+//
+//    public String getPetType() {
+//        return petType;
+//    }
+//
+//    public void setPetType(String petType) {
+//        this.petType = petType;
+//    }
+//
+//    public String getPetDescription() {
+//        return petDescription;
+//    }
+//
+//    public void setPetDescription(String petDescription) {
+//        this.petDescription = petDescription;
+//    }
     public String getImage() {
         return image;
     }

@@ -16,12 +16,12 @@ import javafx.stage.Stage;
  *
  * @author Jen
  */
-public class AddApptLoader extends Application {
-    
+public class TempLoader extends Application {
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Appointment_Add.fxml"));
-        
+        Parent root = FXMLLoader.load(getClass().getResource("AppointmentList.fxml"));
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -33,7 +33,5 @@ public class AddApptLoader extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }
-
-

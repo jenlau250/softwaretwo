@@ -164,7 +164,7 @@ public class AppointmentScreenController {
                     .filter(response -> response == ButtonType.OK)
                     .ifPresent(response -> {
                         deleteAppointment(selAppt);
-                        mainApp.showAppointmentScreen(currentUser);
+                        mainApp.showAppointmentScreen();
                     }
                     );
         }
@@ -173,7 +173,7 @@ public class AppointmentScreenController {
     @FXML
     void handleApptAddNew(ActionEvent event) {
 
-        mainApp.showAppointmentAddScreen(currentUser);
+        mainApp.showAppointmentAddScreen();
 //        mainApp.showAppointmentAddScreen(currentUser);
     }
 
@@ -290,10 +290,10 @@ public class AppointmentScreenController {
      * @param mainApp
      * @param currentUser
      */
-    public void setAppointmentScreen(jCalendar mainApp, User currentUser) {
+    public void setMainController(jCalendar mainApp) {
 
         this.mainApp = mainApp;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
 
         tCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
         tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
@@ -345,7 +345,6 @@ public class AppointmentScreenController {
 //                return comboCustomer.getItems().stream().filter(ap -> ap.getCustomerName().equals(string)).findFirst().orElse(null);
 //            }
 //        });
-
         // // Listen for selection changes and show the appt details when changed.
         ApptTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showAppointmentDetails(newValue));
@@ -377,7 +376,7 @@ public class AppointmentScreenController {
         choiceWeekMonth.setItems(FXCollections.observableArrayList("Weekly", "Monthly"));
         choiceWeekMonth.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
-            // if the item of the list is changed 
+            // if the item of the list is changed
             public void changed(ObservableValue ov, Number value, Number new_value) {
                 LocalDate cbStartDate = currDate;
                 if (choiceWeekMonth.getSelectionModel().getSelectedIndex() == 0) {
@@ -492,7 +491,6 @@ public class AppointmentScreenController {
 //        return customerList;
 //
 //    }
-
     public void showAppointmentDetails(Appointment appointment) {
         editClicked = true;
         selectedAppt = appointment;
@@ -527,10 +525,10 @@ public class AppointmentScreenController {
 //                    + "appointment.start, "
 //                    + "appointment.end, "
 //                    + "appointment.createdBy "
-//                              
+//
 //                    + "customer.customerId, "
 //                    + "customer.customerName, "
-//                              
+//
 //                    + "FROM appointment, customer "
 //                    + "WHERE appointment.customerId = customer.customerId "
 //                    + "ORDER BY `start`");
@@ -638,7 +636,7 @@ public class AppointmentScreenController {
             int result = pst.executeUpdate();
             if (result == 1) {
                 logger.log(Level.INFO, "Customer update complete");
-                mainApp.showAppointmentScreen(currentUser);
+                mainApp.showAppointmentScreen();
             } else {
                 logger.log(Level.WARNING, "Customer update was not successful.");
             }
@@ -732,7 +730,7 @@ public class AppointmentScreenController {
 
             if (result == 1) {
                 logger.log(Level.INFO, "Appointment save complete for " + comboCustomer.getValue().getCustomerName());
-                mainApp.showAppointmentScreen(currentUser);
+                mainApp.showAppointmentScreen();
             } else {
                 logger.log(Level.WARNING, "Appointment save was unsuccessful");
             }
@@ -742,7 +740,6 @@ public class AppointmentScreenController {
 
     }
 
-  
 //    public static ObservableList<Appointment> getApptData() {
 //        return appointmentList;
 //    }

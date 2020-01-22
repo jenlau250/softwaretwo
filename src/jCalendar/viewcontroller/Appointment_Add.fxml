@@ -61,7 +61,7 @@
             <JFXComboBox fx:id="comboType" prefHeight="25.0" prefWidth="250.0" promptText="Appointment Type" />
             <JFXComboBox fx:id="comboBarber" prefHeight="25.0" prefWidth="250.0" promptText="Barber" />
             <JFXTextField fx:id="txtTitle" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Title" />
-            <JFXTextField fx:id="txtLocation" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Notes (Optional)" />
+            <JFXTextField fx:id="txtDesc" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Notes (Optional)" />
             <HBox alignment="CENTER" prefHeight="25.0" prefWidth="250.0" spacing="20.0">
                <children>
                   <JFXRadioButton fx:id="choiceExistingCustomer" selected="true" text="Existing Customer">
@@ -80,28 +80,13 @@
             <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
          </padding>
       </VBox>
-      <VBox fx:id="vBoxCustomer" alignment="TOP_CENTER" layoutY="345.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="345.0">
+      <VBox fx:id="vBoxCustomer" alignment="TOP_CENTER" layoutY="345.0" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="345.0">
          <children>
-            <JFXComboBox fx:id="comboExistCustomer" editable="true" prefHeight="20.0" prefWidth="250.0" promptText="Select Existing Customer">
+            <JFXComboBox fx:id="comboExistCustomer" prefHeight="20.0" prefWidth="250.0" promptText="Select Existing Customer">
                <padding>
                   <Insets bottom="10.0" />
                </padding>
             </JFXComboBox>
-            <JFXTextField fx:id="txtNewCustomer" prefHeight="20.0" prefWidth="250.0" promptText="Enter Customer Name">
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </JFXTextField>
-            <JFXTextField fx:id="txtPhone" prefHeight="20.0" promptText="Phone" VBox.vgrow="NEVER">
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </JFXTextField>
-            <JFXTextField fx:id="txtEmail" prefHeight="20.0" promptText="Email" VBox.vgrow="NEVER">
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </JFXTextField>
             <JFXComboBox fx:id="comboPet" prefHeight="20.0" prefWidth="250.0" promptText="Pet">
                <padding>
                   <Insets bottom="10.0" />
