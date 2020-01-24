@@ -5,9 +5,8 @@
  */
 package jCalendar.model;
 
-import java.util.List;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -17,28 +16,27 @@ import javafx.beans.property.StringProperty;
  */
 public class Customer {
 
-    private final IntegerProperty customerId = new SimpleIntegerProperty();
+    private final StringProperty customerId = new SimpleStringProperty();
     private final StringProperty customerName = new SimpleStringProperty();
     private final StringProperty customerPhone = new SimpleStringProperty();
     private final StringProperty customerEmail = new SimpleStringProperty();
     private final StringProperty active = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
-
-    private CustomerPets customerPet;
+    private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
+    private int petId;
 
 //    private int customerId2;
 //    private String customerName2;
-    private int petId;
 //    private String phone;
 ////    private String email;
 //    private String active;
 //    private String notes;
-    private Pet pet;
+//    private Pet pet;
     private String count;
 //    private Barber barber;
 
-    public Customer(int id, String name, String phone, String email, String active, String notes) {
-        this.customerId.setValue(id);
+    public Customer(String id, String name, String phone, String email, String active, String notes) {
+        this.customerId.set(id);
         this.customerName.set(name);
         this.customerPhone.set(phone);
         this.customerEmail.set(email);
@@ -47,26 +45,49 @@ public class Customer {
 
     }
 
-    public Customer(int id, String name, String phone, String email, String active, String notes, Pet pet) {
-        this.customerId.setValue(id);
+    public Customer(String id, String name, String phone, String email, String active, String notes, Pet pet) {
+        this.customerId.set(id);
         this.customerName.set(name);
         this.customerPhone.set(phone);
         this.customerEmail.set(email);
         this.active.set(active);
         this.notes.set(notes);
-        this.pet = pet;
+        this.pet.set(pet);
+
+    }
+
+    public ObjectProperty<Pet> petProperty() {
+        return pet;
+    }
+
+    public Pet getPet() {
+        return petProperty().get();
+    }
+
+    public void setPet(Pet pet) {
+        petProperty().set(pet);
+    }
+
+    public Customer(String id, String name, String phone, String email, String active, String notes, int petId) {
+        this.customerId.set(id);
+        this.customerName.set(name);
+        this.customerPhone.set(phone);
+        this.customerEmail.set(email);
+        this.active.set(active);
+        this.notes.set(notes);
+        this.petId = petId;
 
     }
 
     //FOR TABLEVIEW
-    public Customer(int id, String name, String phone, String email, Pet pet) {
-        this.customerId.setValue(id);
+    public Customer(String id, String name, String phone, String email, Pet pet) {
+        this.customerId.set(id);
         this.customerName.set(name);
         this.customerPhone.set(phone);
         this.customerEmail.set(email);
 //        this.active.set(active);
 //        this.notes.set(notes);
-        this.pet = pet;
+        this.pet.set(pet);
 
     }
 
@@ -79,8 +100,8 @@ public class Customer {
         this.petId = petId;
     }
 
-    public Customer(int id, String name) {
-        this.customerId.setValue(id);
+    public Customer(String id, String name) {
+        this.customerId.set(id);
         this.customerName.set(name);
 
     }
@@ -97,7 +118,7 @@ public class Customer {
         return customerEmail;
     }
 
-    public IntegerProperty customerIdProperty() {
+    public StringProperty customerIdProperty() {
         return customerId;
     }
 
@@ -106,7 +127,7 @@ public class Customer {
     }
 
     public Customer(Pet pet, String count) {
-        this.pet = pet;
+        this.pet.set(pet);
         this.count = count;
     }
 
@@ -120,11 +141,11 @@ public class Customer {
 //        this.pet = pet;
 //
 //    }
-    public int getCustomerId() {
+    public String getCustomerId() {
         return customerId.get();
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId.set(customerId);
     }
 
@@ -169,15 +190,10 @@ public class Customer {
         this.notes.set(notes);
     }
 
-    public Pet getPet() {
-        return pet;
-
-    }
-
-    public List<CustomerPets> getCustomerPets() {
-        return
-    }
-
+//    public Pet getPet() {
+//        return pet;
+//
+//    }
     @Override
     public String toString() {
         return "Customer id " + customerIdProperty().get()

@@ -5,6 +5,7 @@
  */
 package jCalendar.dao;
 
+import jCalendar.dao.DBConnection;
 import jCalendar.model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -6,6 +6,7 @@
 package jCalendar.model;
 
 import jCalendar.utilities.DateTimeUtil;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javafx.beans.property.ObjectProperty;
@@ -24,7 +25,7 @@ public class Appointment {
     private int appointmentId;
     private int customerId;
     private int barberId;
-//    private LocalDate startDate;
+    private LocalDate startDate;
 
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
@@ -147,6 +148,10 @@ public class Appointment {
 
     public LocalDateTime getStart2() {
         return start2.get();
+    }
+
+    public LocalDate getStartDate() {
+        return start2.get().toLocalDate();
     }
 
     private static final ObservableList<String> startTimes = FXCollections.observableArrayList();

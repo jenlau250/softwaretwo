@@ -6,17 +6,29 @@
 package jCalendar.viewcontroller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.User;
+import jCalendar.utilities.Loggerutil;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -67,15 +79,55 @@ public class AppointmentListController implements Initializable {
     @FXML
     private JFXButton btnNewAdd;
 
+    @FXML
+    private Label labelStartBound;
+    @FXML
+    private Label labelEndBound;
+
+    @FXML
+    private JFXComboBox comboWeekMonth;
+    @FXML
+    private JFXButton btnBack;
+    @FXML
+    private JFXButton btnNext;
+
+    private LocalDate currDate;
+    private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
+
+    private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
+
     //moved to mainApp
-//    private ObservableList<Appointment> appointmentData = FXCollections.observableArrayList();
+    private ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
 //    private ObservableList<Customer> customerData = FXCollections.observableArrayList();
 //    private ObservableList<Barber> barberData = FXCollections.observableArrayList();
 //    private ObservableList<Pet> petData = FXCollections.observableArrayList();
 //    private ObservableList<DisplayAppointment> displayAppointments = FXCollections.observableArrayList();
+
     @FXML
     void handleApptAddNew(ActionEvent event) {
-        mainApp.showAppointmentAddScreen();
+
+        mainApp.showAppointmentAddScreen(currentUser);
+    }
+
+    @FXML
+    void handleApptEdit(ActionEvent event) {
+
+        Appointment selAppt = tableView.getSelectionModel().getSelectedItem();
+
+        System.out.println(selAppt);
+        mainApp.showAppointmentAddScreen(currentUser, selAppt);
+
+    }
+
+    @FXML
+    void handleApptDelete(ActionEvent event) {
+
+        Appointment selAppt = tableView.getSelectionModel().getSelectedItem();
+
+        mainApp.showAppointmentAddScreen(currentUser, selAppt);
+
     }
 
     /**
@@ -144,6 +196,103 @@ public class AppointmentListController implements Initializable {
                 }
             }
         });
+
+        labelStartBound.setText(null);
+        labelEndBound.setText(null);
+        comboWeekMonth.setValue("Monthly");
+        currDate = LocalDate.now();
+        nextMonth(currDate);
+
+        // Add monthly or weekly filter to tableview
+        comboWeekMonth.setItems(FXCollections.observableArrayList("Weekly", "Monthly"));
+        comboWeekMonth.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
+            // if the item of the list is changed
+            public void changed(ObservableValue ov, Number value, Number new_value) {
+                LocalDate cbStartDate = currDate;
+                if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 0) {
+                    nextWeek(cbStartDate);
+                } else if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 1) {
+                    nextMonth(cbStartDate);
+                }
+            }
+        });
+
+        btnNext.setOnAction((evt) -> {
+            LocalDate cbStartDate = currDate;
+
+            if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 0) {
+                nextWeek(cbStartDate);
+            } else if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 1) {
+                nextMonth(cbStartDate);
+            }
+        });
+
+        btnBack.setOnAction((evt) -> {
+            LocalDate cbEndDate = currDate;
+            if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 0) {
+                previousWeek(cbEndDate);
+            } else if (comboWeekMonth.getSelectionModel().getSelectedIndex() == 1) {
+                previousMonth(cbEndDate);
+            }
+        });
+
+    }
+
+    private void nextMonth(LocalDate cbStartDate) {
+///dateFormatter.format(datetime)
+        // Lambda expression used to filter data
+        currDate = currDate.plusMonths(1);
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
+        filteredData.setPredicate(row -> {
+            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+            return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
+        });
+        tableView.setItems(filteredData);
+
+        labelStartBound.setText(cbStartDate.format(labelformat));
+        labelEndBound.setText(currDate.format(labelformat));
+    }
+
+    private void previousMonth(LocalDate cbEndDate) {
+        currDate = currDate.minusMonths(1);
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
+        filteredData.setPredicate(row -> {
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
+            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+            return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
+        });
+        tableView.setItems(filteredData);
+
+        labelStartBound.setText(currDate.format(labelformat));
+        labelEndBound.setText(cbEndDate.format(labelformat));
+    }
+
+    private void nextWeek(LocalDate cbStartDate) {
+        currDate = currDate.plusWeeks(1);
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
+        filteredData.setPredicate(row -> {
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
+            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+            return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
+        });
+        tableView.setItems(filteredData);
+        labelStartBound.setText(cbStartDate.format(labelformat));
+        labelEndBound.setText(currDate.format(labelformat));
+    }
+
+    private void previousWeek(LocalDate cbEndDate) {
+        currDate = currDate.minusWeeks(1);
+        FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
+        filteredData.setPredicate(row -> {
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
+            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+            return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
+        });
+        tableView.setItems(filteredData);
+        labelStartBound.setText(currDate.format(labelformat));
+        labelEndBound.setText(cbEndDate.format(labelformat));
     }
 
     /**
@@ -153,10 +302,10 @@ public class AppointmentListController implements Initializable {
      *
      * @param mainApp
      */
-    public void setMainController(jCalendar mainApp) {
+    public void setMainController(jCalendar mainApp, User currentUse) {
 
         this.mainApp = mainApp;
-//        this.currentUser = currentUser;
+        this.currentUser = currentUser;
 
 //        appointmentData.addAll(AppointmentDaoImpl.addAppointments2());
 //        customerData.addAll(CustomerDaoImpl.addCustomers2());
@@ -188,8 +337,15 @@ public class AppointmentListController implements Initializable {
 //
 //        colPet.setCellValueFactory(f -> f.getValue().getCustomer().getPet().nameProperty());
         //CLEAR AND LOAD DETAILS EX: SHOWAPPOINTMENTDETAILS(NULL)
+        try {
+            appointmentList.addAll(mainApp.getAppointmentData());
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception error with getting all appointment data");
+            Logger.getLogger(AppointmentListController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         tableView.getItems().clear();
-        tableView.setItems(mainApp.getAppointmentData());
+        tableView.setItems(appointmentList);
 
         //LISTEN FOR SELECTION CHANGES AND SHOW THE APPT DETAILS WHEN CHANGED
     }

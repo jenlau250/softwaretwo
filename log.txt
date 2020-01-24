@@ -228,3 +228,47 @@ Jan 20, 2020 4:09:21 PM jCalendar.viewcontroller.LoginScreenController2 handleAc
 INFO: test logged in on Jan 20, 2020 4:09:21 PM
 Jan 20, 2020 4:13:23 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
 INFO: test logged in on Jan 20, 2020 4:13:23 PM
+Jan 22, 2020 3:19:32 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 22, 2020 3:19:32 PM
+Jan 22, 2020 3:39:25 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 22, 2020 3:39:25 PM
+Jan 22, 2020 3:42:42 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 22, 2020 3:42:42 PM
+Jan 22, 2020 3:48:53 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 22, 2020 3:48:53 PM
+Jan 23, 2020 10:38:56 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:38:56 PM
+Jan 23, 2020 10:44:17 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:44:17 PM
+Jan 23, 2020 10:46:03 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:46:03 PM
+Jan 23, 2020 10:48:05 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:48:05 PM
+Jan 23, 2020 10:51:40 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:51:40 PM
+Jan 23, 2020 10:56:35 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:56:35 PM
+Jan 23, 2020 10:58:07 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:58:07 PM
+Jan 23, 2020 10:59:29 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 10:59:29 PM
+Jan 23, 2020 11:01:05 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:01:05 PM
+Jan 23, 2020 11:09:03 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:09:03 PM
+Jan 23, 2020 11:10:39 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:10:39 PM
+Jan 23, 2020 11:12:31 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:12:31 PM
+Jan 23, 2020 11:15:03 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:15:03 PM
+Jan 23, 2020 11:46:20 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:46:20 PM
+Jan 23, 2020 11:55:40 PM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 23, 2020 11:55:40 PM
+Jan 24, 2020 12:26:02 AM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 24, 2020 12:26:02 AM
+Jan 24, 2020 12:49:01 AM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 24, 2020 12:49:01 AM
+Jan 24, 2020 10:08:12 AM jCalendar.viewcontroller.LoginScreenController2 handleActionLogin
+INFO: test logged in on Jan 24, 2020 10:08:12 AM

@@ -173,7 +173,7 @@ public class AppointmentScreenController {
     @FXML
     void handleApptAddNew(ActionEvent event) {
 
-        mainApp.showAppointmentAddScreen();
+        mainApp.showAppointmentAddScreen(currentUser);
 //        mainApp.showAppointmentAddScreen(currentUser);
     }
 
@@ -625,7 +625,7 @@ public class AppointmentScreenController {
                     + "SET customerId = ?, title = ?, type = ?, location = ?, start = ?, end = ?, lastUpdate = CURRENT_TIMESTAMP, lastUpdateBy = ? "
                     + "WHERE appointmentId = ?");
 
-            pst.setInt(1, comboCustomer.getValue().getCustomerId());
+            pst.setString(1, comboCustomer.getValue().getCustomerId());
             pst.setString(2, txtTitle.getText());
             pst.setString(3, comboType.getValue());
             pst.setString(4, txtLocation.getText());
@@ -716,7 +716,7 @@ public class AppointmentScreenController {
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP, ?)");
 
             //**CHANGED CONTACT TO MONTH
-            ps.setInt(1, comboCustomer.getValue().getCustomerId());
+            ps.setString(1, comboCustomer.getValue().getCustomerId());
             ps.setString(2, txtTitle.getText());
             ps.setString(3, comboType.getValue());
             ps.setString(4, txtLocation.getText());

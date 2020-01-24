@@ -18,14 +18,14 @@ import javafx.collections.ObservableList;
  * @author Jen
  */
 public class BarberDaoImpl {
-    
-     public static ObservableList<Barber> loadBarberData() {
+
+    public ObservableList<Barber> loadBarberData() {
 
         ObservableList<Barber> barberList = FXCollections.observableArrayList();
 
         try {
             PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                    "SELECT barberId, barberName, notes, active, hireDate "
+                    "SELECT barberId, barberName, barberPhone, barberEmail, active, notes, hireDate "
                     + "FROM barber");
 
             ResultSet rs = ps.executeQuery();
@@ -33,10 +33,14 @@ public class BarberDaoImpl {
             while (rs.next()) {
                 int id = rs.getInt("barberId");
                 String name = rs.getString("barberName");
-                String notes = rs.getString("notes");
+                String phone = rs.getString("barberPhone");
+                String email = rs.getString("barberEmail");
                 String active = rs.getString("active");
+                String notes = rs.getString("notes");
+//                String hireDate = rs.getString("hireDate");
+
                 LocalDate hireDate = rs.getObject("hireDate", LocalDate.class);
-                barberList.add(new Barber(id, name, notes, active, hireDate));
+                barberList.add(new Barber(id, name, phone, email, active, notes, hireDate));
 
             }
 

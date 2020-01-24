@@ -34,7 +34,7 @@ public class AppointmentDaoImpl {
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
-    public static ObservableList<Appointment> loadApptData() {
+    public ObservableList<Appointment> loadApptData() {
 
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
@@ -45,7 +45,7 @@ public class AppointmentDaoImpl {
                     "SELECT * FROM appointment, barber, customer, pet "
                     + "WHERE appointment.barberId = barber.barberId "
                     + "AND appointment.customerId = customer.customerId "
-                    + "AND customer.petId = pet.petId");
+                    + "AND appointment.petId = pet.petId");
 
             ResultSet rs = ps.executeQuery();
 
@@ -63,6 +63,8 @@ public class AppointmentDaoImpl {
                 Barber barber = new Barber(
                         rs.getInt("barber.barberId"),
                         rs.getString("barber.barberName"),
+                        rs.getString("barber.barberPhone"),
+                        rs.getString("barber.barberEmail"),
                         rs.getString("barber.notes"),
                         rs.getString("barber.active"),
                         rs.getObject("barber.hireDate", LocalDate.class)
@@ -75,12 +77,12 @@ public class AppointmentDaoImpl {
 //                        rs.getString("pet.petDescription")
 //                );
                 Customer customer = new Customer(
-                        rs.getInt("customer.customerId"),
+                        rs.getString("customer.customerId"),
                         rs.getString("customerName"),
                         rs.getString("customerPhone"),
                         rs.getString("customerEmail"),
                         new Pet(
-                                rs.getInt("pet.petId"),
+                                rs.getString("pet.petId"),
                                 rs.getString("pet.petName"),
                                 rs.getString("pet.petType"),
                                 rs.getString("pet.petDescription"))
@@ -109,11 +111,11 @@ public class AppointmentDaoImpl {
 
         ObservableList<Barber> barberList = FXCollections.observableArrayList();
         try (
-                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
+                PreparedStatement ps = DBConnection.getConn().prepareStatement(
                         "SELECT barber.barberId, barber.barberName "
                         + "FROM barber, appointment "
                         + "WHERE barber.barberId = appointment.barberId"
-                );  ResultSet rs = ps.executeQuery();) {
+                ); ResultSet rs = ps.executeQuery();) {
 
                     while (rs.next()) {
                         barberId = rs.getInt("barber.barberId");
@@ -175,7 +177,7 @@ public class AppointmentDaoImpl {
                 String tTitle = rs.getString("appointment.title");
                 String tType = rs.getString("appointment.type");
                 String tLocation = rs.getString("appointment.location");
-                Customer sCustomer = new Customer(rs.getInt("appointment.customerId"), rs.getString("customer.customerName"));
+                Customer sCustomer = new Customer(rs.getString("appointment.customerId"), rs.getString("customer.customerName"));
 
                 String sContact = rs.getString("appointment.createdBy");
 
@@ -242,9 +244,9 @@ public class AppointmentDaoImpl {
             String startSave = newLocalStart.format(dateformat);
             String startEnd = newLocalEnd.format(dateformat);
 
-            Customer customer = new Customer(result.getInt("customer.customerId"), result.getString("customer.customerName"));
+            Customer customer = new Customer(result.getString("customer.customerId"), result.getString("customer.customerName"));
 
-            Pet pet = new Pet(result.getInt("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
+            Pet pet = new Pet(result.getString("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
 //            int barberId = result.getInt("barberId");
 //	    String zipcode = result.getString("pet.postalCode")
 

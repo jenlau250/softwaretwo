@@ -60,9 +60,9 @@ public class MainScreenController {
      * @param mainApp
      * @param currentUser
      */
-    public void setMenu(jCalendar mainApp) throws FileNotFoundException {
+    public void setMenu(jCalendar mainApp, User currentUser) throws FileNotFoundException {
         this.mainApp = mainApp;
-//        this.currentUser = currentUser;
+        this.currentUser = currentUser;
         reminderList = FXCollections.observableArrayList();
 
 //        populateReminderList();
@@ -71,10 +71,15 @@ public class MainScreenController {
         btnCustomers.setOnAction((evt) -> {
             this.mainApp.showCustomerScreen();
         });
+
+        btnStaff.setOnAction((evt) -> {
+            this.mainApp.showBarberScreen();
+        });
         btnAppt.setOnAction((evt) -> {
-            this.mainApp.showAppointmentListScreen();
+            this.mainApp.showAppointmentListScreen(currentUser);
 //            this.mainApp.showAppointmentScreen(this.currentUser);
         });
+
         btnReports.setOnAction((evt) -> {
             this.mainApp.showReportScreen();
         });

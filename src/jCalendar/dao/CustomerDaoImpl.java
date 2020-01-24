@@ -19,30 +19,27 @@ import javafx.collections.ObservableList;
  */
 public class CustomerDaoImpl {
 
-    public static ObservableList<Customer> loadCustomerData() {
+    public ObservableList<Customer> loadCustomerData() {
 
         //adding customer notes and active to this might it not work, so make sure it's exactly
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
         try {
             PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                    "SELECT customerId, customerName, customerPhone, customerEmail, pet.petId, petName, petType, petDescription "
-                    + "FROM customer, pet "
-                    + "WHERE customer.petId = pet.petId");
+                    //                    "SELECT * FROM customer");
+                    "SELECT * FROM customer");
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("customerId");
+                String id = rs.getString("customerId");
                 String name = rs.getString("customerName");
                 String phone = rs.getString("customerPhone");
                 String email = rs.getString("customerEmail");
-//                String notes = rs.getString("notes");
-//                String active = rs.getString("active");
-                Pet pet = new Pet(rs.getInt("pet.petId"), rs.getString("pet.petName"), rs.getString("pet.petType"), rs.getString("pet.petDescription"));
-//
+                String active = rs.getString("active");
+                String notes = rs.getString("notes");
 
-                customerList.add(new Customer(id, name, phone, email, pet));
+                customerList.add(new Customer(id, name, phone, email, active, notes));
 //                customerList.add(new Customer(id, name, phone, email, petId, petName, petType, petDescription));
 
             }
@@ -93,7 +90,7 @@ public class CustomerDaoImpl {
 //
 //    }
 //
-    public static ObservableList<Customer> getallCustomers() throws SQLException, Exception {
+    public ObservableList<Customer> getallCustomers() throws SQLException, Exception {
         //can delete DB init and close
         ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
@@ -111,21 +108,21 @@ public class CustomerDaoImpl {
                 + "pet.petDescription "
                 //                + "barber.barberId "
 
-                + "FROM customer, pet "
-                + "WHERE customer.petId = pet.petId ");
+                + "FROM pet, customer "
+                + "WHERE pet.customerId = customer.customerId ");
 
         Query.makeQuery(sqlStatement);
         ResultSet result = Query.getResult();
 
         while (result.next()) {
-            int customerId = result.getInt("customerId");
+            String customerId = result.getString("customerId");
             String customerNameG = result.getString("customerName");
             String phone = result.getString("customerPhone");
             String email = result.getString("customerEmail");
 
             String active = result.getString("active");
             String notes = result.getString("notes");
-            Pet pet = new Pet(result.getInt("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
+            Pet pet = new Pet(result.getString("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
 //            int barberId = result.getInt("barberId");
 //	    String zipcode = result.getString("pet.postalCode")
 
@@ -160,19 +157,19 @@ public class CustomerDaoImpl {
 
     public ObservableList<Customer> populateCustomerList() {
 
-        int tCustomerId;
+        String tCustomerId;
         String tCustomerName;
 
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
         try (
-                 PreparedStatement statement = DBConnection.getConn().prepareStatement(
+                PreparedStatement statement = DBConnection.getConn().prepareStatement(
                         "SELECT customer.customerId, customer.customerName "
                         + "FROM customer, pet "
                         + "WHERE customer.petId = pet.petId "
-                        + "ORDER BY customer.customerId");  ResultSet rs = statement.executeQuery()) {
+                        + "ORDER BY customer.customerId"); ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
-                tCustomerId = rs.getInt("customer.customerId");
+                tCustomerId = rs.getString("customer.customerId");
                 tCustomerName = rs.getString("customer.customerName");
                 customerList.add(new Customer(tCustomerId, tCustomerName));
             }

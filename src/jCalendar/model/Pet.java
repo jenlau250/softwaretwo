@@ -5,8 +5,6 @@
  */
 package jCalendar.model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -16,102 +14,88 @@ import javafx.beans.property.StringProperty;
  */
 public class Pet {
 
-    private final IntegerProperty petId2 = new SimpleIntegerProperty();
-    private final StringProperty petName2 = new SimpleStringProperty();
-    private final StringProperty petType2 = new SimpleStringProperty();
-    private final StringProperty petDescription2 = new SimpleStringProperty();
-    private CustomerPets customerPet;
+    private final StringProperty petId = new SimpleStringProperty();
+    private final StringProperty petName = new SimpleStringProperty();
+    private final StringProperty petType = new SimpleStringProperty();
+    private final StringProperty petDescription = new SimpleStringProperty();
+    private final StringProperty petActive = new SimpleStringProperty();
+    private Customer customer;
 
-//    private int petId;
-//    private String petName;
-//    private String petType;
-//    private String petDescription;
+//    private String customerId;
     private String image;
 
     //FOR TABLEVIEW
-    public Pet(int id, String name, String type, String desc) {
-        this.petId2.setValue(id);
-        this.petName2.set(name);
-        this.petType2.set(type);
-        this.petDescription2.set(desc);
+    public Pet(String id, String name, String type, String desc) {
+        this.petId.set(id);
+        this.petName.set(name);
+        this.petType.set(type);
+        this.petDescription.set(desc);
+    }
+
+//    public Pet(int id, String name, String type, String desc, String customerId) {
+//        this.petId.setValue(id);
+//        this.petName2.set(name);
+//        this.petType2.set(type);
+//        this.petDescription.set(desc);
+//        this.customerId = customerId;
+//    }
+    public Pet(String id, String name, String type, String desc, String active, Customer customer) {
+        this.petId.set(id);
+        this.petName.set(name);
+        this.petType.set(type);
+        this.petDescription.set(desc);
+        this.petActive.set(active);
+        this.customer = customer;
     }
 
     public StringProperty nameProperty() {
-        return petName2;
+        return petName;
     }
 
     public StringProperty typeProperty() {
-        return petType2;
+        return petType;
     }
 
     public StringProperty descProperty() {
-        return petDescription2;
+        return petDescription;
     }
 
-    public IntegerProperty petIdProperty() {
-        return petId2;
+    public StringProperty petIdProperty() {
+        return petId;
     }
 
     public Pet() {
 
     }
 
-    public Pet(int petId, String petName) {
-        this.petId2.set(petId);
-        this.petName2.set(petName);
+    public Pet(String petId, String petName) {
+        this.petId.set(petId);
+        this.petName.set(petName);
     }
 
-//    public Pet(int petId, String petName, String petType, String petDescription) {
-//        this.petId = petId;
-//        this.petName = petName;
-//        this.petType = petType;
-//        this.petDescription = petDescription;
-//    }
-//    public Pet(int petId, String petName, String petType, String petDescription, String image) {
-//        this.petId = petId;
-//        this.petName = petName;
-//        this.petType = petType;
-//        this.petDescription = petDescription;
-//        this.image = image;
-//    }
-//
-//    public int getPetId() {
-//        return petId;
-//    }
-//
-//    public void setPetId(int petId) {
-//        this.petId = petId;
-//    }
-//
-//    public String getPetName() {
-//        return petName;
-//    }
-//
-//    public void setPetName(String petName) {
-//        this.petName = petName;
-//    }
-//
-//    public String getPetType() {
-//        return petType;
-//    }
-//
-//    public void setPetType(String petType) {
-//        this.petType = petType;
-//    }
-//
-//    public String getPetDescription() {
-//        return petDescription;
-//    }
-//
-//    public void setPetDescription(String petDescription) {
-//        this.petDescription = petDescription;
-//    }
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    @Override
+    public String toString() {
+        return "Pet ID: " + petId + '\n'
+                + "Name: " + petName + '\n'
+                + "Type: " + petType + '\n'
+                + "Desc: " + petDescription + '\n'
+                + "Customer: " + customer + '\n';
     }
 
 }

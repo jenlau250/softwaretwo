@@ -5,12 +5,10 @@
  */
 package jCalendar.viewcontroller;
 
-import jCalendar.dao.CustomerDaoImpl;
 import jCalendar.dao.DBConnection;
-import jCalendar.dao.Query;
+import jCalendar.dao.PetDaoImpl;
 import jCalendar.jCalendar;
 import jCalendar.model.Customer;
-import jCalendar.model.CustomerPets;
 import jCalendar.model.Pet;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
@@ -18,8 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,7 +30,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 
 /**
@@ -44,6 +41,7 @@ public class CustomerScreenController {
 
     private jCalendar mainApp;
     private User currentUser;
+    private Customer customer;
 
     @FXML
     private Label customerLabel;
@@ -60,13 +58,18 @@ public class CustomerScreenController {
     @FXML
     private Button btnCustomerCancelSave;
     @FXML
-    private TableView<Customer> CustomerTable;
+    private TableView<Pet> CustomerTable;
     @FXML
-    private TableColumn<Customer, String> colCustomerID;
+    private TableColumn<Pet, String> colCustomerID;
     @FXML
-    private TableColumn<Customer, String> colCustomerName;
+    private TableColumn<Pet, String> colCustomerName;
     @FXML
-    private TableColumn<Customer, String> colCustomerPhone;
+    private TableColumn<Pet, String> colCustomerPhone;
+
+    @FXML
+    private TableColumn<Pet, String> colCustomerEmail;
+    @FXML
+    private TableColumn<Pet, String> colCustomerStatus;
 
     @FXML
     private TextField txtCustomerName;
@@ -79,6 +82,19 @@ public class CustomerScreenController {
     @FXML
     private TextField txtCustomerNotes; //Phone
 
+    //PETS
+    @FXML
+    private TableView<Pet> petTableView;
+
+    @FXML
+    private TableColumn<Pet, String> colPetName;
+
+    @FXML
+    private TableColumn<Pet, String> colPetType;
+
+    @FXML
+    private TableColumn<Pet, String> colPetDesc;
+
     @FXML
     private ComboBox<Pet> comboPet;
 
@@ -89,8 +105,8 @@ public class CustomerScreenController {
     private TextField txtPetDescription;
 
     private ObservableList<Customer> Customers = FXCollections.observableArrayList();
-    private ObservableList<CustomerPets> customerPets = FXCollections.observableArrayList();
     private ObservableList<Pet> Pets = FXCollections.observableArrayList(); //Cities
+    private ObservableList<Pet> customerPets = FXCollections.observableArrayList(); //selectedCountries
     private ObservableList<Pet> selectedPets = FXCollections.observableArrayList(); //selectedCountries
     private boolean editMode;
 
@@ -100,46 +116,36 @@ public class CustomerScreenController {
 
     }
 
-    protected ObservableList<Pet> populatePets() {
-
-        int petId;
-        String petName;
-
-        ObservableList<Pet> petList = FXCollections.observableArrayList();
-        try (
-                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                        "SELECT pet.petId, pet.petName "
-                        + "FROM pet, customerpets "
-                        + "WHERE pet.petId = customerpets.petId"
-                );  ResultSet rs = ps.executeQuery();) {
-
-                    while (rs.next()) {
-                        petId = rs.getInt("pet.petId");
-                        petName = rs.getString("pet.petName");
-                        petList.add(new Pet(petId, petName));
-                    }
-                } catch (SQLException sqe) {
-                    System.out.println("Check SQL Exception");
-                    sqe.printStackTrace();
-                } catch (Exception e) {
-                    System.out.println("Check Exception");
-                }
-                return petList;
-
-    }
-
+//    protected ObservableList<Pet> populatePets(int customerId) {
+//
+//        int petId;
+//        String petName;
+//
+//        ObservableList<Pet> petList = FXCollections.observableArrayList();
+//        try (
+//                 PreparedStatement ps = DBConnection.getConn().prepareStatement(
+//                        "SELECT * FROM customer, pet "
+//                        + "WHERE customer.petId + "
+//                );  ResultSet rs = ps.executeQuery();) {
+//
+//                    while (rs.next()) {
+//                        petId = rs.getInt("pet.petId");
+//                        petName = rs.getString("pet.petName");
+//                        petList.add(new Pet(petId, petName));
+//                    }
+//                } catch (SQLException sqe) {
+//                    System.out.println("Check SQL Exception");
+//                    sqe.printStackTrace();
+//                } catch (Exception e) {
+//                    System.out.println("Check Exception");
+//                }
+//                return petList;
+//
+//    }
     @FXML
     private void initializePetTypes() {
 
-        Query.makeQuery("SELECT petType FROM pet");
-        ResultSet rs = Query.getResult();
-        try {
-            while (rs.next()) {
-                comboPetType.getItems().add(rs.getString(1));
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "SQL Exception with populating pet types.");
-        }
+        comboPetType.getItems().addAll("Dog", "Puppy", "Cat", "Kitten", "Other");
     }
 
     @FXML
@@ -147,16 +153,32 @@ public class CustomerScreenController {
 
         //populate customer details based on selection
         //**need to rename FXML FIELDS, need to show barber
+        labelCusID.setText(String.valueOf(selectedCustomer.getCustomerId()));
+
         txtCustomerName.setText(selectedCustomer.getCustomerName());
         txtCustomerPhone.setText(selectedCustomer.getPhone());
         txtCustomerEmail.setText(selectedCustomer.getEmail());
-//	countryCombo.setValue(selectedCustomer.getPet());
-//        comboPet.setValue(selectedCustomer.getPet());
-//        comboPetType.setValue(selectedCustomer.getPet().getPetType());
-//        txtPetDescription.setText(selectedCustomer.getPet().getPetDescription());
         txtCustomerStatus.setText(selectedCustomer.getActive());
         txtCustomerNotes.setText(selectedCustomer.getNotes());
-        labelCusID.setText(String.valueOf(selectedCustomer.getCustomerId()));
+//	countryCombo.setValue(selectedCustomer.getPet());
+//        comboPet.setItems(selectedCustomer.petProperty().get());
+        comboPet.setItems(customerPets);
+        comboPet.getSelectionModel().selectFirst();
+//        comboPetType.setValue(selectedCustomer.getPet().);
+//        txtPetDescription.setText(selectedCustomer.getPet().descProperty().get());
+        System.out.println("showcustomerdetails" + selectedCustomer);
+
+    }
+
+    @FXML
+    private void showPetDetails(Pet selectedPet) {
+
+//        comboPet.setItems(selectedPets);
+//        comboPet.getSelectionModel().selectFirst();
+        comboPetType.setValue(selectedPet.typeProperty().get());
+//        comboPetType.setItems(selectedPets);
+        txtPetDescription.setText(selectedPet.descProperty().get());
+        System.out.println("showcustomerdetails" + selectedPet);
 
     }
 
@@ -181,25 +203,25 @@ public class CustomerScreenController {
     @FXML
     void handleDeleteCustomer(ActionEvent event) {
 
-        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-
-        if (selectedCustomer != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm delete");
-            alert.setHeaderText("Are you sure you want to delete " + selectedCustomer.getCustomerName() + "?");
-            alert.showAndWait()
-                    .filter(response -> response == ButtonType.OK)
-                    .ifPresent(response -> {
-                        deleteCustomer(selectedCustomer);
-                        mainApp.showCustomerScreen();
-                    });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Not selected");
-            alert.setHeaderText("No customer was selected to delete");
-            alert.setContentText("Please select a customer to delete");
-            alert.showAndWait();
-        }
+//        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+//
+//        if (selectedCustomer != null) {
+//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//            alert.setTitle("Confirm delete");
+//            alert.setHeaderText("Are you sure you want to delete " + selectedCustomer.getCustomerName() + "?");
+//            alert.showAndWait()
+//                    .filter(response -> response == ButtonType.OK)
+//                    .ifPresent(response -> {
+//                        deleteCustomer(selectedCustomer);
+//                        mainApp.showCustomerScreen();
+//                    });
+//        } else {
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Not selected");
+//            alert.setHeaderText("No customer was selected to delete");
+//            alert.setContentText("Please select a customer to delete");
+//            alert.showAndWait();
+//        }
     }
 
     @FXML
@@ -227,43 +249,46 @@ public class CustomerScreenController {
     @FXML
     void handleSaveCustomer(ActionEvent event) {
 
-        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-        System.out.println("Debug handleSaveCustomer: editMode: " + editMode);
-        if (validateCustomer()) {
-            if (editMode) {
-                updateCustomer(selectedCustomer);
-            } else {
-                saveNewCustomer();
-            }
-            mainApp.showCustomerScreen();
-        }
+//        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+//        System.out.println("Debug handleSaveCustomer: editMode: " + editMode);
+//        if (validateCustomer()) {
+//            if (editMode) {
+//                updateCustomer(selectedCustomer);
+//            } else {
+//                saveNewCustomer();
+//            }
+//            mainApp.showCustomerScreen();
+//        }
     }
 
     @FXML
     void handleUpdateCustomer(ActionEvent event) {
 
-        enableEdits();
-        customerLabel.setText("Update Customer Details");
+//        enableEdits();
+//        customerLabel.setText("Update Customer Details");
+//
+//        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+//
+//        if (selectedCustomer != null) {
+//            editMode = true;
+//            CustomerTable.setDisable(false);
+//            btnCustomerAdd.setDisable(true);
+//            btnCustomerUpdate.setDisable(true);
+//            btnCustomerDelete.setDisable(true);
+//            btnCustomerCancelSave.setDisable(false);
+//            btnCustomerSave.setDisable(false);
+//
+//        } else {
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Not selected");
+//            alert.setHeaderText("No customer was selected");
+//            alert.setContentText("Please select a customer to update");
+//            alert.showAndWait();
+//        }
+    }
 
-        Customer selectedCustomer = CustomerTable.getSelectionModel().getSelectedItem();
-
-        if (selectedCustomer != null) {
-            editMode = true;
-            CustomerTable.setDisable(false);
-            btnCustomerAdd.setDisable(true);
-            btnCustomerUpdate.setDisable(true);
-            btnCustomerDelete.setDisable(true);
-            btnCustomerCancelSave.setDisable(false);
-            btnCustomerSave.setDisable(false);
-
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Not selected");
-            alert.setHeaderText("No customer was selected");
-            alert.setContentText("Please select a customer to update");
-            alert.showAndWait();
-        }
-
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     /**
@@ -277,20 +302,67 @@ public class CustomerScreenController {
         this.mainApp = mainApp;
 //        this.currentUser = currentUser;
 
-        customerLabel.setText("Customer Details");
-        colCustomerID.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("phone")); //as named in Customer
-
+        initCol();
         initializePetTypes();
 
-        // Query pet list and add to list
-        selectedPets = populatePets();
-        comboPet.setItems(selectedPets);
+//        loadPetTableView();
+//        try {
+//            Customers.addAll(mainApp.getCustomerData());
+//        } catch (Exception ex) {
+//            logger.log(Level.SEVERE, "Exception error with getting all customer data");
+//            Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        try {
+//            Pets.addAll(mainApp.getPetData());
+//        } catch (Exception ex) {
+//            logger.log(Level.SEVERE, "Exception error with getting all customer data");
+//            Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        //default settings
+        //Add observable list of customerPets to list
+        customerPets.addAll(mainApp.getCustomerPetData());
+        CustomerTable.getItems().setAll(customerPets);
+
+        //Filter customerpets list
+//        FilteredList<Pet> filteredItems = new FilteredList<>(customerPets);
+//        petTableView.setItems(selectedPets);
+        String customerId = CustomerTable.getSelectionModel().getSelectedItem().getCustomer().getCustomerId();
+
+        loadPetTableView(customerId);
+//
+//        filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
+//                () -> nameFilter.get().and(genderFilter.get()),
+//                nameFilter, genderFilter));
+        //get selected customer
+//        String selCustomerId = CustomerTable.getSelectionModel().getSelectedItem().getCustomer().getCustomerId();
+//        loadPetTableView(selCustomerId);
+//        petTableView.getItems().setAll(mainApp.getCustomerPetData());
+        disableEdits();
+        labelCusID.setText("");
+        btnCustomerCancelSave.setDisable(true);
+        btnCustomerSave.setDisable(true);
+
+        CustomerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+
+                System.out.println("selected customer: " + newSelection.getCustomer().getCustomerName());
+                System.out.println("selected pet " + newSelection.nameProperty().get());
+//                selectedPets.clear();
+//                selectedPets.addAll(new PetDaoImpl().getPetsByCustomer(newSelection.customerIdProperty().get()));
+//                showCustomerDetails(newSelection);
+
+            }
+        });
+
         comboPet.setConverter(new StringConverter<Pet>() {
             @Override
             public String toString(Pet object) {
-                return object.nameProperty().get();
+                if (object == null) {
+                    return null;
+                } else {
+                    return object.nameProperty().get();
+                }
             }
 
             @Override
@@ -299,38 +371,93 @@ public class CustomerScreenController {
             }
         });
 
-        // Show pet name in combo box
+    }
+
+    private void initCol() {
+
+//           this.petId.setValue(id);
+//        this.petName.set(name);
+//        this.petType.set(type);
+//        this.petDescription.set(desc);
+//        this.petActive.set(active);
+//        this.customer = customer;
+        //Load Customer Tableview
+        customerLabel.setText("Customer Details");
+//        colCustomerID.setCellValueFactory(new PropertyValueFactory<>("petId"));
+//        colCustomerName.setCellValueFactory(new PropertyValueFactory<>("petName"));
+//        colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("petType")); //as named in Customer
+//        colCustomerEmail.setCellValueFactory(new PropertyValueFactory<>("petDescription"));
+//        colCustomerStatus.setCellValueFactory(new PropertyValueFactory<>("petActive"));
+
+        colCustomerID.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerId()));
+
+        colCustomerName.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerName()));
+
+        colCustomerPhone.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getPhone()));
+
+        colCustomerEmail.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
+
+        colCustomerStatus.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getNotes()));
+
+        colPetName.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().nameProperty().get()));
+        colPetType.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().typeProperty().get()));
+
+        colPetDesc.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().descProperty().get()));
+
+        //        //Load Pet Table
+        //        colPetName.setCellValueFactory(new PropertyValueFactory<>("petName"));
+        //        colPetType.setCellValueFactory(new PropertyValueFactory<>("petType"));
+        //        colPetDesc.setCellValueFactory(new PropertyValueFactory<>("petDescription")); //as named in Customer
+    }
+
+    private void loadPetTableView(String customerId) {
+        // Query pet list and add to list
+
+        System.out.println("printing for loadPetTableView() " + customerId);
+        selectedPets.clear();
+
+        selectedPets.addAll(new PetDaoImpl().getPetsByCustomer(customerId));
+
+        petTableView.setItems(selectedPets);
+
+        for (Pet p : selectedPets) {
+            System.out.println(p.toString());
+        }
+//        ObservableList<Pet> petlist = new CustomerDaoImpl().getPetsByCustomer(customer.customerIdProperty().get());
+//        selectedPets = populatePets();
+//        comboPet.setItems(selectedPets);
 //        comboPet.setConverter(new StringConverter<Pet>() {
-//
 //            @Override
 //            public String toString(Pet object) {
-//                return object.getPetName();
+//                return object.nameProperty().get();
 //            }
 //
 //            @Override
 //            public Pet fromString(String string) {
-//                return comboPet.getItems().stream().filter(ap -> ap.getPetName().equals(string)).findFirst().orElse(null);
+//                return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
 //            }
 //        });
-        try {
-            Customers.addAll(CustomerDaoImpl.getallCustomers());
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception error with getting all customer data");
-            Logger.getLogger(CustomerScreenController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //default settings
-        CustomerTable.getItems().setAll(Customers);
-        disableEdits();
-        labelCusID.setText("");
-        btnCustomerCancelSave.setDisable(true);
-        btnCustomerSave.setDisable(true);
-
-        CustomerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                showCustomerDetails(newSelection);
-            }
-        });
+////        Show pet name in combo box
+//        comboPet.setConverter(new StringConverter<Pet>() {
+//
+//            @Override
+//            public String toString(Pet object) {
+//                return object.nameProperty().get();
+//            }
+//
+//            @Override
+//            public Pet fromString(String string) {
+//                return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
+//            }
+//        });
     }
 
     private void enableEdits() {
@@ -493,7 +620,7 @@ public class CustomerScreenController {
 
         try {
             PreparedStatement pst = DBConnection.getConn().prepareStatement("DELETE customer.*, pet.* from customer, pet WHERE customer.customerId = ? AND customer.petId = pet.petId");
-            pst.setInt(1, customer.getCustomerId());
+            pst.setString(1, customer.getCustomerId());
             pst.executeUpdate();
 
         } catch (SQLException e) {

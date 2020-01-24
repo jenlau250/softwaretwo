@@ -48,13 +48,12 @@ import javafx.util.StringConverter;
  *
  * @author Jen
  */
-public class Appointment_AddController {
+public class Appointment_EditController1 {
 
     // Controllers
 //    private AppointmentScreenController mainController;
     private jCalendar mainApp;
     private User currentUser;
-    private Appointment appt;
 
     @FXML
     private AnchorPane rootPane;
@@ -96,14 +95,6 @@ public class Appointment_AddController {
     @FXML
     private VBox vBoxCustomer;
 
-//    @FXML
-//    private JFXTextField txtNewCustomer;
-//
-//    @FXML
-//    private JFXTextField txtPhone;
-//
-//    @FXML
-//    private JFXTextField txtEmail;
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     private ObservableList<Appointment> data;
@@ -190,65 +181,15 @@ public class Appointment_AddController {
             }
         });
 
-        //Add Customer radio button listener
-        //set default
-//        choiceExistingCustomer.setSelected(true);
-//        comboExistCustomer.setVisible(true);
-//        txtNewCustomer.setVisible(false);
-//
-//        txtNewCustomer.managedProperty().bind(txtNewCustomer.visibleProperty());
-        //HIDE - test if this is causing combo box issues
-//        comboExistCustomer.managedProperty().bind(comboExistCustomer.visibleProperty());
-//
-//        choiceExistingCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
-//            if (isSelected) {
-//                comboExistCustomer.setVisible(true);
-//                txtNewCustomer.setVisible(false);
-//                System.out.println("existing customer selected");
-//            }
-//        });
-//
-//        choiceNewCustomer.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
-//            if (isSelected) {
-//                comboExistCustomer.setVisible(false);
-//                txtNewCustomer.setVisible(true);
-//                System.out.println("new customer selected");
-//            }
-//        });
         //Set close button to exit
         btnClose.setOnMouseClicked((evt) -> {
-//            Stage stage = (Stage) rootPane.getScene().getWindow();
-//            stage.close();
             mainApp.showAppointmentListScreen(currentUser);
         });
-    }
-
-    private void setAppointment(Appointment appt) {
-        this.appt = appt;
-        if (appt != null) {
-            topLabel.setText("Edit Appointment");
-//            editClicked = true;
-//            btnApptCancel.setDisable(false);
-//            btnApptSave.setDisable(false);
-//            btnApptUpdate.setDisable(true);
-//            btnApptAdd.setDisable(true);
-//            btnApptDel.setDisable(true);
-//            apptVBox.setVisible(true);
-
-        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Nothing selected");
-//            alert.setHeaderText("No appointment was selected");
-//            alert.setContentText("Please select an appointment to update");
-//            alert.showAndWait();
-        }
-
     }
 
     @FXML
     private void clearFields() {
 
-//        comboExistCustomer.setValue(null);
         comboBarber.getItems().clear();
         comboType.getItems().clear();
         comboExistCustomer.getItems().clear();
@@ -263,16 +204,8 @@ public class Appointment_AddController {
     @FXML
     private void initFields() {
 
-        //CLEAR AND INITIALIZE DEFAULT FIELDS
-//        customers.clear();
-//        customers.addAll(mainApp.getCustomerData());
-//        comboExistCustomer.setItems(mainApp.getCustomerData());
+//        topLabel.setText("Edit Appointment");
         comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
-//        populatePetsLists();
-
-//if not null, change customer list
-//
-//        getPetsByCustomer(customerId);
         comboBarber.setItems(mainApp.getBarberData());
 
         //Appointment Type dropdown
@@ -286,10 +219,7 @@ public class Appointment_AddController {
 
     @FXML
     void handleApptCancel(ActionEvent event) {
-        // Close the window
-//        Stage stage = (Stage) rootPane.getScene().getWindow();
-//        stage.close();
-//
+
         mainApp.showAppointmentListScreen(currentUser);
     }
 
@@ -412,13 +342,6 @@ public class Appointment_AddController {
                 + " Pet " + sPet + " " + comboPet.getValue().nameProperty().get()
         );
 
-        //RESULT:
-//           [java] Printing record to save:  Title Test  Desc test  Type Extended
-//Barber StringProperty [value: Cutty]
-//Customer Customer id 2 name StringProperty [value: Sam] phone StringProperty [value: null] email StringProperty [value: null]
-//Pet jCalendar.model.Pet@654b8b25
-//        Appointment appt = new Appointment(String sTitle, stringStart, stringEnd, sDesc, sType, sBarber, sCustomer);
-        //Print appointment times
         System.out.println("Appointment times to save :" + stringStart + " and " + stringEnd);
         System.out.println("Current user :" + currentUser.getUserName());
         try {

@@ -19,99 +19,123 @@ import javafx.beans.property.StringProperty;
  */
 public class Barber {
 
-    private final IntegerProperty barberId2 = new SimpleIntegerProperty();
-    private final StringProperty barberName2 = new SimpleStringProperty();
-    private final StringProperty notes2 = new SimpleStringProperty();
-    private final StringProperty active2 = new SimpleStringProperty();
-    private final ObjectProperty<LocalDate> hireDate2 = new SimpleObjectProperty();
-//
-//    private int barberId;
-//    private String barberName;
-//    private String notes;
-//    private String active;
-//    private Date hireDate;
+    private final IntegerProperty barberId = new SimpleIntegerProperty();
+    private final StringProperty barberName = new SimpleStringProperty();
+    private final StringProperty barberPhone = new SimpleStringProperty();
+    private final StringProperty barberEmail = new SimpleStringProperty();
+    private final StringProperty notes = new SimpleStringProperty();
+    private final StringProperty active = new SimpleStringProperty();
+    private final ObjectProperty<LocalDate> hireDate = new SimpleObjectProperty();
 
     public Barber() {
 
     }
 
     //FOR TABLEVIEW
-    public Barber(int id, String name, String notes, String active, LocalDate date) {
-        this.barberId2.setValue(id);
-        this.barberName2.set(name);
-        this.notes2.set(notes);
-        this.active2.set(active);
-        this.hireDate2.set(date);
+    public Barber(int id, String name, String phone, String email, String active, String notes, LocalDate date) {
+        this.barberId.setValue(id);
+        this.barberName.set(name);
+        this.barberPhone.set(name);
+        this.barberEmail.set(name);
+
+        this.active.set(active);
+        this.notes.set(notes);
+        this.hireDate.set(date);
     }
 
     public StringProperty nameProperty() {
-        return barberName2;
+        return barberName;
+    }
+
+    public StringProperty barberPhoneProperty() {
+        return barberPhone;
+    }
+
+    public StringProperty barberEmailProperty() {
+        return barberEmail;
     }
 
     public StringProperty noteProperty() {
-        return notes2;
+        return notes;
     }
 
     public StringProperty activeProperty() {
-        return active2;
+        return active;
     }
 
     public IntegerProperty barberIdProperty() {
-        return barberId2;
+        return barberId;
     }
 
     public Barber(int barberId, String name) {
-        this.barberId2.setValue(barberId);
-        this.barberName2.set(name);
+        this.barberId.setValue(barberId);
+        this.barberName.set(name);
+    }
+
+    public String getPhone() {
+        return barberPhone.get();
+    }
+
+    public void setPhone(String phone) {
+        this.barberPhone.set(phone);
+    }
+
+    public String getEmail() {
+        return barberEmail.get();
+    }
+
+    public void setEmail(String email) {
+        this.barberEmail.set(email);
+
     }
 
     public int getBarberId() {
-        return barberId2.get();
+        return barberId.get();
     }
 
     public void setBarberId(int barberId) {
-        this.barberId2.set(barberId);
+        this.barberId.set(barberId);
     }
 
     public String getBarberName() {
-        return barberName2.get();
+        return barberName.get();
     }
 
     public void setBarberName(String barberName) {
-        this.barberName2.set(barberName);
+        this.barberName.set(barberName);
     }
 
     public String getNotes() {
-        return notes2.get();
+        return notes.get();
     }
 
     public void setNotes(String notes) {
-        this.notes2.set(notes);
+        this.notes.set(notes);
     }
 
     public String getActive() {
-        return active2.get();
+        return active.get();
     }
 
     public void setActive(String active) {
-        this.active2.set(active);
+        this.active.set(active);
     }
 
     public ObjectProperty hireDateProperty() {
-        return hireDate2;
+        return hireDate;
     }
 
     public LocalDate getHireDate() {
-        return hireDate2.get();
+        return hireDate.get();
     }
 
     public void setHireDate(LocalDate hireDate) {
-        this.hireDate2.setValue(hireDate);
+        this.hireDate.setValue(hireDate);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(barberName2);
+        return String.valueOf(barberName);
     }
 
 }
