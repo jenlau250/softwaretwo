@@ -5,6 +5,7 @@
  */
 package jCalendar.viewcontroller;
 
+import jCalendar.dao.DBConnection;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -18,9 +19,11 @@ import javafx.stage.Stage;
  */
 public class TempLoader extends Application {
 
+    private DBConnection databaseHandler;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("AppointmentList.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Appointment_Add.fxml"));
 
         Scene scene = new Scene(root);
         stage.setScene(scene);

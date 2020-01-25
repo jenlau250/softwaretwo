@@ -25,6 +25,36 @@ public class Customer {
     private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
     private int petId;
 
+    public Customer(String id, String name) {
+
+        setCustomerId(id);
+        setCustomerName(name);
+
+    }
+
+    public StringProperty customerIdProperty() {
+        return this.customerId;
+    }
+
+    public StringProperty customerNameProperty() {
+        return this.customerName;
+    }
+
+    public String getCustomerId() {
+        return this.customerId.get();
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId.set(customerId);
+    }
+
+    public String getCustomerName() {
+        return this.customerName.get();
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName.set(customerName);
+    }
 //    private int customerId2;
 //    private String customerName2;
 //    private String phone;
@@ -56,29 +86,26 @@ public class Customer {
 
     }
 
-    public ObjectProperty<Pet> petProperty() {
-        return pet;
-    }
-
-    public Pet getPet() {
-        return petProperty().get();
-    }
-
-    public void setPet(Pet pet) {
-        petProperty().set(pet);
-    }
-
-    public Customer(String id, String name, String phone, String email, String active, String notes, int petId) {
-        this.customerId.set(id);
-        this.customerName.set(name);
-        this.customerPhone.set(phone);
-        this.customerEmail.set(email);
-        this.active.set(active);
-        this.notes.set(notes);
-        this.petId = petId;
-
-    }
-
+//    public ObjectProperty<Pet> petProperty() {
+//        return pet;
+//    }
+//    public Pet getPet() {
+//        return petProperty().get();
+//    }
+//
+//    public void setPet(Pet pet) {
+//        petProperty().set(pet);
+//    }
+//    public Customer(String id, String name, String phone, String email, String active, String notes, int petId) {
+//        this.customerId.set(id);
+//        this.customerName.set(name);
+//        this.customerPhone.set(phone);
+//        this.customerEmail.set(email);
+//        this.active.set(active);
+//        this.notes.set(notes);
+//        this.petId = petId;
+//
+//    }
     //FOR TABLEVIEW
     public Customer(String id, String name, String phone, String email, Pet pet) {
         this.customerId.set(id);
@@ -91,46 +118,30 @@ public class Customer {
 
     }
 
-    public int getPetId() {
-        return petId;
-
-    }
-
-    public void setPetId(int petId) {
-        this.petId = petId;
-    }
-
-    public Customer(String id, String name) {
-        this.customerId.set(id);
-        this.customerName.set(name);
-
-    }
-
-    public StringProperty customerNameProperty() {
-        return customerName;
-    }
-
+//    public int getPetId() {
+//        return petId;
+//
+//    }
+//
+//    public void setPetId(int petId) {
+//        this.petId = petId;
+//    }
     public StringProperty customerPhoneProperty() {
-        return customerPhone;
+        return this.customerPhone;
     }
 
     public StringProperty customerEmailProperty() {
-        return customerEmail;
-    }
-
-    public StringProperty customerIdProperty() {
-        return customerId;
+        return this.customerEmail;
     }
 
     public Customer() {
 
     }
 
-    public Customer(Pet pet, String count) {
-        this.pet.set(pet);
-        this.count = count;
-    }
-
+//    public Customer(Pet pet, String count) {
+//        this.pet.set(pet);
+//        this.count = count;
+//    }
 //    public Customer(int customerId, String customerNameG, String phone, String email, String notes, String active, Pet pet) {
 //        this.customerId2 = customerId;
 //        this.customerName2 = customerNameG;
@@ -141,22 +152,6 @@ public class Customer {
 //        this.pet = pet;
 //
 //    }
-    public String getCustomerId() {
-        return customerId.get();
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId.set(customerId);
-    }
-
-    public String getCustomerName() {
-        return customerName.get();
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName.set(customerName);
-    }
-
     public String getPhone() {
         return customerPhone.get();
     }

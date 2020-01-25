@@ -174,7 +174,6 @@ public class AppointmentScreenController {
     void handleApptAddNew(ActionEvent event) {
 
         mainApp.showAppointmentAddScreen(currentUser);
-//        mainApp.showAppointmentAddScreen(currentUser);
     }
 
     @FXML

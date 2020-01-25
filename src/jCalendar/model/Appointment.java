@@ -67,7 +67,7 @@ public class Appointment {
     }
 
 //current tableview
-    public Appointment(int appointmentId, String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer) {
+    public Appointment(int appointmentId, String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
 
         this.appointmentId = appointmentId;
 //        this.customerId = customerId;
@@ -78,6 +78,7 @@ public class Appointment {
         this.type = type;
         this.barber = barber;
         this.customer = customer;
+        this.pet = pet;
 
     }
 
@@ -282,6 +283,14 @@ public class Appointment {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
     }
 
     public String getUser() {

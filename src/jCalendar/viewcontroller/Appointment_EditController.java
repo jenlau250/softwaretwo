@@ -11,7 +11,6 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
-import jCalendar.dao.PetDaoImpl;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
@@ -30,6 +29,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,19 +42,20 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
  *
  * @author Jen
  */
-public class Appointment_EditController1 {
+public class Appointment_EditController {
 
     // Controllers
 //    private AppointmentScreenController mainController;
     private jCalendar mainApp;
     private User currentUser;
+    private Appointment selectedAppt;
+    private boolean editClicked;
 
     @FXML
     private AnchorPane rootPane;
@@ -95,6 +97,18 @@ public class Appointment_EditController1 {
     @FXML
     private VBox vBoxCustomer;
 
+    private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
+
+//    @FXML
+//    private JFXTextField txtNewCustomer;
+//
+//    @FXML
+//    private JFXTextField txtPhone;
+//
+//    @FXML
+//    private JFXTextField txtEmail;
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     private ObservableList<Appointment> data;
@@ -107,80 +121,101 @@ public class Appointment_EditController1 {
      *
      * @param mainApp
      */
-    public void setMainController(jCalendar mainApp, User currentUser) {
+    public void setMainController(jCalendar mainApp, User currentUser, Appointment appt) {
 
         this.mainApp = mainApp;
         this.currentUser = currentUser;
+        this.selectedAppt = appt;
 
         clearFields();
-        initFields();
+//        initFields();
+//        editAppointmentDetails(appt);
+
+//initialize selected appt details
+        String start = appt.getStart();
+        String end = appt.getEnd();
+        LocalDateTime startLDT = LocalDateTime.parse(start, dateformat);
+        LocalDateTime endLDT = LocalDateTime.parse(end, dateformat);
+
+        //fill data
+        datePicker.setValue(LocalDate.parse(appt.getStart(), dateformat));
+
+        comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeformat));
+        comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeformat));
+
+        txtTitle.setText(appt.getTitle());
+        txtDesc.setText(appt.getDescription());
+        comboExistCustomer.getSelectionModel().select(appt.getCustomer());
+//        comboPet.getSelectionModel().select(appt.getCustomer().g);
+        comboType.getSelectionModel().select(appt.getType());
+
+        System.out.println("Saved for Edit Screen mainApp, user, Appt " + mainApp + " " + currentUser + " " + appt);
 
         //Add String converter to convert barber and customer objects
-        comboBarber.setConverter(new StringConverter<Barber>() {
-            @Override
-            public String toString(Barber object) {
-                if (object == null) {
-                    return null;
-                } else {
-                    return object.nameProperty().get();
-                }
-            }
-
-            @Override
-            public Barber fromString(String string) {
-//                        return null;
-                return comboBarber.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
-            }
-        });
-
-        comboExistCustomer.setConverter(new StringConverter<Customer>() {
-            @Override
-            public String toString(Customer object) {
-                if (object == null) {
-                    return null;
-                } else {
-                    return object.customerNameProperty().get();
-                }
-            }
-
-            @Override
-            public Customer fromString(String string) {
-//                return null;
-                return comboExistCustomer.getItems().stream().filter(ap -> ap.customerNameProperty().get().equals(string)).findFirst().orElse(null);
-            }
-        });
-
-        comboPet.setConverter(new StringConverter<Pet>() {
-            @Override
-            public String toString(Pet object) {
-                if (object == null) {
-                    return null;
-                } else {
-                    return object.nameProperty().get();
-                }
-            }
-
-            @Override
-            public Pet fromString(String string) {
-                return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
-            }
-        });
-
-        //POTENTIAL ISSUE: setting combobox could return null pointer exception
-        //solved by moving initializing data to setMainController() method
-        //Update Pet Combo based on current selection of Existing Customer
-        comboExistCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                System.out.println("old value is: " + oldValue);
-            } else {
-                comboPet.setItems(new PetDaoImpl().getPetsByCustomer(newValue.customerIdProperty().get()));
-//                System.out.println("newValue is " + newValue);
-//                int customerId = comboExistCustomer.getValue().customerIdProperty().get();
-//                System.out.println("printing customerId " + customerId);
-
-            }
-        });
-
+//        comboBarber.setConverter(new StringConverter<Barber>() {
+//            @Override
+//            public String toString(Barber object) {
+//                if (object == null) {
+//                    return null;
+//                } else {
+//                    return object.nameProperty().get();
+//                }
+//            }
+//
+//            @Override
+//            public Barber fromString(String string) {
+////                        return null;
+//                return comboBarber.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
+//            }
+//        });
+//
+//        comboExistCustomer.setConverter(new StringConverter<Customer>() {
+//            @Override
+//            public String toString(Customer object) {
+//                if (object == null) {
+//                    return null;
+//                } else {
+//                    return object.customerNameProperty().get();
+//                }
+//            }
+//
+//            @Override
+//            public Customer fromString(String string) {
+////                return null;
+//                return comboExistCustomer.getItems().stream().filter(ap -> ap.customerNameProperty().get().equals(string)).findFirst().orElse(null);
+//            }
+//        });
+//
+//        comboPet.setConverter(new StringConverter<Pet>() {
+//            @Override
+//            public String toString(Pet object) {
+//                if (object == null) {
+//                    return null;
+//                } else {
+//                    return object.nameProperty().get();
+//                }
+//            }
+//
+//            @Override
+//            public Pet fromString(String string) {
+//                return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
+//            }
+//        });
+//
+//        //POTENTIAL ISSUE: setting combobox could return null pointer exception
+//        //solved by moving initializing data to setMainController() method
+//        //Update Pet Combo based on current selection of Existing Customer
+//        comboExistCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue == null) {
+//                System.out.println("old value is: " + oldValue);
+//            } else {
+//                comboPet.setItems(new PetDaoImpl().getPetsByCustomer(newValue.customerIdProperty().get()));
+////                System.out.println("newValue is " + newValue);
+////                int customerId = comboExistCustomer.getValue().customerIdProperty().get();
+////                System.out.println("printing customerId " + customerId);
+//
+//            }
+//        });
         //Set close button to exit
         btnClose.setOnMouseClicked((evt) -> {
             mainApp.showAppointmentListScreen(currentUser);
@@ -190,6 +225,7 @@ public class Appointment_EditController1 {
     @FXML
     private void clearFields() {
 
+//        comboExistCustomer.setValue(null);
         comboBarber.getItems().clear();
         comboType.getItems().clear();
         comboExistCustomer.getItems().clear();
@@ -201,25 +237,24 @@ public class Appointment_EditController1 {
         datePicker.setValue(LocalDate.now());
     }
 
-    @FXML
-    private void initFields() {
-
-//        topLabel.setText("Edit Appointment");
-        comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
-        comboBarber.setItems(mainApp.getBarberData());
-
-        //Appointment Type dropdown
-        comboType.setItems(Appointment.getApptTypes());
-
-        //Start and End Times dropdown
-        comboStart.setItems(Appointment.getDefaultStartTimes());
-        comboEnd.setItems(Appointment.getDefaultEndTimes());
-
-    }
-
+//    @FXML
+//    private void initFields() {
+//
+//        //CLEAR AND INITIALIZE DEFAULT FIELDS
+////        comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
+//////        getPetsByCustomer(customerId);
+////        comboBarber.setItems(mainApp.getBarberData());
+////
+////        //Appointment Type dropdown
+////        comboType.setItems(Appointment.getApptTypes());
+////
+////        //Start and End Times dropdown
+////        comboStart.setItems(Appointment.getDefaultStartTimes());
+////        comboEnd.setItems(Appointment.getDefaultEndTimes());
+//    }
     @FXML
     void handleApptCancel(ActionEvent event) {
-
+        // Close the window
         mainApp.showAppointmentListScreen(currentUser);
     }
 
@@ -255,14 +290,7 @@ public class Appointment_EditController1 {
         } else {
 
             saveAppointment();
-//            if (topLabel.getText().contains("Edit")) {
-//                System.out.println("Updating..");
-//                updateAppointment();
-//
-//            } else if (topLabel.getText().contains("Add")) {
-//                System.out.println("Adding..");
-//                saveAppointment();
-//            }
+
         }
     }
 //
@@ -342,6 +370,13 @@ public class Appointment_EditController1 {
                 + " Pet " + sPet + " " + comboPet.getValue().nameProperty().get()
         );
 
+        //RESULT:
+//           [java] Printing record to save:  Title Test  Desc test  Type Extended
+//Barber StringProperty [value: Cutty]
+//Customer Customer id 2 name StringProperty [value: Sam] phone StringProperty [value: null] email StringProperty [value: null]
+//Pet jCalendar.model.Pet@654b8b25
+//        Appointment appt = new Appointment(String sTitle, stringStart, stringEnd, sDesc, sType, sBarber, sCustomer);
+        //Print appointment times
         System.out.println("Appointment times to save :" + stringStart + " and " + stringEnd);
         System.out.println("Current user :" + currentUser.getUserName());
         try {
@@ -375,6 +410,8 @@ public class Appointment_EditController1 {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
+        mainApp.refreshView();
     }
 
     public Boolean validateApptOverlap(ZonedDateTime sDate, ZonedDateTime eDate) {

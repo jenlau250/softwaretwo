@@ -42,9 +42,9 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="146.0" layoutY="81.0" spacing="50.0" style="-fx-background-color: transparent;" styleClass="normalButton" stylesheets="@../styles/styles.css" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
          <children>
-            <JFXButton fx:id="btnNewAdd" buttonType="RAISED" onAction="#handleApptAddNew" styleClass="normalButton" stylesheets="@../styles/styles.css" text="Add New Customer" />
-            <JFXButton fx:id="btnEdit" buttonType="RAISED" onAction="#handleApptEdit" styleClass="normalButton" text="Update Customer" />
-            <JFXButton fx:id="btnDelete" buttonType="RAISED" onAction="#handleApptDelete" styleClass="normalButton" text="Delete Customer" />
+            <JFXButton fx:id="btnNewAdd" buttonType="RAISED" onAction="#handleApptAddNew" styleClass="normalButton" stylesheets="@../styles/styles.css" text="Add New Appointment" />
+            <JFXButton fx:id="btnEdit" buttonType="RAISED" onAction="#handleApptEdit" styleClass="normalButton" text="Update Appointment" />
+            <JFXButton fx:id="btnDelete" buttonType="RAISED" onAction="#handleApptDelete" styleClass="normalButton" text="Delete Appointment" />
          </children>
       </HBox>
    </children>

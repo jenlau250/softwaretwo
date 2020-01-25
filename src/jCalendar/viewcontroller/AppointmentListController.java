@@ -42,7 +42,9 @@ public class AppointmentListController implements Initializable {
 
     private jCalendar mainApp;
     private User currentUser;
-
+    private LocalDate currDate;
+    Appointment selectedAppt;
+//    private Appointment selectedAppt;
     @FXML
     private TableView<Appointment> tableView;
 
@@ -91,7 +93,6 @@ public class AppointmentListController implements Initializable {
     @FXML
     private JFXButton btnNext;
 
-    private LocalDate currDate;
     private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
@@ -114,20 +115,39 @@ public class AppointmentListController implements Initializable {
     @FXML
     void handleApptEdit(ActionEvent event) {
 
-        Appointment selAppt = tableView.getSelectionModel().getSelectedItem();
+        selectedAppt = tableView.getSelectionModel().getSelectedItem();
 
-        System.out.println(selAppt);
-        mainApp.showAppointmentAddScreen(currentUser, selAppt);
+        if (selectedAppt != null) {
+            mainApp.showAppointmentEditScreen(currentUser, selectedAppt);
+        } else {
+            System.out.println("Please select an appointment first");
+        }
 
     }
 
     @FXML
     void handleApptDelete(ActionEvent event) {
 
-        Appointment selAppt = tableView.getSelectionModel().getSelectedItem();
-
-        mainApp.showAppointmentAddScreen(currentUser, selAppt);
-
+//        if (selectedAppt == null) {
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Nothing selected");
+//            alert.setHeaderText("No appointment was selected to delete");
+//            alert.setContentText("Please select an appointment to delete");
+//            alert.showAndWait();
+//        } else {
+//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//            alert.setTitle("Confirm Deletion");
+//            alert.setHeaderText("Are you sure you want to delete " + selectedAppt.getTitle() + " scheduled for " + selectedAppt.getCustomer().getCustomerName() + "?");
+//            alert.showAndWait()
+//                    .filter(response -> response == ButtonType.OK)
+//                    .ifPresent(response -> {
+//                        deleteAppointment(selectedAppt);
+//                        mainApp.showAppointmentScreen(currentUser);
+//                    }
+//                    );
+//        }
+//        selectedAppt = tableView.getSelectionModel().getSelectedItem();
+//        mainApp.showAppointmentEditScreen(currentUser, selAppt);
     }
 
     /**
@@ -141,6 +161,7 @@ public class AppointmentListController implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
 
+        //        selectedAppt = tableView.getSelectionModel().getSelectedItem();
         //1 - INITIALIZE THE TABLECOLUMNS
         colTitle.setCellValueFactory(f -> f.getValue().titleProperty());
         colDate.setCellValueFactory(f -> f.getValue().startProperty());
@@ -149,7 +170,7 @@ public class AppointmentListController implements Initializable {
         colType.setCellValueFactory(f -> f.getValue().descriptionProperty());
 
         colBarber.setCellValueFactory(f -> f.getValue().getBarber().nameProperty());
-        colPet.setCellValueFactory(f -> f.getValue().getCustomer().getPet().nameProperty());
+        colPet.setCellValueFactory(f -> f.getValue().getPet().nameProperty());
         colCusName.setCellValueFactory(f -> f.getValue().getCustomer().customerNameProperty());
         colPhone.setCellValueFactory(f -> f.getValue().getCustomer().customerPhoneProperty());
         colEmail.setCellValueFactory(f -> f.getValue().getCustomer().customerEmailProperty());

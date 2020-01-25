@@ -30,6 +30,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,8 +56,8 @@ public class Appointment_AddController {
 //    private AppointmentScreenController mainController;
     private jCalendar mainApp;
     private User currentUser;
-    private Appointment appt;
-
+    private Appointment selectedAppt;
+    private boolean editClicked;
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -95,6 +97,9 @@ public class Appointment_AddController {
     private JFXComboBox<Pet> comboPet;
     @FXML
     private VBox vBoxCustomer;
+    private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
 
 //    @FXML
 //    private JFXTextField txtNewCustomer;
@@ -123,6 +128,32 @@ public class Appointment_AddController {
 
         clearFields();
         initFields();
+
+        System.out.println("Saved for App Screen mainApp, user, Appt " + mainApp + " " + currentUser);
+
+        if (selectedAppt != null) {
+//EDIT APPT
+            System.out.println("Printing selected appt " + selectedAppt);
+            topLabel.setText("Edit Appointment");
+            System.out.println("to edit");
+//            editClicked = true;
+//            btnApptCancel.setDisable(false);
+//            btnApptSave.setDisable(false);
+//            btnApptUpdate.setDisable(true);
+//            btnApptAdd.setDisable(true);
+//            btnApptDel.setDisable(true);
+//            apptVBox.setVisible(true);
+
+        } else {
+            System.out.println("to add");
+            //IF NO SELECTED APPT, then ADD
+
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Nothing selected");
+//            alert.setHeaderText("No appointment was selected");
+//            alert.setContentText("Please select an appointment to update");
+//            alert.showAndWait();
+        }
 
         //Add String converter to convert barber and customer objects
         comboBarber.setConverter(new StringConverter<Barber>() {
@@ -223,28 +254,6 @@ public class Appointment_AddController {
         });
     }
 
-    private void setAppointment(Appointment appt) {
-        this.appt = appt;
-        if (appt != null) {
-            topLabel.setText("Edit Appointment");
-//            editClicked = true;
-//            btnApptCancel.setDisable(false);
-//            btnApptSave.setDisable(false);
-//            btnApptUpdate.setDisable(true);
-//            btnApptAdd.setDisable(true);
-//            btnApptDel.setDisable(true);
-//            apptVBox.setVisible(true);
-
-        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Nothing selected");
-//            alert.setHeaderText("No appointment was selected");
-//            alert.setContentText("Please select an appointment to update");
-//            alert.showAndWait();
-        }
-
-    }
-
     @FXML
     private void clearFields() {
 
@@ -263,6 +272,19 @@ public class Appointment_AddController {
     @FXML
     private void initFields() {
 
+        //datePicker
+        //Start and End Times dropdown
+        comboStart.setItems(Appointment.getDefaultStartTimes());
+        comboEnd.setItems(Appointment.getDefaultEndTimes());
+
+        //Get Appointment Type
+        comboType.setItems(Appointment.getApptTypes());
+//        txtTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+//        txtDesc.setCellValueFactory(new PropertyValueFactory<>("notes"));
+////
+//        tCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
+//        tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
+
         //CLEAR AND INITIALIZE DEFAULT FIELDS
 //        customers.clear();
 //        customers.addAll(mainApp.getCustomerData());
@@ -274,14 +296,6 @@ public class Appointment_AddController {
 //
 //        getPetsByCustomer(customerId);
         comboBarber.setItems(mainApp.getBarberData());
-
-        //Appointment Type dropdown
-        comboType.setItems(Appointment.getApptTypes());
-
-        //Start and End Times dropdown
-        comboStart.setItems(Appointment.getDefaultStartTimes());
-        comboEnd.setItems(Appointment.getDefaultEndTimes());
-
     }
 
     @FXML
@@ -373,6 +387,8 @@ public class Appointment_AddController {
 
     private void saveAppointment() {
 
+        //TEMP ADD CURRENT USER AS "TEST"
+        currentUser.setUserName("test");
         System.out.println("Current user for Appt SAVE Screen " + currentUser);
 
         //Convert datepicker and time to LocalDateTime
@@ -452,6 +468,8 @@ public class Appointment_AddController {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
+        mainApp.refreshView();
     }
 
     public Boolean validateApptOverlap(ZonedDateTime sDate, ZonedDateTime eDate) {

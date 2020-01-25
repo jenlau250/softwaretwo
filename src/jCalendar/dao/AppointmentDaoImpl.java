@@ -70,12 +70,12 @@ public class AppointmentDaoImpl {
                         rs.getObject("barber.hireDate", LocalDate.class)
                 );
 
-//                Pet pet = new Pet(
-//                        rs.getInt("pet.petId"),
-//                        rs.getString("pet.petName"),
-//                        rs.getString("pet.petType"),
-//                        rs.getString("pet.petDescription")
-//                );
+                Pet pet = new Pet(
+                        rs.getString("pet.petId"),
+                        rs.getString("pet.petName"),
+                        rs.getString("pet.petType"),
+                        rs.getString("pet.petDescription")
+                );
                 Customer customer = new Customer(
                         rs.getString("customer.customerId"),
                         rs.getString("customerName"),
@@ -89,7 +89,7 @@ public class AppointmentDaoImpl {
                 );
 
 //                apptList.add(new Appointment(title, start, end, desc, type, barber, customer, pet));
-                apptList.add(new Appointment(appointmentId, title, start, end, desc, type, barber, customer));
+                apptList.add(new Appointment(appointmentId, title, start, end, desc, type, barber, customer, pet));
 
             }
             DBConnection.closeConnection();
