@@ -58,7 +58,7 @@ public class AppointmentListController implements Initializable {
     private TableColumn<Appointment, String> colCusName;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> colDate;
+    private TableColumn<Appointment, String> colDate;
 
     @FXML
     private TableColumn<Appointment, LocalDateTime> colStart;
@@ -95,16 +95,13 @@ public class AppointmentListController implements Initializable {
 
     private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private static final DateTimeFormatter DATEFORMATTOLOCAL = DateTimeFormatter.ofPattern("MM-dd-yyyy");
     private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
 
     //moved to mainApp
     private ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
-//    private ObservableList<Customer> customerData = FXCollections.observableArrayList();
-//    private ObservableList<Barber> barberData = FXCollections.observableArrayList();
-//    private ObservableList<Pet> petData = FXCollections.observableArrayList();
-//    private ObservableList<DisplayAppointment> displayAppointments = FXCollections.observableArrayList();
 
     @FXML
     void handleApptAddNew(ActionEvent event) {
@@ -163,8 +160,9 @@ public class AppointmentListController implements Initializable {
 
         //        selectedAppt = tableView.getSelectionModel().getSelectedItem();
         //1 - INITIALIZE THE TABLECOLUMNS
+        //this method replaces newPropertyValueFactory<>"date"
         colTitle.setCellValueFactory(f -> f.getValue().titleProperty());
-        colDate.setCellValueFactory(f -> f.getValue().startProperty());
+        colDate.setCellValueFactory(f -> f.getValue().startDateProperty());
         colStart.setCellValueFactory(f -> f.getValue().startProperty());
         colEnd.setCellValueFactory(f -> f.getValue().endProperty());
         colType.setCellValueFactory(f -> f.getValue().descriptionProperty());
@@ -178,20 +176,7 @@ public class AppointmentListController implements Initializable {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
-//SET HOW DATE, START AND END TIME FIELDS ARE DISPLAYED
-        colDate.setCellFactory(column -> new TableCell<Appointment, LocalDateTime>() {
-            @Override
-            protected void updateItem(LocalDateTime datetime, boolean empty
-            ) {
-                super.updateItem(datetime, empty);
-                if (empty) {
-                    setText("");
-                } else {
-                    setText(dateFormatter.format(datetime));
-                }
-            }
-        });
-
+//        colDate.setCellFactory(DateTimeUtil.getDateCell(dateFormatter));
         colStart.setCellFactory(column -> new TableCell<Appointment, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime datetime, boolean empty) {
@@ -221,6 +206,7 @@ public class AppointmentListController implements Initializable {
         labelStartBound.setText(null);
         labelEndBound.setText(null);
         comboWeekMonth.setValue("Monthly");
+
         currDate = LocalDate.now();
         nextMonth(currDate);
 
@@ -266,7 +252,10 @@ public class AppointmentListController implements Initializable {
         currDate = currDate.plusMonths(1);
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
         filteredData.setPredicate(row -> {
-            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//            original
+            LocalDate rowDate = LocalDate.parse(row.getStartDate(), DATEFORMATTOLOCAL);
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
+//            LocalDate rowDate = row.getStartDate();
             return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
         });
         tableView.setItems(filteredData);
@@ -279,9 +268,14 @@ public class AppointmentListController implements Initializable {
         currDate = currDate.minusMonths(1);
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
         filteredData.setPredicate(row -> {
+            LocalDate rowDate = LocalDate.parse(row.getStartDate(), DATEFORMATTOLOCAL);
+            //TROUBLESHOOTING TESTS
+            //LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat); <-- error:
+//Exception in thread "JavaFX Application Thread" java.lang.NullPointerException: text
+//	at java.util.Objects.requireNonNull(Objects.java:228)
 //            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
-//            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
-            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//                        LocalDate rowDate = row.getStartDate(); <-- works but with error msg
             return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
         });
         tableView.setItems(filteredData);
@@ -294,8 +288,10 @@ public class AppointmentListController implements Initializable {
         currDate = currDate.plusWeeks(1);
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
         filteredData.setPredicate(row -> {
+            LocalDate rowDate = LocalDate.parse(row.getStartDate(), DATEFORMATTOLOCAL);
 //            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
-            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//            LocalDate rowDate = row.getStartDate();
             return rowDate.isAfter(cbStartDate.minusDays(1)) && rowDate.isBefore(currDate);
         });
         tableView.setItems(filteredData);
@@ -307,8 +303,10 @@ public class AppointmentListController implements Initializable {
         currDate = currDate.minusWeeks(1);
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentList);
         filteredData.setPredicate(row -> {
+            LocalDate rowDate = LocalDate.parse(row.getStartDate(), DATEFORMATTOLOCAL);
 //            LocalDate rowDate = LocalDate.parse(row.getStart(), dateformat);
-            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
+//            LocalDate rowDate = row.getStartDate();
+//            LocalDate rowDate = LocalDate.parse(row.getStart2().format(dateformat));
             return rowDate.isAfter(currDate.minusDays(1)) && rowDate.isBefore(cbEndDate);
         });
         tableView.setItems(filteredData);

@@ -42,6 +42,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -58,6 +59,9 @@ public class Appointment_AddController {
     private User currentUser;
     private Appointment selectedAppt;
     private boolean editClicked;
+
+    @FXML
+    BorderPane mainScreen;
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -248,16 +252,14 @@ public class Appointment_AddController {
 //        });
         //Set close button to exit
         btnClose.setOnMouseClicked((evt) -> {
-//            Stage stage = (Stage) rootPane.getScene().getWindow();
-//            stage.close();
             mainApp.showAppointmentListScreen(currentUser);
         });
+
     }
 
     @FXML
     private void clearFields() {
 
-//        comboExistCustomer.setValue(null);
         comboBarber.getItems().clear();
         comboType.getItems().clear();
         comboExistCustomer.getItems().clear();
@@ -300,10 +302,8 @@ public class Appointment_AddController {
 
     @FXML
     void handleApptCancel(ActionEvent event) {
-        // Close the window
-//        Stage stage = (Stage) rootPane.getScene().getWindow();
-//        stage.close();
-//
+        //this closes the app
+//                ((Node) (event.getSource())).getScene().getWindow().hide();
         mainApp.showAppointmentListScreen(currentUser);
     }
 

@@ -9,10 +9,12 @@ import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
 import jCalendar.model.Customer;
 import jCalendar.model.Pet;
+import jCalendar.utilities.DateTimeUtil;
 import jCalendar.utilities.Loggerutil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -54,7 +56,7 @@ public class AppointmentDaoImpl {
 //                int customerId = rs.getInt("customerId");
 //                int barberId = rs.getInt("barberId");
                 String title = rs.getString("title");
-
+                Timestamp startDate = rs.getTimestamp("start");
                 LocalDateTime start = rs.getObject("start", LocalDateTime.class);
                 LocalDateTime end = rs.getObject("end", LocalDateTime.class);
                 String desc = rs.getString("description");
@@ -89,7 +91,7 @@ public class AppointmentDaoImpl {
                 );
 
 //                apptList.add(new Appointment(title, start, end, desc, type, barber, customer, pet));
-                apptList.add(new Appointment(appointmentId, title, start, end, desc, type, barber, customer, pet));
+                apptList.add(new Appointment(appointmentId, title, DateTimeUtil.getDateString(startDate), start, end, desc, type, barber, customer, pet));
 
             }
             DBConnection.closeConnection();
