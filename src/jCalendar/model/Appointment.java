@@ -30,10 +30,14 @@ public class Appointment {
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private final StringProperty type = new SimpleStringProperty(); //type
-    private Customer customer;
-    private Pet pet;
+    private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
+    private ObjectProperty<Customer> customer = new SimpleObjectProperty<>();
+    private ObjectProperty<Barber> barber = new SimpleObjectProperty<>();
+
+//    private Customer customer;
+//    private Pet pet;
     private String user;
-    private Barber barber;
+//    private Barber barber;
 
     private String month;
     private String count;
@@ -56,9 +60,9 @@ public class Appointment {
         this.end.set(end);
         this.description.set(desc);
         this.type.set(type);
-        this.barber = barber;
-        this.customer = customer;
-        this.pet = pet;
+        this.barber.set(barber);
+        this.customer.set(customer);
+        this.pet.set(pet);
 
     }
 
@@ -140,28 +144,40 @@ public class Appointment {
         return type;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public Barber getBarber() {
+    public ObjectProperty barberProperty() {
         return barber;
     }
 
-    public void setBarber(Barber barber) {
-        this.barber = barber;
+    public ObjectProperty customerProperty() {
+        return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Pet getPet() {
+    public ObjectProperty petProperty() {
         return pet;
     }
 
+    public Customer getCustomer() {
+        return customer.get();
+    }
+
+    public Barber getBarber() {
+        return barber.get();
+    }
+
+    public void setBarber(Barber barber) {
+        this.barber.set(barber);
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer.set(customer);
+    }
+
+    public Pet getPet() {
+        return pet.get();
+    }
+
     public void setPet(Pet pet) {
-        this.pet = pet;
+        this.pet.set(pet);
     }
 
     public String getUser() {
@@ -194,7 +210,7 @@ public class Appointment {
 
     public static ObservableList<String> getDefaultStartTimes() {
         //Set time from 8AM to 5PM in 15 minute increments
-        LocalTime appointmentStartTime = LocalTime.of(8, 0);
+        LocalTime appointmentStartTime = LocalTime.of(7, 0);
         while (!appointmentStartTime.equals(LocalTime.of(17, 0))) {
             String startTime = DateTimeUtil.parseTimeToStringFormat(appointmentStartTime);
             startTimes.add(startTime);
@@ -205,8 +221,8 @@ public class Appointment {
     }
 
     public static ObservableList<String> getDefaultEndTimes() {
-        //Set time from 8AM to 5PM in 15 minute increments
-        LocalTime appointmentEndTime = LocalTime.of(8, 0);
+        //Set time from 7AM to 5PM in 15 minute increments
+        LocalTime appointmentEndTime = LocalTime.of(7, 15);
         while (!appointmentEndTime.equals(LocalTime.of(17, 15))) {
             String endTime = DateTimeUtil.parseTimeToStringFormat(appointmentEndTime);
             endTimes.add(endTime);

@@ -346,15 +346,17 @@ public class Appointment_AddController {
         topLabel.setText("Edit Appointment");
         datePicker.setValue(appt.getStartDate());
 
-        //convert local date time to local time
-        comboStart.setValue(appt.getStart().toLocalTime().toString());
-        comboEnd.setValue(appt.getEnd().toLocalTime().toString());
-
+        //convert local time to string
+        String startTime = DateTimeUtil.parseTimeToStringFormat(appt.getStart().toLocalTime());
+        String endTime = DateTimeUtil.parseTimeToStringFormat(appt.getEnd().toLocalTime());
+        comboStart.setValue(startTime);
+        comboEnd.setValue(endTime);
+        System.out.println(appt.getEnd().toLocalTime().toString());
         //make editable?
-        comboType.setValue(appt.getType());
+        comboType.setValue(appt.typeProperty().get());
         comboBarber.setValue(appt.getBarber());
-        txtTitle.setText(appt.getTitle());
-        txtDesc.setText(appt.getDescription()); //Notes
+        txtTitle.setText(appt.titleProperty().get());
+        txtDesc.setText(appt.descriptionProperty().get()); //Notes
         comboExistCustomer.setValue(appt.getCustomer());
 //        comboPet.getItems().clear();
 
