@@ -133,9 +133,10 @@ public class Appointment_AddController {
         clearFields();
         initFields();
 
-        System.out.println("Saved for App Screen mainApp, user, Appt " + mainApp + " " + currentUser);
-
+        //ADD LOGIC - IF THERE IS SELECTED APPT, THIS IS TO EDIT, ELSE ADD
+        //NOT CURRENTLY WORKING
         if (selectedAppt != null) {
+            editClicked = true;
 //EDIT APPT
             System.out.println("Printing selected appt " + selectedAppt);
             topLabel.setText("Edit Appointment");
@@ -210,27 +211,21 @@ public class Appointment_AddController {
             }
         });
 
-        //POTENTIAL ISSUE: setting combobox could return null pointer exception
-        //solved by moving initializing data to setMainController() method
         //Update Pet Combo based on current selection of Existing Customer
         comboExistCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 System.out.println("old value is: " + oldValue);
             } else {
                 comboPet.setItems(new PetDaoImpl().getPetsByCustomer(newValue.customerIdProperty().get()));
-//                System.out.println("newValue is " + newValue);
-//                int customerId = comboExistCustomer.getValue().customerIdProperty().get();
-//                System.out.println("printing customerId " + customerId);
 
             }
         });
 
-        //Add Customer radio button listener
+        //ADD LISTENER FOR NEW OR EXISTING CUSTOMER
         //set default
 //        choiceExistingCustomer.setSelected(true);
 //        comboExistCustomer.setVisible(true);
 //        txtNewCustomer.setVisible(false);
-//
 //        txtNewCustomer.managedProperty().bind(txtNewCustomer.visibleProperty());
         //HIDE - test if this is causing combo box issues
 //        comboExistCustomer.managedProperty().bind(comboExistCustomer.visibleProperty());
@@ -250,7 +245,7 @@ public class Appointment_AddController {
 //                System.out.println("new customer selected");
 //            }
 //        });
-        //Set close button to exit
+        //CLOSE PANE ON EXIT
         btnClose.setOnMouseClicked((evt) -> {
             mainApp.showAppointmentListScreen(currentUser);
         });
@@ -260,55 +255,46 @@ public class Appointment_AddController {
     @FXML
     private void clearFields() {
 
-        comboBarber.getItems().clear();
-        comboType.getItems().clear();
-        comboExistCustomer.getItems().clear();
+        datePicker.setValue(LocalDate.now());
         comboStart.getItems().clear();
         comboEnd.getItems().clear();
-        comboPet.getItems().clear();
-        txtDesc.clear();
+        comboType.getItems().clear();
+        comboBarber.getItems().clear();
         txtTitle.clear();
-        datePicker.setValue(LocalDate.now());
+        txtDesc.clear(); //Notes
+        comboExistCustomer.getItems().clear();
+        comboPet.getItems().clear();
+
     }
 
     @FXML
     private void initFields() {
 
-        //datePicker
-        //Start and End Times dropdown
-        comboStart.setItems(Appointment.getDefaultStartTimes());
-        comboEnd.setItems(Appointment.getDefaultEndTimes());
+        if (!editClicked) { //Start and End Times dropdown
+            comboStart.setItems(Appointment.getDefaultStartTimes());
+            comboEnd.setItems(Appointment.getDefaultEndTimes());
+            //Get Appointment Type options
+            comboType.setItems(Appointment.getApptTypes());
+            comboBarber.setItems(mainApp.getBarberData());
+            comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
+            //pet combo dropdown is based on listener
+        } else if (editClicked) {
+            System.out.println("to do: populate edit fields for existing appt");
+        }
 
-        //Get Appointment Type
-        comboType.setItems(Appointment.getApptTypes());
-//        txtTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-//        txtDesc.setCellValueFactory(new PropertyValueFactory<>("notes"));
-////
-//        tCustomer.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getCustomer().getCustomerName()));
-//        tStartDate.setCellValueFactory(new PropertyValueFactory<>("start"));
-
-        //CLEAR AND INITIALIZE DEFAULT FIELDS
-//        customers.clear();
-//        customers.addAll(mainApp.getCustomerData());
-//        comboExistCustomer.setItems(mainApp.getCustomerData());
-        comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
-//        populatePetsLists();
-
-//if not null, change customer list
-//
-//        getPetsByCustomer(customerId);
-        comboBarber.setItems(mainApp.getBarberData());
     }
 
     @FXML
-    void handleApptCancel(ActionEvent event) {
+    void handleApptCancel(ActionEvent event
+    ) {
         //this closes the app
 //                ((Node) (event.getSource())).getScene().getWindow().hide();
         mainApp.showAppointmentListScreen(currentUser);
     }
 
     @FXML
-    void handleApptSave(ActionEvent event) {
+    void handleApptSave(ActionEvent event
+    ) {
 
         //HANDLE NULL POINTER EXCEPTION AT DATETIMEUTIL
         //Get Fields
@@ -338,7 +324,12 @@ public class Appointment_AddController {
 
         } else {
 
-            saveAppointment();
+            if (editClicked) {
+                updateAppointment();
+            } else {
+                saveAppointment();
+            }
+
 //            if (topLabel.getText().contains("Edit")) {
 //                System.out.println("Updating..");
 //                updateAppointment();
@@ -349,37 +340,27 @@ public class Appointment_AddController {
 //            }
         }
     }
-//
-//    private void populatePetsLists() {
-//
-//        //clear and load pet box
+
+    public void setSelectedAppointment(Appointment appt) {
+        //initialize selected appointment fields
+        topLabel.setText("Edit Appointment");
+        datePicker.setValue(appt.getStartDate());
+
+        //convert local date time to local time
+        comboStart.setValue(appt.getStart().toLocalTime().toString());
+        comboEnd.setValue(appt.getEnd().toLocalTime().toString());
+
+        //make editable?
+        comboType.setValue(appt.getType());
+        comboBarber.setValue(appt.getBarber());
+        txtTitle.setText(appt.getTitle());
+        txtDesc.setText(appt.getDescription()); //Notes
+        comboExistCustomer.setValue(appt.getCustomer());
 //        comboPet.getItems().clear();
-//
-//        int selCustomerId = comboExistCustomer.getValue().customerIdProperty().get();
-//        System.out.println(selCustomerId);
-//
-////        comboPet.getItems().removeIf((c) -> !Utils.isEmpty());
-//        //if combo box is not null
-//        comboPet.getItems().addAll(getPetsByCustomer(selCustomerId));
-//        comboPet.setItems(getPetsByCustomer(selCustomerId));
-//        String sql = "SELECT pet.petId, pet.petName "
-//                + "FROM pet "
-//                + "WHERE petId = \"" + selectedPetId + "\"";
-//
-//        Query.makeQuery(sql);
-//        System.out.println("Sql statement is " + sql);
-//        ResultSet result = Query.getResult();
-//
-//        try {
-//            while (result.next()) {
-//                selectedPets.add(new Pet(result.getInt("pet.petId"), result.getString("pet.petName")));
-//            }
-//        } catch (SQLException ex) {
-//            logger.log(Level.SEVERE, "SQL Exception with populating pet combo box.");
-//        }
-////         Set city options in cb.
-//        comboPet.setItems(selectedPets);
-//    }
+
+        System.out.println(appt.toString());
+
+    }
 
     private void updateAppointment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

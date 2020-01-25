@@ -23,6 +23,12 @@ public class Customer {
     private final StringProperty active = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
     private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
+
+//    private ObservableList<Pet> pets = FXCollections.observableArrayList();
+//
+//    public ObservableList<Pet> getPets() {
+//        return pets;
+//    }
     private int petId;
 
     public Customer(String id, String name) {
@@ -86,26 +92,6 @@ public class Customer {
 
     }
 
-//    public ObjectProperty<Pet> petProperty() {
-//        return pet;
-//    }
-//    public Pet getPet() {
-//        return petProperty().get();
-//    }
-//
-//    public void setPet(Pet pet) {
-//        petProperty().set(pet);
-//    }
-//    public Customer(String id, String name, String phone, String email, String active, String notes, int petId) {
-//        this.customerId.set(id);
-//        this.customerName.set(name);
-//        this.customerPhone.set(phone);
-//        this.customerEmail.set(email);
-//        this.active.set(active);
-//        this.notes.set(notes);
-//        this.petId = petId;
-//
-//    }
     //FOR TABLEVIEW
     public Customer(String id, String name, String phone, String email, Pet pet) {
         this.customerId.set(id);
@@ -118,14 +104,6 @@ public class Customer {
 
     }
 
-//    public int getPetId() {
-//        return petId;
-//
-//    }
-//
-//    public void setPetId(int petId) {
-//        this.petId = petId;
-//    }
     public StringProperty customerPhoneProperty() {
         return this.customerPhone;
     }
@@ -138,20 +116,6 @@ public class Customer {
 
     }
 
-//    public Customer(Pet pet, String count) {
-//        this.pet.set(pet);
-//        this.count = count;
-//    }
-//    public Customer(int customerId, String customerNameG, String phone, String email, String notes, String active, Pet pet) {
-//        this.customerId2 = customerId;
-//        this.customerName2 = customerNameG;
-//        this.phone = phone;
-//        this.email = email;
-//        this.notes = notes;
-//        this.active = active;
-//        this.pet = pet;
-//
-//    }
     public String getPhone() {
         return customerPhone.get();
     }
@@ -185,10 +149,6 @@ public class Customer {
         this.notes.set(notes);
     }
 
-//    public Pet getPet() {
-//        return pet;
-//
-//    }
     @Override
     public String toString() {
         return "Customer id " + customerIdProperty().get()

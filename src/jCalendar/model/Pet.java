@@ -24,6 +24,10 @@ public class Pet {
 //    private String customerId;
     private String image;
 
+    public Pet() {
+
+    }
+
     //FOR TABLEVIEW
     public Pet(String id, String name, String type, String desc) {
         this.petId.set(id);
@@ -32,13 +36,6 @@ public class Pet {
         this.petDescription.set(desc);
     }
 
-//    public Pet(int id, String name, String type, String desc, String customerId) {
-//        this.petId.setValue(id);
-//        this.petName2.set(name);
-//        this.petType2.set(type);
-//        this.petDescription.set(desc);
-//        this.customerId = customerId;
-//    }
     public Pet(String id, String name, String type, String desc, String active, Customer customer) {
         this.petId.set(id);
         this.petName.set(name);
@@ -46,6 +43,11 @@ public class Pet {
         this.petDescription.set(desc);
         this.petActive.set(active);
         this.customer = customer;
+    }
+
+    public Pet(String petId, String petName) {
+        this.petId.set(petId);
+        this.petName.set(petName);
     }
 
     public StringProperty nameProperty() {
@@ -64,21 +66,28 @@ public class Pet {
         return petId;
     }
 
-    public Pet() {
-
+    public String getPetId() {
+        return petId.get();
     }
 
-    public Pet(String petId, String petName) {
-        this.petId.set(petId);
-        this.petName.set(petName);
+    public String getPetName() {
+        return petName.get();
     }
 
-    public String getImage() {
-        return image;
+    public String getPetType() {
+        return petType.get();
+    }
+
+    public String getPetDesc() {
+        return petDescription.get();
     }
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public Customer getCustomer() {

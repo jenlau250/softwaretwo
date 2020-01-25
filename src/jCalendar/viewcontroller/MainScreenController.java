@@ -99,7 +99,8 @@ public class MainScreenController {
         FilteredList<Appointment> filteredData = new FilteredList<>(reminderList);
 
         filteredData.setPredicate(row -> {
-            LocalDateTime rowDate = LocalDateTime.parse(row.getStart(), timeDTF);
+            LocalDateTime rowDate = row.getStart();
+//            LocalDateTime rowDate = LocalDateTime.parse(row.getStart(), timeDTF);
             return rowDate.isAfter(now.minusMinutes(1)) && rowDate.isBefore(nowPlus15Min);
         });
 
@@ -108,7 +109,7 @@ public class MainScreenController {
         } else {
             String type = filteredData.get(0).getType();
             String customer = filteredData.get(0).getCustomer().getCustomerName();
-            String start = filteredData.get(0).getStart();
+            String start = filteredData.get(0).getStart().toString();
 
             txtAreaReminders.appendText("Reminder for upcoming appointment! \n"
                     + " Customer: " + customer + "\n"

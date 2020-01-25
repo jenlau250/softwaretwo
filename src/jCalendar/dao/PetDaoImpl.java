@@ -31,13 +31,8 @@ public class PetDaoImpl {
                     + "WHERE pet.customerId = customer.customerId "
                     + "AND customer.customerId = " + customerId
             );
-//            "SELECT pet.petId, petName, petType, petDescription "
-//                    + "FROM pet, customer "
-//                    + "WHERE pet.customerId = customer.customerId "
-//                    + "AND customer.customerId = \"" + customerId + "\""
-//            );
 
-            System.out.println(ps);
+            System.out.println("running PetDAO getPetsbyCuseromer");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -74,7 +69,7 @@ public class PetDaoImpl {
                     + "WHERE pet.customerId = customer.customerId "
             );
 
-            System.out.println(ps);
+            System.out.println("running PetDAO  loadCustomerPetData()");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -105,6 +100,7 @@ public class PetDaoImpl {
         return customerPetList;
 
     }
+
 //
 //    public ObservableList<Pet> getPetsByCustomer(int customerId) {
 //
@@ -140,7 +136,6 @@ public class PetDaoImpl {
 //        return petList;
 //
 //    }
-
     public static ObservableList<Pet> addPets() {
 
         ObservableList<Pet> petList = FXCollections.observableArrayList();

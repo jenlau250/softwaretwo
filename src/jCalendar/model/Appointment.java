@@ -6,6 +6,7 @@
 package jCalendar.model;
 
 import jCalendar.utilities.DateTimeUtil;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javafx.beans.property.ObjectProperty;
@@ -21,98 +22,56 @@ import javafx.collections.ObservableList;
  */
 public class Appointment {
 
-    private int appointmentId;
-    private int customerId;
-    private int barberId;
-    private final StringProperty startDate = new SimpleStringProperty();
-
+    private final StringProperty appointmentId = new SimpleStringProperty();
+//    private final StringProperty startDate = new SimpleStringProperty();
+    private final ObjectProperty<LocalDate> startDate = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDateTime> start = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDateTime> end = new SimpleObjectProperty();
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
-    private final ObjectProperty<LocalDateTime> start2 = new SimpleObjectProperty();
-    private final ObjectProperty<LocalDateTime> end2 = new SimpleObjectProperty();
-
-    private String sTitle;
-    private String type;
-    private String location;
-    private String month;
-    private String count;
-    private String start;
-    private String end;
-
+    private final StringProperty type = new SimpleStringProperty(); //type
     private Customer customer;
     private Pet pet;
     private String user;
     private Barber barber;
-    private String calendar;
 
-//    public void setStartDate(ObjectProperty<LocalDateTime> start2) {
-//        this.start2.set(dateFormatter.format(start2);
-//    }
-    //FOR TABLEVIEW
-//    public Appointment(int appointmentId, int customerId, String title, String description, LocalDateTime start, LocalDateTime end, Barber barber) {
-//        this.appointmentId = appointmentId;
-////        this.barberId = barberId;
-//        this.customerId = customerId;
-//        this.title.set(title);
-//        this.description.set(description);
-//        this.start2.set(start);
-//        this.end2.set(end);
-//        this.barber = barber;
-//    }
-    public Appointment(int customerId, String title) {
-        this.customerId = customerId;
-        this.title.set(title);
+    private String month;
+    private String count;
 
+    private static final ObservableList<String> startTimes = FXCollections.observableArrayList();
+    private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
+
+    //Default Appt Types
+    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Standard", "Extended");
+
+    public Appointment() {
     }
 
-//current tableview
-    public Appointment(int appointmentId, String title, String startDate, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
+    public Appointment(String appointmentId, String title, LocalDate startDate, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
 
-        this.appointmentId = appointmentId;
-//        this.customerId = customerId;
+        this.appointmentId.set(appointmentId);
         this.title.set(title);
         this.startDate.set(startDate);
-        this.start2.set(start);
-        this.end2.set(end);
+        this.start.set(start);
+        this.end.set(end);
         this.description.set(desc);
-        this.type = type;
+        this.type.set(type);
         this.barber = barber;
         this.customer = customer;
         this.pet = pet;
 
     }
 
-    //for saving
-    public Appointment(String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer) {
-
-//        this.appointmentId = appointmentId;
-//        this.customerId = customerId;
-        this.title.set(title);
-        this.start2.set(start);
-        this.end2.set(end);
-        this.description.set(desc);
-        this.type = type;
-        this.barber = barber;
-        this.customer = customer;
-
+    public String getAppointmentId() {
+        return appointmentId.get();
     }
 
-    public int getCustomerId() {
-        return customerId;
-
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId.set(appointmentId);
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getBarberId() {
-        return barberId;
-
-    }
-
-    public void setBarberId(int barberId) {
-        this.barberId = barberId;
+    public StringProperty appointmentIdProperty() {
+        return appointmentId;
     }
 
     public String getTitle() {
@@ -140,144 +99,45 @@ public class Appointment {
     }
 
     public ObjectProperty startProperty() {
-        return start2;
+        return start;
+    }
+
+    public LocalDateTime getStart() {
+        return start.get();
     }
 
     public ObjectProperty endProperty() {
-        return end2;
+        return end;
     }
 
-    public LocalDateTime getStart2() {
-        return start2.get();
+    public LocalDateTime getEnd() {
+        return end.get();
     }
 
-//    public LocalDate getStartDate() {
-//        return start2.get().toLocalDate();
-//    }
-    public StringProperty startDateProperty() {
+    public ObjectProperty startDateProperty() {
         return startDate;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate.get();
-    }
-
-    private static final ObservableList<String> startTimes = FXCollections.observableArrayList();
-    private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
-
-    //Default Appt Types
-    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Standard", "Extended");
-
-    //Default Appt Start Times
-    public Appointment() {
     }
 
     public Appointment(String month, String type, String count) {
         this.month = month;
-        this.type = type;
+        this.type.set(type);
         this.count = count;
     }
 
-    public Appointment(int appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public int getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(int appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public String getsTitle() {
-        return sTitle;
-    }
-
-    public void setsTitle(String sTitle) {
-        this.sTitle = sTitle;
-    }
-
-    public Appointment(int appointmentId, String start, String end, String sTitle, String type, String location, Customer customer, String user) {
-        this.appointmentId = appointmentId;
-        this.start = start;
-        this.end = end;
-        this.sTitle = sTitle;
-        this.type = type;
-        this.location = location;
-        this.customer = customer;
-        this.user = user;
-    }
-
-    public Appointment(int sAppointmentId, String format, String format0, String sTitle, String sType, String sLocation, Customer sCustomer, String sUser, Barber sBarber, Calendar sCalendar) {
-        this.appointmentId = appointmentId;
-        this.start = start;
-        this.end = end;
-        this.sTitle = sTitle;
-        this.type = type;
-        this.location = location;
-        this.customer = customer;
-        this.user = user;
-        this.barber = barber;
-        this.calendar = calendar;
-    }
-
-    public Appointment(int appointmentId, String title, String type, String location, String month, String start, String end, Customer customer, Pet pet) {
-        this.appointmentId = appointmentId;
-        this.sTitle = title;
-        this.type = type;
-        this.location = location;
-        this.month = month;
-        this.start = start;
-        this.end = end;
-        this.customer = customer;
-        this.pet = pet;
-    }
-//
-//    public int getAppointmentId() {
-//        return appointmentId;
-//    }
-//    public void setAppointmentId(int appointmentId) {
-//        this.appointmentId = appointmentId;
-//    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
     public String getType() {
-        return type;
+        return type.get();
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type.set(type);
     }
 
-    public String getStart() {
-        return start;
-    }
-
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
+    public StringProperty typeProperty() {
+        return type;
     }
 
     public Customer getCustomer() {
@@ -286,6 +146,10 @@ public class Appointment {
 
     public Barber getBarber() {
         return barber;
+    }
+
+    public void setBarber(Barber barber) {
+        this.barber = barber;
     }
 
     public void setCustomer(Customer customer) {
@@ -352,23 +216,19 @@ public class Appointment {
         return endTimes;
     }
 
-    public void setBarber(Barber barber) {
-        this.barber = barber;
+    @Override
+    //public Appointment(String appointmentId, String title, String startDate, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
+
+    public String toString() {
+        return "ID: " + getAppointmentId() + '\n'
+                + "Title: " + getTitle() + '\n'
+                + "Start Date: " + getStartDate() + '\n'
+                + "Time: " + getStart() + " to " + getEnd() + '\n'
+                + "Description: " + getDescription() + '\n'
+                + "Type: " + getType() + '\n'
+                + "Barber: " + getBarber().getBarberId() + " - " + getBarber().getBarberName() + '\n'
+                + "Customer: " + getCustomer().getCustomerId() + " - " + getCustomer().getCustomerName() + '\n'
+                + "Pet: " + getPet().getPetId() + " - " + getPet().getPetName() + '\n';
     }
 
-    public String getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(String calendar) {
-        this.calendar = calendar;
-    }
-
-//    public Pet getPet() {
-//        return pet;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
 }

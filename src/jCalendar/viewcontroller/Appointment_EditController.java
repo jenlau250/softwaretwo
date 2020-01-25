@@ -100,7 +100,7 @@ public class Appointment_EditController {
     private final DateTimeFormatter timeformat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private final DateTimeFormatter dateformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final DateTimeFormatter labelformat = DateTimeFormatter.ofPattern("E MMM d, yyyy");
-
+    private static final DateTimeFormatter DATEFORMATTOLOCAL = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 //    @FXML
 //    private JFXTextField txtNewCustomer;
 //
@@ -132,14 +132,13 @@ public class Appointment_EditController {
 //        editAppointmentDetails(appt);
 
 //initialize selected appt details
-        String start = appt.getStart();
-        String end = appt.getEnd();
+        String start = appt.getStart().toString();
+        String end = appt.getEnd().toString();
         LocalDateTime startLDT = LocalDateTime.parse(start, dateformat);
         LocalDateTime endLDT = LocalDateTime.parse(end, dateformat);
 
         //fill data
-        datePicker.setValue(LocalDate.parse(appt.getStart(), dateformat));
-
+//        datePicker.setValue(LocalDate.parse(appt.getStartDate(), DATEFORMATTOLOCAL));
         comboStart.getSelectionModel().select(startLDT.toLocalTime().format(timeformat));
         comboEnd.getSelectionModel().select(endLDT.toLocalTime().format(timeformat));
 

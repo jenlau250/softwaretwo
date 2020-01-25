@@ -147,8 +147,12 @@ public class ReportScreenController {
 
     private void filterMonth(String month) {
         FilteredList<Appointment> filteredData = new FilteredList<>(schedule);
+
+        DateTimeFormatter DATEFORMATTOLOCAL = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         filteredData.setPredicate(row -> {
-            LocalDate rowDate = LocalDate.parse(row.getStart(), dtformat);
+            LocalDate rowDate = row.getStartDate();
+//            LocalDate rowDate = LocalDate.parse(row.getStartDate(), DATEFORMATTOLOCAL);
+//            LocalDate rowDate = LocalDate.parse(row.getStart(), dtformat);
             String rowMonth = rowDate.getMonth().name();
             return rowMonth.equals(month);
         });

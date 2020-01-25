@@ -13,7 +13,6 @@ import jCalendar.dao.PetDaoImpl;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
 import jCalendar.model.Customer;
-import jCalendar.model.DataModel;
 import jCalendar.model.DisplayAppointment;
 import jCalendar.model.Pet;
 import jCalendar.model.User;
@@ -45,7 +44,6 @@ public class jCalendar extends Application {
     private User currUser;
     private Appointment appt;
     private Customer customer;
-    private DataModel model;
     private DBConnection databasebHandler;
 
     private ObservableList<Appointment> appointmentData = FXCollections.observableArrayList();
@@ -91,10 +89,9 @@ public class jCalendar extends Application {
         customerPetData.addAll(new PetDaoImpl().loadCustomerPetData());
 //        petData.addAll(new PetDaoImpl().loadPetsData());
 
-        for (Pet p : customerPetData) {
-            System.out.println("printing" + p.toString());
-        }
-
+//        for (Pet p : customerPetData) {
+//            System.out.println("printing" + p.toString());
+//        }
 //        showLoginScreen2();
         showMain(currUser);
 //        showListScreen();
@@ -233,24 +230,24 @@ public class jCalendar extends Application {
             ex.printStackTrace();
         }
     }
-
-    public void showAppointmentScreen() {
-
-        try {
-
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
-            screen = (AnchorPane) loader.load();
-
-            mainScreen.setCenter(screen);
-
-            AppointmentScreenController controller = loader.getController();
-            controller.setMainController(this);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+//
+//    public void showAppointmentScreen() {
+//
+//        try {
+//
+//            FXMLLoader loader = new FXMLLoader();
+//            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentScreen.fxml"));
+//            screen = (AnchorPane) loader.load();
+//
+//            mainScreen.setCenter(screen);
+//
+//            AppointmentScreenController controller = loader.getController();
+//            controller.setMainController(this);
+//
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     public void showReportScreen() {
 
@@ -290,7 +287,6 @@ public class jCalendar extends Application {
     public void showAppointmentEditScreen(User currentUser, Appointment appt) {
 
         // to edit appointment
-        //store selected appt in data singleton
         try {
 
             FXMLLoader loader = new FXMLLoader();
@@ -326,6 +322,24 @@ public class jCalendar extends Application {
         }
     }
 
+    public void showAppointmentAddScreen(User currentUser, Appointment selectedAppt) {
+
+        //TO PASS SELECTED APPT FOR EDITING
+        try {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/Appointment_Add.fxml"));
+            screen = (AnchorPane) loader.load();
+
+            mainScreen.setLeft(screen);
+
+            Appointment_AddController controller = loader.getController();
+            controller.setMainController(this, currentUser);
+            controller.setSelectedAppointment(selectedAppt);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 //        try {
 //
 //
