@@ -6,7 +6,6 @@
 package jCalendar.dao;
 
 import jCalendar.model.Customer;
-import jCalendar.model.Pet;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,6 @@ public class CustomerDaoImpl {
 
         try {
             PreparedStatement ps = DBConnection.getConn().prepareStatement(
-                    //                    "SELECT * FROM customer");
                     "SELECT * FROM customer");
 
             ResultSet rs = ps.executeQuery();
@@ -39,8 +37,26 @@ public class CustomerDaoImpl {
                 String active = rs.getString("active");
                 String notes = rs.getString("notes");
 
-                customerList.add(new Customer(id, name, phone, email, active, notes));
-//                customerList.add(new Customer(id, name, phone, email, petId, petName, petType, petDescription));
+                //this customer list needs to contain pets
+                //it needs to be loaded after pet list is loaded
+//                PetDaoImpl petDb = new PetDaoImpl();
+//                for (Customer c : customerData) {
+//                    c.getPets().addAll(petDb.getPetsByCustomer(c.getCustomerId()));
+//                }
+//1. Add customerId to Pets and use pet.CustomerId to populate customerlist
+//2. NO IDs in Pet or Customer. Combine query into one to populate lists..
+//should populate list of pets by customerID.
+                Customer c = new Customer(id, name, phone, email, active, notes);
+
+                customerList.add(c);
+//                ps2.setString(1, c.getCustomerId());
+//
+//                ResultSet rs2 = ps2.executeQuery();
+//
+//                while (rs2 != null && rs2.next()) {
+//                    System.out.println("query " + ps2);
+//                    c.getPets().add(new Pet(rs.getString("pet.petId"), rs.getString("pet.petName")));
+//                }
 
             }
 
@@ -52,52 +68,6 @@ public class CustomerDaoImpl {
         }
         return customerList;
 
-    }
-
-    public ObservableList<Customer> getallCustomers() throws SQLException, Exception {
-        //can delete DB init and close
-        ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-
-//	DBConnection.init();
-        String sqlStatement
-                = ("SELECT customer.customerId, "
-                + "customer.customerName, "
-                + "customer.customerPhone, "
-                + "customer.customerEmail, "
-                + "customer.notes, "
-                + "customer.active, "
-                + "pet.petId, "
-                + "pet.petName, "
-                + "pet.petType, "
-                + "pet.petDescription "
-                //                + "barber.barberId "
-
-                + "FROM pet, customer "
-                + "WHERE pet.customerId = customer.customerId ");
-
-        Query.makeQuery(sqlStatement);
-        ResultSet result = Query.getResult();
-
-        while (result.next()) {
-            String customerId = result.getString("customerId");
-            String customerNameG = result.getString("customerName");
-            String phone = result.getString("customerPhone");
-            String email = result.getString("customerEmail");
-
-            String active = result.getString("active");
-            String notes = result.getString("notes");
-            Pet pet = new Pet(result.getString("pet.petId"), result.getString("pet.petName"), result.getString("pet.petType"), result.getString("pet.petDescription"));
-//            int barberId = result.getInt("barberId");
-//	    String zipcode = result.getString("pet.postalCode")
-
-            Customer customerResult = new Customer(customerId, customerNameG, phone, email, active, notes, pet);
-
-//
-            allCustomers.add(customerResult);
-        }
-
-//	DBConnection.closeConnection();
-        return allCustomers;
     }
 
     public ObservableList<Customer> populateCustomerList() {

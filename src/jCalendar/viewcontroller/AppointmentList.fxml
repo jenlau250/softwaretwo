@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane id="AnchorPane" fx:id="root" style="-fx-background-color: #9baec8;" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentListController">
+<AnchorPane id="AnchorPane" fx:id="root" style="-fx-background-color: #d9e1e8;" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.AppointmentListController">
    <children>
-      <HBox layoutX="86.0" layoutY="137.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="150.0">
+      <HBox layoutX="86.0" layoutY="137.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
          <children>
             <TableView fx:id="tableView" prefHeight="650.0" prefWidth="1000.0" stylesheets="@../styles/jfx-table-view.css" HBox.hgrow="ALWAYS">
               <columns>
@@ -32,7 +32,7 @@
             </TableView>
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
          <children>
             <Label fx:id="labelStartBound" text="Label" />
             <JFXButton fx:id="btnBack" buttonType="RAISED" styleClass="normalButton" text="&lt;&lt;" />

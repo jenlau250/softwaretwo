@@ -5,13 +5,14 @@
  */
 package jCalendar.viewcontroller;
 
+import Cache.BarberCache;
+import Cache.CustomerCache;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
-import jCalendar.dao.PetDaoImpl;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
@@ -133,8 +134,6 @@ public class Appointment_AddController {
         clearFields();
         initFields();
 
-        //ADD LOGIC - IF THERE IS SELECTED APPT, THIS IS TO EDIT, ELSE ADD
-        //NOT CURRENTLY WORKING
         if (selectedAppt != null) {
             editClicked = true;
 //EDIT APPT
@@ -216,8 +215,12 @@ public class Appointment_AddController {
             if (newValue == null) {
                 System.out.println("old value is: " + oldValue);
             } else {
-                comboPet.setItems(new PetDaoImpl().getPetsByCustomer(newValue.customerIdProperty().get()));
+                System.out.println("Selected customer is " + newValue);
 
+//                comboPet.setItems(new PetDaoImpl().getPetsByCustomer(newValue.customerIdProperty().get()));
+//                comboPet.setItems(newValue.getPets());
+//UPDATE LATER, change this to update observable list and set combopet to that list
+//                comboPet.setItems(PetCache.getPetsByCustomerId(newValue.getCustomerId()));
             }
         });
 
@@ -247,7 +250,7 @@ public class Appointment_AddController {
 //        });
         //CLOSE PANE ON EXIT
         btnClose.setOnMouseClicked((evt) -> {
-            mainApp.showAppointmentListScreen(currentUser);
+            mainApp.showBarberScreen();
         });
 
     }
@@ -275,8 +278,9 @@ public class Appointment_AddController {
             comboEnd.setItems(Appointment.getDefaultEndTimes());
             //Get Appointment Type options
             comboType.setItems(Appointment.getApptTypes());
-            comboBarber.setItems(mainApp.getBarberData());
-            comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
+            comboBarber.setItems(BarberCache.getAllBarbers());
+//            comboExistCustomer.getItems().addAll(mainApp.getCustomerData());
+            comboExistCustomer.setItems(CustomerCache.getAllCustomers());
             //pet combo dropdown is based on listener
         } else if (editClicked) {
             System.out.println("to do: populate edit fields for existing appt");
@@ -287,9 +291,7 @@ public class Appointment_AddController {
     @FXML
     void handleApptCancel(ActionEvent event
     ) {
-        //this closes the app
-//                ((Node) (event.getSource())).getScene().getWindow().hide();
-        mainApp.showAppointmentListScreen(currentUser);
+        mainApp.showBarberScreen();
     }
 
     @FXML
@@ -352,15 +354,14 @@ public class Appointment_AddController {
         comboStart.setValue(startTime);
         comboEnd.setValue(endTime);
         System.out.println(appt.getEnd().toLocalTime().toString());
-        //make editable?
         comboType.setValue(appt.typeProperty().get());
         comboBarber.setValue(appt.getBarber());
         txtTitle.setText(appt.titleProperty().get());
         txtDesc.setText(appt.descriptionProperty().get()); //Notes
         comboExistCustomer.setValue(appt.getCustomer());
-//        comboPet.getItems().clear();
 
-        System.out.println(appt.toString());
+        //Update Pet Observable List based on selected appt
+        comboPet.setValue(appt.getPet());
 
     }
 
@@ -411,13 +412,6 @@ public class Appointment_AddController {
                 + " Pet " + sPet + " " + comboPet.getValue().nameProperty().get()
         );
 
-        //RESULT:
-//           [java] Printing record to save:  Title Test  Desc test  Type Extended
-//Barber StringProperty [value: Cutty]
-//Customer Customer id 2 name StringProperty [value: Sam] phone StringProperty [value: null] email StringProperty [value: null]
-//Pet jCalendar.model.Pet@654b8b25
-//        Appointment appt = new Appointment(String sTitle, stringStart, stringEnd, sDesc, sType, sBarber, sCustomer);
-        //Print appointment times
         System.out.println("Appointment times to save :" + stringStart + " and " + stringEnd);
         System.out.println("Current user :" + currentUser.getUserName());
         try {

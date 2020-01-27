@@ -23,7 +23,6 @@ import javafx.collections.ObservableList;
 public class Appointment {
 
     private final StringProperty appointmentId = new SimpleStringProperty();
-//    private final StringProperty startDate = new SimpleStringProperty();
     private final ObjectProperty<LocalDate> startDate = new SimpleObjectProperty();
     private final ObjectProperty<LocalDateTime> start = new SimpleObjectProperty();
     private final ObjectProperty<LocalDateTime> end = new SimpleObjectProperty();
@@ -34,6 +33,8 @@ public class Appointment {
     private ObjectProperty<Customer> customer = new SimpleObjectProperty<>();
     private ObjectProperty<Barber> barber = new SimpleObjectProperty<>();
 
+    private String customerName;
+    private String barberName;
 //    private Customer customer;
 //    private Pet pet;
     private String user;
@@ -46,7 +47,7 @@ public class Appointment {
     private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
 
     //Default Appt Types
-    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Standard", "Extended");
+    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Bath & Haircut", "Bath & Brush", "Haircut ", "Bath", "Brush", "Daycare", "Other");
 
     public Appointment() {
     }
@@ -64,6 +65,17 @@ public class Appointment {
         this.customer.set(customer);
         this.pet.set(pet);
 
+    }
+
+//for schedule detail report
+    public Appointment(String appointmentId, LocalDateTime start, LocalDateTime end, String title, String type, String customerName, String barberName) {
+        this.appointmentId.set(appointmentId);
+        this.start.set(start);
+        this.end.set(end);
+        this.title.set(title);
+        this.type.set(type);
+        this.customerName = customerName;
+        this.barberName = barberName;
     }
 
     public String getAppointmentId() {
@@ -173,7 +185,7 @@ public class Appointment {
     }
 
     public Pet getPet() {
-        return pet.get();
+        return this.pet.get();
     }
 
     public void setPet(Pet pet) {

@@ -5,23 +5,19 @@
  */
 package jCalendar;
 
-import jCalendar.dao.AppointmentDaoImpl;
-import jCalendar.dao.BarberDaoImpl;
-import jCalendar.dao.CustomerDaoImpl;
+import Cache.AppointmentCache;
+import Cache.BarberCache;
+import Cache.CustomerCache;
+import Cache.PetCache;
 import jCalendar.dao.DBConnection;
-import jCalendar.dao.PetDaoImpl;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
 import jCalendar.model.Customer;
-import jCalendar.model.DisplayAppointment;
-import jCalendar.model.Pet;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
 import jCalendar.viewcontroller.*;
 import java.io.IOException;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,53 +42,55 @@ public class jCalendar extends Application {
     private Customer customer;
     private DBConnection databasebHandler;
 
-    private ObservableList<Appointment> appointmentData = FXCollections.observableArrayList();
-    private ObservableList<Customer> customerData = FXCollections.observableArrayList();
-    private ObservableList<Pet> customerPetData = FXCollections.observableArrayList();
-    private ObservableList<Barber> barberData = FXCollections.observableArrayList();
-    private ObservableList<Pet> petData = FXCollections.observableArrayList();
-    private ObservableList<DisplayAppointment> displayAppointments = FXCollections.observableArrayList();
-
-    public ObservableList<Appointment> getAppointmentData() {
-        return appointmentData;
-    }
-
-    public ObservableList<Pet> getPetData() {
-        return petData;
-    }
-
-    public ObservableList<Pet> getCustomerPetData() {
-        return customerPetData;
-    }
-
-    public ObservableList<Customer> getCustomerData() {
-        return customerData;
-    }
-
-    public ObservableList<Barber> getBarberData() {
-        return barberData;
-    }
-
-    public ObservableList<DisplayAppointment> getDisplay() {
-        return displayAppointments;
-    }
-
+//    private ObservableList<Appointment> appointmentData = FXCollections.observableArrayList();
+//    private ObservableList<Customer> customerData = FXCollections.observableArrayList();
+//    private ObservableList<Pet> customerPetData = FXCollections.observableArrayList();
+//    private ObservableList<Barber> barberData = FXCollections.observableArrayList();
+//    private ObservableList<Pet> petData = FXCollections.observableArrayList();
+//    public ObservableList<Appointment> getAppointmentData() {
+//        return appointmentData;
+//    }
+//    public ObservableList<Pet> getPetData() {
+//        return petData;
+//    }
+//
+//    public ObservableList<Pet> getCustomerPetData() {
+//        return customerPetData;
+//    }
+//    public ObservableList<Customer> getCustomerData() {
+//        return customerData;
+//    }
+//    public ObservableList<Barber> getBarberData() {
+//        return barberData;
+//    }
     @Override
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
         this.mainStage.setTitle("Calendar App");
 
-        appointmentData.addAll(new AppointmentDaoImpl().loadApptData());
-        barberData.addAll(new BarberDaoImpl().loadBarberData());
-        customerData.addAll(new CustomerDaoImpl().loadCustomerData());
+        //order is important
+        BarberCache.flush();
+        //PetDaoImpl().loadPetData()
+        PetCache.flush();
+        // loadCustomerData()
+        CustomerCache.flush();
+        AppointmentCache.flush();
 
-        customerPetData.addAll(new PetDaoImpl().loadCustomerPetData());
+//petcache flush
+//customercache flush
+//then appointment flush
+//keep same order when you update data
+//only one object of pet and barber is kept
+//if we had a huge list, we could use hash map
+//        appointmentData.addAll(new AppointmentDaoImpl().loadApptData());
+//        barberData.addAll(new BarberDaoImpl().loadBarberData());
+//        customerData.addAll(new CustomerDaoImpl().loadCustomerData());
+//        customerPetData.addAll(new PetDaoImpl().loadCustomerPetData());
 //        petData.addAll(new PetDaoImpl().loadPetsData());
-
-//        for (Pet p : customerPetData) {
+//        for (Appointment p : appointmentData) {
 //            System.out.println("printing" + p.toString());
 //        }
-//        showLoginScreen2();
+//        showLoginScreen();
         showMain(currUser);
 //        showListScreen();
 //        showBarberScreen();
@@ -103,15 +101,11 @@ public class jCalendar extends Application {
     }
 
     public void refreshView() {
-        //load from database
-        appointmentData.clear();
-        barberData.clear();
-        customerData.clear();
 
-        appointmentData.addAll(new AppointmentDaoImpl().loadApptData());
-        barberData.addAll(new BarberDaoImpl().loadBarberData());
-        customerData.addAll(new CustomerDaoImpl().loadCustomerData());
-        customerPetData.addAll(new PetDaoImpl().loadCustomerPetData());
+        BarberCache.flush();
+        PetCache.flush();
+        CustomerCache.flush();
+        AppointmentCache.flush();
 
     }
 
@@ -158,28 +152,7 @@ public class jCalendar extends Application {
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen.fxml"));
             screen = (AnchorPane) loader.load();
 
-            LoginScreenController controller;
-            controller = loader.getController();
-            controller.setLogin(this);
-
-            Scene scene = new Scene(screen);
-            mainStage.setScene(scene);
-            mainStage.show();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
-    public void showLoginScreen2() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/LoginScreen2.fxml"));
-            screen = (AnchorPane) loader.load();
-
-            LoginScreenController2 controller = loader.getController();
+            LoginScreenController controller = loader.getController();
             controller.setMainController(this);
 
             Scene scene = new Scene(screen);
@@ -224,12 +197,49 @@ public class jCalendar extends Application {
             mainScreen.setLeft(null);
 
             BarberScreenController controller = loader.getController();
-            controller.setMainController(this, currUser);
+            controller.setMainController(this);
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
+
+    public void showBarberAddScreen() {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/BarberAdd.fxml"));
+            screen = (AnchorPane) loader.load();
+
+            mainScreen.setLeft(screen);
+
+            BarberAddController controller = loader.getController();
+            controller.setMainController(this, currUser);
+//            controller.setSelectedAppointment(selectedAppt);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void showBarberAddScreen(Barber selected) {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/BarberAdd.fxml"));
+            screen = (AnchorPane) loader.load();
+
+            mainScreen.setLeft(screen);
+
+            BarberAddController controller = loader.getController();
+            controller.setMainController(this, currUser);
+            controller.setSelected(selected);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 //
 //    public void showAppointmentScreen() {
 //
@@ -248,7 +258,6 @@ public class jCalendar extends Application {
 //            ex.printStackTrace();
 //        }
 //    }
-
     public void showReportScreen() {
 
         try {
@@ -265,7 +274,7 @@ public class jCalendar extends Application {
         }
     }
 
-    public void showAppointmentListScreen(User currentUser) {
+    public void showAppointmentListScreen() {
 
         try {
 
@@ -277,26 +286,7 @@ public class jCalendar extends Application {
             mainScreen.setLeft(null);
 
             AppointmentListController controller = loader.getController();
-            controller.setMainController(this, currentUser);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void showAppointmentEditScreen(User currentUser, Appointment appt) {
-
-        // to edit appointment
-        try {
-
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/Appointment_Edit.fxml"));
-            screen = (AnchorPane) loader.load();
-
-            mainScreen.setLeft(screen);
-
-            Appointment_EditController controller = loader.getController();
-            controller.setMainController(this, currentUser, appt);
+            controller.setMainController(this);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -340,6 +330,7 @@ public class jCalendar extends Application {
             ex.printStackTrace();
         }
     }
+
 //        try {
 //
 //

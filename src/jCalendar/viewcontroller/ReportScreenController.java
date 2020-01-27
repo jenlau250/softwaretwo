@@ -95,7 +95,7 @@ public class ReportScreenController {
     @FXML
     private TableColumn<Customer, String> colCustCount;
     @FXML
-    private TableColumn<Customer, Barber> colCustCity;
+    private TableColumn<Customer, Barber> colPet;
 
     private final DateTimeFormatter dtformat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     private final ZoneId newZoneId = ZoneId.systemDefault();
@@ -132,7 +132,7 @@ public class ReportScreenController {
         colApptType.setCellValueFactory(new PropertyValueFactory<>("type"));
         colApptCount.setCellValueFactory(new PropertyValueFactory<>("count"));
         colCustCount.setCellValueFactory(new PropertyValueFactory<>("count"));
-        colCustCity.setCellValueFactory(new PropertyValueFactory<>("pet"));
+        colPet.setCellValueFactory(new PropertyValueFactory<>("pet"));
 
         ObservableList<String> newList = FXCollections.observableArrayList(monthSet);
 
@@ -197,7 +197,7 @@ public class ReportScreenController {
             PreparedStatement pst = DBConnection.getConn().prepareStatement(
                     "SELECT customer.customerName, pet.petId, pet.petName, COUNT(pet.petName) as \"count\" "
                     + "FROM customer, pet "
-                    + "WHERE customer.petId = pet.petId "
+                    + "WHERE customer.customerId = pet.customerId "
                     + "GROUP BY petName");
 //                  "SELECT city.cityId, city.city, COUNT(city.city) as \"count\" "
 //                + "FROM customer, address, city "

@@ -5,6 +5,7 @@
  */
 package jCalendar.viewcontroller;
 
+import Cache.AppointmentCache;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import jCalendar.jCalendar;
@@ -18,7 +19,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -158,21 +158,21 @@ public class AppointmentListController implements Initializable {
      *
      * @param mainApp
      */
-    public void setMainController(jCalendar mainApp, User currentUse) {
+    public void setMainController(jCalendar mainApp) {
 
         this.mainApp = mainApp;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
 
         //CLEAR AND LOAD DETAILS EX: SHOWAPPOINTMENTDETAILS(NULL)
-        try {
-            appointmentList.addAll(mainApp.getAppointmentData());
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception error with getting all appointment data");
-            Logger.getLogger(AppointmentListController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        tableView.getItems().clear();
-        tableView.setItems(appointmentList);
+//        try {
+//            appointmentList.addAll(mainApp.getAppointmentData());
+//        } catch (Exception ex) {
+//            logger.log(Level.SEVERE, "Exception error with getting all appointment data");
+//            Logger.getLogger(AppointmentListController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        tableView.setItems(AppointmentCache.getAllAppointments());
+//        tableView.getItems().clear();
+//        tableView.setItems(appointmentList);
 
         //LISTEN FOR SELECTION CHANGES AND SHOW THE APPT DETAILS WHEN CHANGED
     }

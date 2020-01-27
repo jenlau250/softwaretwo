@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package jCalendar.viewcontroller;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.User;
@@ -19,33 +17,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 
-/**
- * FXML Controller class
- *
- * @author jlau2
- */
 public class LoginScreenController {
 
     private jCalendar mainApp;
+    private User currentUser;
 
     @FXML
-    private Label labelUserId;
+    private JFXTextField textUserId;
     @FXML
-    private Button buttonLogin;
+    private JFXPasswordField textUserPw;
     @FXML
-    private Button buttonCancel;
+    private JFXButton buttonLogin;
     @FXML
-    private TextField textUserId;
-    @FXML
-    private TextField textUserPw;
-    @FXML
-    private Label labelUserPw;
+    private JFXButton buttonCancel;
 
     ObservableList<User> Users = FXCollections.observableArrayList();
+
     User user = new User();
 
     // Reference back to main screen
@@ -89,8 +77,8 @@ public class LoginScreenController {
                 alert.setContentText(rb.getString("LOGIN WAS SUCCESSFUL."));
                 alert.showAndWait();
 
-//                showMain();
-//		mainApp.showMain(validateUser);
+                mainApp.showMain(validateUser);
+
                 //Log user login name and timestamp
                 logger.log(Level.INFO, userNameInput + " logged in on " + Loggerutil.currentTimestamp());
 
@@ -100,7 +88,6 @@ public class LoginScreenController {
 
     User validateLogin(String username, String password) {
         try {
-
             PreparedStatement ps = DBConnection.getConn().prepareStatement("SELECT * FROM user WHERE userName=? and password=?");
             ps.setString(1, username);
             ps.setString(2, password);
@@ -123,13 +110,14 @@ public class LoginScreenController {
      * Initializes the controller class.
      *
      * @param mainApp
+     * @param currentUser
      */
-    public void setLogin(jCalendar mainApp) {
+    public void setMainController(jCalendar mainApp) {
+
         this.mainApp = mainApp;
+//        this.currentUser = currentUser;
         buttonLogin.setText(rb.getString("loginbutton"));
         buttonCancel.setText(rb.getString("cancelbutton"));
-        labelUserId.setText(rb.getString("labelusername"));
-        labelUserPw.setText(rb.getString("labeluserpw"));
 
 //	Lambda use - set exit action to cancel button
         buttonCancel.setOnAction((evt) -> {

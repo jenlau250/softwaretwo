@@ -5,10 +5,10 @@
  */
 package jCalendar.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -22,22 +22,24 @@ public class Customer {
     private final StringProperty customerEmail = new SimpleStringProperty();
     private final StringProperty active = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
-    private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
+    private String count;
 
-//    private ObservableList<Pet> pets = FXCollections.observableArrayList();
-//
-//    public ObservableList<Pet> getPets() {
-//        return pets;
-//    }
-    private int petId;
+    private ObservableList<Pet> pets = FXCollections.observableArrayList();
 
-    public Customer(String id, String name) {
+    public ObservableList<Pet> getPets() {
+        return pets;
+    }
 
-        setCustomerId(id);
-        setCustomerName(name);
+    public Customer() {
 
     }
 
+//    public Customer(String id, String name) {
+//
+//        setCustomerId(id);
+//        setCustomerName(name);
+//
+//    }
     public StringProperty customerIdProperty() {
         return this.customerId;
     }
@@ -68,9 +70,9 @@ public class Customer {
 //    private String active;
 //    private String notes;
 //    private Pet pet;
-    private String count;
 //    private Barber barber;
 
+    //All data
     public Customer(String id, String name, String phone, String email, String active, String notes) {
         this.customerId.set(id);
         this.customerName.set(name);
@@ -81,39 +83,44 @@ public class Customer {
 
     }
 
-    public Customer(String id, String name, String phone, String email, String active, String notes, Pet pet) {
+    //For Appt Table View
+    public Customer(String id, String name, String phone, String email) {
         this.customerId.set(id);
         this.customerName.set(name);
         this.customerPhone.set(phone);
         this.customerEmail.set(email);
-        this.active.set(active);
-        this.notes.set(notes);
-        this.pet.set(pet);
 
     }
 
-    //FOR TABLEVIEW
-    public Customer(String id, String name, String phone, String email, Pet pet) {
-        this.customerId.set(id);
+    public Customer(String name, String count) {
         this.customerName.set(name);
-        this.customerPhone.set(phone);
-        this.customerEmail.set(email);
+        this.count = count;
+    }
+
+//    public Customer(String id, String name, String phone, String email, String active, String notes, Pet pet) {
+//        this.customerId.set(id);
+//        this.customerName.set(name);
+//        this.customerPhone.set(phone);
+//        this.customerEmail.set(email);
 //        this.active.set(active);
 //        this.notes.set(notes);
-        this.pet.set(pet);
-
-    }
-
+//        this.pet.set(pet);
+//
+//    }
+//
+//    //FOR TABLEVIEW
+//    public Customer(String id, String name, String phone, String email, Pet pet) {
+//        this.customerId.set(id);
+//        this.customerName.set(name);
+//        this.customerPhone.set(phone);
+//        this.customerEmail.set(email);
+////        this.active.set(active);
+////        this.notes.set(notes);
+//        this.pet.set(pet);
+//
+//    }
     public StringProperty customerPhoneProperty() {
         return this.customerPhone;
-    }
-
-    public StringProperty customerEmailProperty() {
-        return this.customerEmail;
-    }
-
-    public Customer() {
-
     }
 
     public String getPhone() {
@@ -133,12 +140,20 @@ public class Customer {
 
     }
 
+    public StringProperty customerEmailProperty() {
+        return this.customerEmail;
+    }
+
     public String getActive() {
         return active.get();
     }
 
     public void setActive(String active) {
         this.active.set(active);
+    }
+
+    public StringProperty activeProperty() {
+        return active;
     }
 
     public String getNotes() {
@@ -149,12 +164,19 @@ public class Customer {
         this.notes.set(notes);
     }
 
+    public StringProperty noteProperty() {
+        return notes;
+    }
+
     @Override
     public String toString() {
         return "Customer id " + customerIdProperty().get()
                 + " name " + customerNameProperty()
                 + " phone " + customerPhoneProperty()
-                + " email " + customerEmailProperty();
+                + " email " + customerEmailProperty()
+                + " status " + activeProperty()
+                + " notes " + noteProperty()
+                + " pets " + getPets();
     }
 
 //    @Override

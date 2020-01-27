@@ -76,7 +76,7 @@ public class MainScreenController {
             this.mainApp.showBarberScreen();
         });
         btnAppt.setOnAction((evt) -> {
-            this.mainApp.showAppointmentListScreen(currentUser);
+            this.mainApp.showAppointmentListScreen();
 //            this.mainApp.showAppointmentScreen(this.currentUser);
         });
 
@@ -84,7 +84,7 @@ public class MainScreenController {
             this.mainApp.showReportScreen();
         });
         btnExit.setOnAction((evt) -> {
-            this.mainApp.showLoginScreen2();
+            this.mainApp.showLoginScreen();
         });
 
     }

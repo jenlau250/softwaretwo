@@ -5,6 +5,9 @@
  */
 package jCalendar.dao;
 
+import Cache.BarberCache;
+import Cache.CustomerCache;
+import Cache.PetCache;
 import jCalendar.model.Appointment;
 import jCalendar.model.Barber;
 import jCalendar.model.Customer;
@@ -14,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.logging.Logger;
@@ -49,44 +51,38 @@ public class AppointmentDaoImpl {
             while (rs.next()) {
                 String appointmentId = rs.getString("appointmentId");
                 String title = rs.getString("title");
-//                java.sql.Date startDate = rs.getDate("start");
                 Timestamp startDate = rs.getTimestamp("start");
-//                LocalDate startDate = rs.getObject("start", LocalDate.class);
                 Timestamp start = rs.getTimestamp("start");
                 Timestamp end = rs.getTimestamp("end");
-//                LocalDateTime end = rs.getObject("end", LocalDateTime.class);
                 String desc = rs.getString("appointment.description");
                 String type = rs.getString("appointment.type");
+//                Barber barber = new Barber(
+//                        rs.getInt("barber.barberId"),
+//                        rs.getString("barber.barberName"),
+//                        rs.getString("barber.barberPhone"),
+//                        rs.getString("barber.barberEmail"),
+//                        rs.getString("barber.notes"),
+//                        rs.getString("barber.active"),
+//                        rs.getObject("barber.hireDate", LocalDate.class)
+//                );
 
-//                java.util.Date dbSqlDateConverted = new java.util.Date(startDate.getTime());
-                Barber barber = new Barber(
-                        rs.getInt("barber.barberId"),
-                        rs.getString("barber.barberName"),
-                        rs.getString("barber.barberPhone"),
-                        rs.getString("barber.barberEmail"),
-                        rs.getString("barber.notes"),
-                        rs.getString("barber.active"),
-                        rs.getObject("barber.hireDate", LocalDate.class)
-                );
+                Barber barber = BarberCache.getBarber(rs.getInt("barber.barberId"));
 
-                Pet pet = new Pet(
-                        rs.getString("pet.petId"),
-                        rs.getString("pet.petName"),
-                        rs.getString("pet.petType"),
-                        rs.getString("pet.petDescription")
-                );
-                Customer customer = new Customer(
-                        rs.getString("customer.customerId"),
-                        rs.getString("customerName"),
-                        rs.getString("customerPhone"),
-                        rs.getString("customerEmail"),
-                        new Pet(
-                                rs.getString("pet.petId"),
-                                rs.getString("pet.petName"),
-                                rs.getString("pet.petType"),
-                                rs.getString("pet.petDescription"))
-                );
-
+                Customer customer = CustomerCache.getCustomer(rs.getString("customer.customerId"));
+                Pet pet = PetCache.getPet(rs.getString("pet.petId"));
+//change to pet cache, and customer, THEN appointment
+//                Pet pet = new Pet(
+//                        rs.getString("pet.petId"),
+//                        rs.getString("pet.petName"),
+//                        rs.getString("pet.petType"),
+//                        rs.getString("pet.petDescription")
+//                );
+//                Customer customer = new Customer(
+//                        rs.getString("customer.customerId"),
+//                        rs.getString("customerName"),
+//                        rs.getString("customerPhone"),
+//                        rs.getString("customerEmail")
+//                );
 //                apptList.add(new Appointment(title, start, end, desc, type, barber, customer, pet));
                 apptList.add(new Appointment(appointmentId, title, startDate.toLocalDateTime().toLocalDate(), start.toLocalDateTime(), end.toLocalDateTime(), desc, type, barber, customer, pet));
 

@@ -17,6 +17,14 @@ and open the template in the editor.
 }
 
 
+.title {
+  -fx-font: 28px Roboto;
+}
+
+.subtitle {
+  -fx-font: 20px Roboto;
+}
+
 .myButton:hover {
     -fx-text-fill: -fx-primary;
     -fx-border-color: -fx-lightblue;
@@ -24,6 +32,18 @@ and open the template in the editor.
     -fx-line-spacing: 1px;
     -fx-font-size: 15px;
 }
+
+.btn2 {
+    -fx-background-color: -fx-lightblue;
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: -fx-lightblue;
+    -fx-border-width: 0px 0px 4px 0px;
+    -fx-line-spacing: 1px;
+    -fx-font-size: 15px;
+}
+
+
+
 
 .normalButton {
     -fx-text-fill: white;
