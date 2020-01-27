@@ -36,7 +36,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -173,8 +172,7 @@ public class CustomerScreenController {
         enableEdits();
         labelCusID.setText("Auto Generated");
 
-        showEditableComboBoxWithAutoAdd();
-
+//        showEditableComboBoxWithAutoAdd();
     }
 
     @FXML
@@ -642,6 +640,7 @@ public class CustomerScreenController {
         comboPet.setConverter(new StringConverter<Pet>() {
             @Override
             public String toString(Pet object) {
+//                return object == null ? "" : object.toString();
                 if (object == null) {
                     return null;
                 } else {
@@ -653,46 +652,49 @@ public class CustomerScreenController {
             public Pet fromString(String string) {
 //                return comboPet.getValue();
                 return comboPet.getItems().stream().filter(ap -> ap.nameProperty().get().equals(string)).findFirst().orElse(null);
-            }
-        });
-    }
-
-    static void showEditableComboBoxWithAutoAdd() {
-        petVBox.getChildren().clear();
-
-        JFXComboBox jvmLangsEditableComboBox = new JFXComboBox<String>(petNames);
-
-        // set to editable
-        jvmLangsEditableComboBox.setEditable(true);
-
-        // provide StringConverter
-        jvmLangsEditableComboBox.setConverter(new StringConverter<String>() {
-            @Override
-            public String toString(String obj) {
-                if (obj != null) {
-                    return obj;
-                }
-                return "";
+//                return string == null || string.isEmpty() ? null : comboPet.getItems().stream().filter(d -> string.equals(d.toString())).findAny().orElse(null);
             }
 
-            @Override
-            public String fromString(String string) {
-                if (!petNames.contains(string)) {
-                    petNames.add(string);
-                }
-                return string;
-            }
-        });
-
-        Label valueLabel = new Label();
-        valueLabel.textProperty().bind(jvmLangsEditableComboBox.valueProperty().asString());
-
-        petVBox.getChildren().add(
-                new HBox(10,
-                        new Label("ComboBox<String> JVM Languages"),
-                        jvmLangsEditableComboBox,
-                        valueLabel
-                )
+        }
         );
     }
+
+//    static void showEditableComboBoxWithAutoAdd() {
+//        petVBox.getChildren().clear();
+//
+//        JFXComboBox jvmLangsEditableComboBox = new JFXComboBox<String>(petNames);
+//
+//        // set to editable
+//        jvmLangsEditableComboBox.setEditable(true);
+//
+//        // provide StringConverter
+//        jvmLangsEditableComboBox.setConverter(new StringConverter<String>() {
+//            @Override
+//            public String toString(String obj) {
+//                if (obj != null) {
+//                    return obj;
+//                }
+//                return "";
+//            }
+//
+//            @Override
+//            public String fromString(String string) {
+//                if (!petNames.contains(string)) {
+//                    petNames.add(string);
+//                }
+//                return string;
+//            }
+//        });
+//
+//        Label valueLabel = new Label();
+//        valueLabel.textProperty().bind(jvmLangsEditableComboBox.valueProperty().asString());
+//
+//        petVBox.getChildren().add(
+//                new HBox(10,
+//                        new Label("ComboBox<String> JVM Languages"),
+//                        jvmLangsEditableComboBox,
+//                        valueLabel
+//                )
+//        );
+//    }
 }

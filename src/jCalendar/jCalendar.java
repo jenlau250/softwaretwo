@@ -172,7 +172,8 @@ public class jCalendar extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/CustomerScreen.fxml"));
             screen = (AnchorPane) loader.load();
-
+            screen.setMinSize(25, 25);
+            screen.setPrefSize(25000, 25000);
             mainScreen.setCenter(screen);
             mainScreen.setLeft(null);
 
@@ -193,6 +194,8 @@ public class jCalendar extends Application {
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/BarberScreen.fxml"));
             screen = (AnchorPane) loader.load();
 
+            screen.setMinSize(25, 25);
+            screen.setPrefSize(25000, 25000);
             mainScreen.setCenter(screen);
             mainScreen.setLeft(null);
 
@@ -264,7 +267,8 @@ public class jCalendar extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/ReportScreen.fxml"));
             screen = (AnchorPane) loader.load();
-
+            screen.setMinSize(25, 25);
+            screen.setPrefSize(25000, 25000);
             mainScreen.setCenter(screen);
             ReportScreenController controller = loader.getController();
             controller.setMainController(this);
@@ -281,7 +285,8 @@ public class jCalendar extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(jCalendar.class.getResource("/jCalendar/viewcontroller/AppointmentList.fxml"));
             screen = (AnchorPane) loader.load();
-
+            screen.setMinSize(25, 25);
+            screen.setPrefSize(25000, 25000);
             mainScreen.setCenter(screen);
             mainScreen.setLeft(null);
 

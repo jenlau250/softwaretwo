@@ -107,7 +107,7 @@ public class BarberAddController {
                 // Lambda use - set OK button to respond
                 .filter(response -> response == ButtonType.OK)
                 .ifPresent(response -> {
-                    mainApp.showAppointmentListScreen();
+                    mainApp.showBarberScreen();
 
                 });
     }
@@ -136,18 +136,6 @@ public class BarberAddController {
         this.mainApp = mainApp;
         this.currentUser = currentUser;
 
-        if (selected != null) {
-            topLabel.setText("Edit Barber Details");
-            editMode = true;
-            showBarberDetails(selected);
-
-        } else {
-            topLabel.setText("Add New Barber");
-            editMode = false;
-            clearFields();
-
-        }
-
         System.out.println("Running BarberAddController.setMaincontroller: Edit mode is " + editMode);
 //        labelBarberId.setText("");
 
@@ -160,15 +148,28 @@ public class BarberAddController {
 
     }
 
-    public void setSelected(Barber b) {
-        labelBarberId.setText(String.valueOf(b.getBarberId()));
-        txtName.setText(b.nameProperty().get());
-        txtPhone.setText(b.barberPhoneProperty().get());
-        txtEmail.setText(b.barberEmailProperty().get());
-        txtStatus.setText(b.activeProperty().get());
-        txtNotes.setText(b.noteProperty().get());
-//        cbStatus.setValue(selectedBarber.activeProperty().get());
-        datePicker.setValue(b.getHireDate());
+    public void setSelected(Barber selected) {
+
+        if (selected != null) {
+            topLabel.setText("Edit Barber Details");
+            editMode = true;
+            showBarberDetails(selected);
+
+        } else {
+            topLabel.setText("Add New Barber");
+            editMode = false;
+            clearFields();
+
+        }
+//
+//        labelBarberId.setText(String.valueOf(b.getBarberId()));
+//        txtName.setText(b.nameProperty().get());
+//        txtPhone.setText(b.barberPhoneProperty().get());
+//        txtEmail.setText(b.barberEmailProperty().get());
+//        txtStatus.setText(b.activeProperty().get());
+//        txtNotes.setText(b.noteProperty().get());
+////        cbStatus.setValue(selectedBarber.activeProperty().get());
+//        datePicker.setValue(b.getHireDate());
 
     }
 
