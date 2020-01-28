@@ -102,6 +102,11 @@ and open the template in the editor.
 
 .table-row-cell:grouped {
     -fx-background-color: rgb(230, 230, 230);
+    
+}
+
+.table-row-cell {
+    -fx-cell-size: 25px;
 }
 
 .table-view .menu-item:focused {

@@ -8,6 +8,7 @@ package jCalendar.viewcontroller;
 import Cache.CustomerCache;
 import Cache.PetCache;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
@@ -36,6 +37,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -76,7 +78,10 @@ public class CustomerScreenController {
     @FXML
     private TableColumn<Customer, String> colCustomerEmail;
     @FXML
-    private TableColumn<Customer, String> colCustomerStatus;
+    private TableColumn<Customer, Boolean> colCustomerStatus;
+
+    @FXML
+    private TableColumn<Customer, Boolean> checkboxStatus;
 
     @FXML
     private JFXTextField txtCustomerName;
@@ -84,8 +89,9 @@ public class CustomerScreenController {
     private JFXTextField txtCustomerPhone; //Address
     @FXML
     private JFXTextField txtCustomerEmail; //Address2
-    @FXML
-    private JFXTextField txtCustomerStatus; //ZipCode
+//    @FXML
+    private JFXCheckBox checkboxActive;
+//    private JFXTextField txtCustomerStatus; //ZipCode
     @FXML
     private JFXTextField txtCustomerNotes; //Phone
 
@@ -100,6 +106,15 @@ public class CustomerScreenController {
 
     @FXML
     private static VBox petVBox;
+
+    @FXML
+    private JFXButton btnPetSave;
+
+    @FXML
+    private JFXButton btnPetEdit;
+
+    @FXML
+    private JFXButton btnPetDelete;
 
     @FXML
     private TextField txtPetDescription;
@@ -132,7 +147,7 @@ public class CustomerScreenController {
         txtCustomerName.setText(selectedCustomer.getCustomerName());
         txtCustomerPhone.setText(selectedCustomer.getPhone());
         txtCustomerEmail.setText(selectedCustomer.getEmail());
-        txtCustomerStatus.setText(selectedCustomer.getActive());
+//        txtCustomerStatus.se(selectedCustomer.getActive());
         txtCustomerNotes.setText(selectedCustomer.getNotes());
 //	countryCombo.setValue(selectedCustomer.getPet());
 //        comboPet.setItems(selectedCustomer.petProperty().get());
@@ -219,6 +234,21 @@ public class CustomerScreenController {
                     clearFields();
                     editMode = false;
                 });
+    }
+
+    @FXML
+    void handleDeletePet(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleEditPet(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleSavePet(ActionEvent event) {
+
     }
 
     @FXML
@@ -337,8 +367,12 @@ public class CustomerScreenController {
 
         colCustomerEmail.setCellValueFactory(cellData
                 -> new SimpleStringProperty(cellData.getValue().customerEmailProperty().get()));
-        colCustomerStatus.setCellValueFactory(cellData
-                -> new SimpleStringProperty(cellData.getValue().activeProperty().get()));
+//        colCustomerStatus.setCellValueFactory(cellData
+//                -> new SimpleStringProperty(cellData.getValue().activeProperty().get()));
+
+        colCustomerStatus.setCellFactory(CheckBoxTableCell.forTableColumn(colCustomerStatus));
+//        colCustomerStatus.setCellValueFactory(new PropertyValueFactory<>("active"));
+        colCustomerStatus.setCellValueFactory(cellData -> cellData.getValue().activeProperty());
 
     }
 
@@ -347,7 +381,7 @@ public class CustomerScreenController {
         txtCustomerName.setEditable(true);
         txtCustomerPhone.setEditable(true);
         txtCustomerEmail.setEditable(true);
-        txtCustomerStatus.setEditable(true);
+//        checkboxActive.setEditable(true);
         txtCustomerNotes.setEditable(true);
         comboPet.setEditable(true);
         comboPetType.setEditable(true);
@@ -359,7 +393,7 @@ public class CustomerScreenController {
         txtCustomerName.setEditable(false);
         txtCustomerPhone.setEditable(false);
         txtCustomerEmail.setEditable(false);
-        txtCustomerStatus.setEditable(false);
+//        checkboxActive.setEditable(false);
         txtCustomerNotes.setEditable(false);;
         comboPet.setEditable(false);
         comboPetType.setEditable(false);
@@ -371,7 +405,7 @@ public class CustomerScreenController {
         txtCustomerName.clear();
         txtCustomerPhone.clear();
         txtCustomerEmail.clear();
-        txtCustomerStatus.clear();
+//        checkboxActive.clear();
         txtCustomerNotes.clear();
         comboPet.setValue(null);
         comboPetType.setValue(null);
@@ -392,7 +426,13 @@ public class CustomerScreenController {
             pst.setString(2, txtCustomerPhone.getText());
             pst.setString(3, txtCustomerEmail.getText());
             pst.setString(4, txtCustomerNotes.getText());
-            pst.setInt(5, 1); //TO UPDATE: let user change status
+
+            if (checkboxActive.isSelected()) {
+                pst.setInt(5, 1);
+            } else {
+                pst.setInt(5, 0);
+            }
+//            pst.setBoolean(5, 1); //TO UPDATE: let user change status
 //            pst.setString(6, currentUser.getUserName()); //temp workaround for now
             pst.setString(6, "test");
             pst.setString(7, "test");
@@ -528,7 +568,7 @@ public class CustomerScreenController {
         String phone = txtCustomerPhone.getText();
         String email = txtCustomerEmail.getText();
         Pet pet = comboPet.getValue();
-        String status = txtCustomerStatus.getText();
+//        Boolean status = checkboxActive.getText();
         String notes = txtCustomerNotes.getText();
         String petType = comboPetType.getValue();
         String petDesc = txtPetDescription.getText();
@@ -573,7 +613,7 @@ public class CustomerScreenController {
                     + "Phone: " + phone + "\n"
                     + "Email: " + email + "\n"
                     + "Pet: " + pet + "\n"
-                    + "Status: " + status + "\n"
+                    //                    + "Status: " + status + "\n"
                     + "Notes: " + notes + "\n"
                     + "Pet Type: " + petType + "\n"
                     + "Pet Desc:: " + petDesc + "\n"
@@ -591,7 +631,7 @@ public class CustomerScreenController {
         txtCustomerName.setText(c.getCustomerName());
         txtCustomerPhone.setText(c.getPhone());
         txtCustomerEmail.setText(c.getEmail());
-        txtCustomerStatus.setText(c.getActive());
+//        txtCustomerStatus.setText(c.getActive());
         txtCustomerNotes.setText(c.getNotes());
 
 //        selectedPets.addAll(PetCache.getSelectedPets(c));

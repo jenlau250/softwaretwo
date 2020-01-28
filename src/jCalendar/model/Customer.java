@@ -5,6 +5,7 @@
  */
 package jCalendar.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -20,7 +21,8 @@ public class Customer {
     private final StringProperty customerName = new SimpleStringProperty();
     private final StringProperty customerPhone = new SimpleStringProperty();
     private final StringProperty customerEmail = new SimpleStringProperty();
-    private final StringProperty active = new SimpleStringProperty();
+//    private final StringProperty active = new SimpleStringProperty();
+    private final SimpleBooleanProperty active = new SimpleBooleanProperty();
     private final StringProperty notes = new SimpleStringProperty();
     private String count;
 
@@ -73,7 +75,7 @@ public class Customer {
 //    private Barber barber;
 
     //All data
-    public Customer(String id, String name, String phone, String email, String active, String notes) {
+    public Customer(String id, String name, String phone, String email, Boolean active, String notes) {
         this.customerId.set(id);
         this.customerName.set(name);
         this.customerPhone.set(phone);
@@ -144,15 +146,15 @@ public class Customer {
         return this.customerEmail;
     }
 
-    public String getActive() {
+    public Boolean getActive() {
         return active.get();
     }
 
-    public void setActive(String active) {
+    public void setActive(Boolean active) {
         this.active.set(active);
     }
 
-    public StringProperty activeProperty() {
+    public SimpleBooleanProperty activeProperty() {
         return active;
     }
 

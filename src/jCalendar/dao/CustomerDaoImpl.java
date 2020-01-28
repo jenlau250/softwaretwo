@@ -34,7 +34,7 @@ public class CustomerDaoImpl {
                 String name = rs.getString("customerName");
                 String phone = rs.getString("customerPhone");
                 String email = rs.getString("customerEmail");
-                String active = rs.getString("active");
+                Boolean active = rs.getBoolean("active");
                 String notes = rs.getString("notes");
 
                 //this customer list needs to contain pets
