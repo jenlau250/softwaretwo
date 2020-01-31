@@ -6,6 +6,7 @@
 package jCalendar.viewcontroller;
 
 import Cache.BarberCache;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
@@ -39,7 +40,7 @@ public class BarberAddController {
     private User currentUser;
 
     @FXML
-    private TextField txtStatus;
+    private JFXCheckBox checkboxActive;
 
     @FXML
     private TextField txtEmail;
@@ -85,16 +86,15 @@ public class BarberAddController {
     }
 
     @FXML
-    private void showBarberDetails(Barber selectedBarber) {
+    private void showBarberDetails(Barber b) {
 
-        labelBarberId.setText(String.valueOf(selectedBarber.getBarberId()));
-        txtName.setText(selectedBarber.nameProperty().get());
-        txtPhone.setText(selectedBarber.barberPhoneProperty().get());
-        txtEmail.setText(selectedBarber.barberEmailProperty().get());
-        txtStatus.setText(selectedBarber.activeProperty().get());
-        txtNotes.setText(selectedBarber.noteProperty().get());
-//        cbStatus.setValue(selectedBarber.activeProperty().get());
-        datePicker.setValue(selectedBarber.getHireDate());
+        labelBarberId.setText(String.valueOf(b.getBarberId()));
+        txtName.setText(b.nameProperty().get());
+        txtPhone.setText(b.barberPhoneProperty().get());
+        txtEmail.setText(b.barberEmailProperty().get());
+        checkboxActive.setSelected(b.getActive());
+        txtNotes.setText(b.noteProperty().get());
+        datePicker.setValue(b.getHireDate());
 
     }
 
@@ -121,6 +121,8 @@ public class BarberAddController {
             } else {
                 saveNewBarber();
             }
+            BarberCache.flush();
+
             mainApp.showBarberScreen();
         }
     }
@@ -150,6 +152,7 @@ public class BarberAddController {
 
     public void setSelected(Barber selected) {
 
+        //this doesn't actually work
         if (selected != null) {
             topLabel.setText("Edit Barber Details");
             editMode = true;
@@ -178,7 +181,7 @@ public class BarberAddController {
         txtName.clear();
         txtPhone.clear();
         txtEmail.clear();
-        txtStatus.clear();
+        checkboxActive.isSelected();
         txtNotes.clear();
         datePicker.setValue(LocalDate.now());
 
@@ -204,7 +207,13 @@ public class BarberAddController {
             pst.setString(2, txtPhone.getText());
             pst.setString(3, txtEmail.getText());
             pst.setString(4, txtNotes.getText());
-            pst.setString(5, "1");
+
+            if (checkboxActive.isSelected()) {
+                pst.setInt(5, 1);
+            } else {
+                pst.setInt(5, 0);
+            }
+
             pst.setDate(6, sqlDate);
 
 //            System.out.println("printing save barber query " + pst);
@@ -220,7 +229,6 @@ public class BarberAddController {
         }
 //        BarberTable.setItems(mainApp.getBarberData());
 //        mainApp.refreshView();
-        BarberCache.flush();
     }
 
     /**
@@ -231,7 +239,7 @@ public class BarberAddController {
         LocalDate selHireDate = datePicker.getValue();
 
         java.sql.Date sqlDate = Date.valueOf(selHireDate);
-        System.out.println("sql date" + sqlDate);
+        System.out.println("sql date: " + sqlDate);
         System.out.println("attempting to update " + b.getBarberName());
         try {
 
@@ -243,7 +251,13 @@ public class BarberAddController {
             ps.setString(2, txtPhone.getText());
             ps.setString(3, txtEmail.getText());
             ps.setString(4, txtNotes.getText());
-            ps.setString(5, txtStatus.getText());
+
+            if (checkboxActive.isSelected()) {
+                ps.setInt(5, 1);
+            } else {
+                ps.setInt(5, 0);
+            }
+
             ps.setDate(6, sqlDate);
 
             int result = ps.executeUpdate();
@@ -251,8 +265,6 @@ public class BarberAddController {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
-        BarberCache.flush();
 
     }
 
@@ -262,7 +274,7 @@ public class BarberAddController {
         String name = txtName.getText();
         String phone = txtPhone.getText();
         String email = txtEmail.getText();
-        String status = txtStatus.getText();
+//        String status = txtStatus.getText();
         String notes = txtNotes.getText();
         String hireDate = datePicker.getValue().toString();
 
@@ -279,11 +291,6 @@ public class BarberAddController {
 //            errorMessage += "Please enter a hire date.\n";
 //        }
 
-        if (status == null || status.length() == 0) {
-            errorMessage += "Please enter the employee status.\n";
-        } else if (status.length() > 1) {
-            errorMessage += "Must be less than one digit.\n";
-        }
         if (phone == null || phone.length() == 0) {
             errorMessage += "Please enter a phone number).";
         } else if (phone.length() < 10 || phone.length() > 20) {
@@ -304,7 +311,7 @@ public class BarberAddController {
                     + "Name: " + name + "\n"
                     + "Phone: " + phone + "\n"
                     + "Email: " + email + "\n"
-                    + "Status: " + status + "\n"
+                    //                    + "Status: " + status + "\n"
                     + "Notes: " + notes + "\n"
                     + "Hire Date: " + hireDate + "\n"
             );

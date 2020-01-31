@@ -35,7 +35,7 @@ public class BarberDaoImpl {
                 String name = rs.getString("barberName");
                 String phone = rs.getString("barberPhone");
                 String email = rs.getString("barberEmail");
-                String active = rs.getString("active");
+                Boolean active = rs.getBoolean("active");
                 String notes = rs.getString("notes");
 //                String hireDate = rs.getString("hireDate");
 

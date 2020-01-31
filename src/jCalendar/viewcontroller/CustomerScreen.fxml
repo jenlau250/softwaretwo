@@ -10,6 +10,7 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -19,9 +20,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.CustomerScreenController">
+<AnchorPane prefWidth="1000.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.CustomerScreenController">
    <children>
-      <SplitPane dividerPositions="0.4256410256410256" layoutX="50.0" layoutY="180.0" orientation="VERTICAL" prefHeight="605.0" prefWidth="1030.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="150.0">
+      <SplitPane dividerPositions="0.4256410256410256" layoutX="65.0" layoutY="180.0" orientation="VERTICAL" prefHeight="578.0" prefWidth="2306.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="150.0">
         <items>
             <SplitPane>
                <items>
@@ -63,7 +64,7 @@
                   </VBox>
                </items>
             </SplitPane>
-            <VBox prefHeight="450.0" prefWidth="407.0">
+            <VBox prefHeight="377.0" prefWidth="1028.0">
                <children>
                   <HBox>
                      <children>
@@ -108,12 +109,12 @@
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label contentDisplay="TOP" text="Name" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                    <Label contentDisplay="TOP" text="Name*" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label contentDisplay="TOP" text="Phone" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                    <Label contentDisplay="TOP" text="Phone*" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
@@ -162,13 +163,14 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <GridPane prefHeight="207.0" prefWidth="391.0">
+                              <GridPane prefHeight="195.0" prefWidth="202.0">
                                  <columnConstraints>
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="96.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="448.0" minWidth="10.0" prefWidth="137.0" />
-                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="436.0" minWidth="10.0" prefWidth="254.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="448.0" minWidth="10.0" prefWidth="159.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="436.0" minWidth="10.0" prefWidth="130.0" />
                                  </columnConstraints>
                                  <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -177,25 +179,26 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label contentDisplay="TOP" prefHeight="17.0" prefWidth="29.0" text="Pet" GridPane.rowIndex="1">
+                                    <Label contentDisplay="TOP" prefHeight="17.0" prefWidth="63.0" text="Pet Name" GridPane.rowIndex="2">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <JFXComboBox fx:id="comboPet" editable="true" labelFloat="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <JFXComboBox fx:id="comboPetType" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <JFXTextField fx:id="txtPetDescription" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <Label contentDisplay="TOP" text="Pet Type" GridPane.rowIndex="2">
+                                    <JFXComboBox fx:id="comboPetType" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <JFXTextField fx:id="txtPetDescription" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <Label contentDisplay="TOP" text="Pet Type" GridPane.rowIndex="3">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label contentDisplay="TOP" text="Notes" GridPane.rowIndex="3">
+                                    <Label contentDisplay="TOP" text="Notes" GridPane.rowIndex="4">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
                                     </Label>
-                                    <Label contentDisplay="TOP" text="Pet Photo" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                                    <JFXComboBox fx:id="cbPetSelection" prefHeight="25.0" prefWidth="141.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <JFXTextField fx:id="txtPetName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label contentDisplay="TOP" text="Select Pet" GridPane.rowIndex="1">
                                        <padding>
                                           <Insets right="10.0" />
                                        </padding>
@@ -204,15 +207,29 @@
                               </GridPane>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="393.0" spacing="20.0">
                                  <children>
-                                    <JFXButton fx:id="btnPetSave" alignment="CENTER" buttonType="RAISED" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleSavePet" prefWidth="120.0" style="-fx-background-color: darkgray;" styleClass="normalButton" text="Add New Pet" textAlignment="CENTER" />
-                                    <JFXButton fx:id="btnPetEdit" alignment="CENTER" buttonType="RAISED" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleEditPet" prefWidth="120.0" style="-fx-background-color: darkgray;" styleClass="normalButton" text="Update Pet" textAlignment="CENTER" />
+                                    <JFXButton fx:id="btnPetSave" alignment="CENTER" buttonType="RAISED" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleSavePet" prefWidth="120.0" style="-fx-background-color: darkgray;" styleClass="normalButton" text="Save Pet" textAlignment="CENTER" />
                                     <JFXButton fx:id="btnPetDelete" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleDeletePet" prefWidth="120.0" style="-fx-background-color: darkgray;" styleClass="normalButton" text="Delete Pet" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
                         <Pane prefHeight="276.0" prefWidth="10.0" style="-fx-background-color: white;" />
-                        <HBox prefHeight="331.0" prefWidth="132.0" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label contentDisplay="TOP" styleClass="subtitle" text="Pet Photo">
+                                 <padding>
+                                    <Insets right="10.0" />
+                                 </padding>
+                              </Label>
+                              <ImageView fx:id="petPhoto" fitHeight="193.0" fitWidth="283.0" pickOnBounds="true" preserveRatio="true" />
+                              <Label fx:id="fileSelected" text="Label" />
+                              <HBox alignment="CENTER" prefHeight="331.0" prefWidth="132.0">
+                                 <children>
+                                    <JFXButton fx:id="btnUpload" alignment="CENTER" onAction="#handleUploadPhoto" styleClass="normalButton" text="Upload Pet Photo" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
                </children>
@@ -223,18 +240,24 @@
         </items>
       </SplitPane>
       <Label styleClass="title" text="Customer Profiles" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="50.0" />
-      <HBox alignment="BOTTOM_LEFT" layoutX="189.0" layoutY="95.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="90.0">
+      <HBox alignment="BOTTOM_LEFT" layoutX="189.0" layoutY="95.0" spacing="10.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="90.0">
          <children>
             <Label alignment="BOTTOM_LEFT" text="Search Customer:">
                <padding>
                   <Insets right="5.0" />
                </padding>
             </Label>
-            <JFXTextField fx:id="txtSearchField" alignment="CENTER" style="-fx-background-color: white;" />
+            <JFXTextField fx:id="filterCustomer" alignment="CENTER" style="-fx-background-color: white;" />
+            <Label prefHeight="17.0" prefWidth="55.0" text="Status" />
+            <JFXComboBox fx:id="filterStatus" prefHeight="25.0" prefWidth="98.0">
+               <HBox.margin>
+                  <Insets left="2.0" />
+               </HBox.margin>
+            </JFXComboBox>
          </children>
       </HBox>
    </children>
    <padding>
-      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+      <Insets left="15.0" right="15.0" />
    </padding>
 </AnchorPane>

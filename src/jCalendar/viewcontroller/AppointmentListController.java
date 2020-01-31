@@ -8,11 +8,14 @@ package jCalendar.viewcontroller;
 import Cache.AppointmentCache;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Appointment;
 import jCalendar.model.User;
 import jCalendar.utilities.Loggerutil;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -28,6 +31,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -43,7 +48,7 @@ public class AppointmentListController implements Initializable {
     private jCalendar mainApp;
     private User currentUser;
     private LocalDate currDate;
-    Appointment selectedAppt;
+//    Appointment selectedAppt;
 //    private Appointment selectedAppt;
     @FXML
     private TableView<Appointment> tableView;
@@ -110,44 +115,46 @@ public class AppointmentListController implements Initializable {
     @FXML
     void handleApptAddNew(ActionEvent event) {
 
-        mainApp.showAppointmentAddScreen(currentUser);
+        mainApp.showAppointmentAddScreen();
     }
 
     @FXML
     void handleApptEdit(ActionEvent event) {
 
-        selectedAppt = tableView.getSelectionModel().getSelectedItem();
+        Appointment selectedAppt = tableView.getSelectionModel().getSelectedItem();
 
         if (selectedAppt != null) {
-            mainApp.showAppointmentAddScreen(currentUser, selectedAppt);
+            mainApp.showAppointmentAddScreen(selectedAppt);
         } else {
-            System.out.println("Please select an appointment first");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Not selected");
+//            alert.setHeaderText("No barber was selected to delete");
+            alert.setContentText("Please select an existing appointment to update");
+            alert.showAndWait();
         }
-
     }
 
     @FXML
     void handleApptDelete(ActionEvent event) {
-//        selectedAppt = tableView.getSelectionModel().getSelectedItem();
-//
-//        if (selectedAppt == null) {
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Nothing selected");
-//            alert.setHeaderText("No appointment was selected to delete");
-//            alert.setContentText("Please select an appointment to delete");
-//            alert.showAndWait();
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("Confirm Deletion");
-//            alert.setHeaderText("Are you sure you want to delete " + selectedAppt.getTitle() + " scheduled for " + selectedAppt.getCustomer().getCustomerName() + "?");
-//            alert.showAndWait()
-//                    .filter(response -> response == ButtonType.OK)
-//                    .ifPresent(response -> {
-//                        deleteAppointment(selectedAppt);
-//                        mainApp.showAppointmentListScreen(currentUser);
-//                    }
-//                    );
-//        }
+        Appointment selectedAppt = tableView.getSelectionModel().getSelectedItem();
+
+        if (selectedAppt == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Nothing selected");
+            alert.setHeaderText("No appointment was selected to delete");
+            alert.setContentText("Please select an appointment to delete");
+            alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Are you sure you want to delete " + selectedAppt.getTitle() + " scheduled for " + selectedAppt.getCustomer().getCustomerName() + "?");
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK)
+                    .ifPresent(response -> {
+                        deleteAppointment(selectedAppt);
+                        mainApp.showAppointmentListScreen();
+                    });
+        }
 
     }
 
@@ -163,18 +170,8 @@ public class AppointmentListController implements Initializable {
         this.mainApp = mainApp;
 //        this.currentUser = currentUser;
 
-        //CLEAR AND LOAD DETAILS EX: SHOWAPPOINTMENTDETAILS(NULL)
-//        try {
-//            appointmentList.addAll(mainApp.getAppointmentData());
-//        } catch (Exception ex) {
-//            logger.log(Level.SEVERE, "Exception error with getting all appointment data");
-//            Logger.getLogger(AppointmentListController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         tableView.setItems(AppointmentCache.getAllAppointments());
-//        tableView.getItems().clear();
-//        tableView.setItems(appointmentList);
 
-        //LISTEN FOR SELECTION CHANGES AND SHOW THE APPT DETAILS WHEN CHANGED
     }
 
     /**
@@ -236,6 +233,7 @@ public class AppointmentListController implements Initializable {
         currDate = LocalDate.now();
         nextMonth(currDate);
 
+        //first filter list - getAppointments by barber - get all or by ID, THEN use that filtered list for date selection below..
         // Add monthly or weekly filter to tableview
         comboWeekMonth.setItems(FXCollections.observableArrayList("Daily", "Weekly", "Monthly"));
         comboWeekMonth.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -359,6 +357,22 @@ public class AppointmentListController implements Initializable {
         tableView.setItems(filteredData);
         labelStartBound.setText(currDate.format(labelformat));
         labelEndBound.setText(cbEndDate.format(labelformat));
+    }
+
+    private void deleteAppointment(Appointment a) {
+
+        try {
+            PreparedStatement pst = DBConnection.getConn().prepareStatement(
+                    "DELETE FROM appointment WHERE appointmentId = ?");
+            pst.setString(1, a.getAppointmentId());
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+//        mainApp.refreshView();
+        AppointmentCache.flush();
+
     }
 
 }

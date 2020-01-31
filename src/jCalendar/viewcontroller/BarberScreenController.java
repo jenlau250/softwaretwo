@@ -6,6 +6,8 @@
 package jCalendar.viewcontroller;
 
 import Cache.BarberCache;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import jCalendar.dao.DBConnection;
 import jCalendar.jCalendar;
 import jCalendar.model.Barber;
@@ -16,13 +18,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -51,16 +58,22 @@ public class BarberScreenController {
     @FXML
     private TableColumn<Barber, String> colEmail;
     @FXML
-    private TableColumn<Barber, String> colStatus;
+    private TableColumn<Barber, Boolean> colStatus;
     @FXML
     private TableColumn<Barber, String> colNotes;
     @FXML
     private TableColumn<Barber, String> colHireDate;
 
     @FXML
+    private JFXTextField filterBarber;
+    @FXML
+    private JFXComboBox filterStatus;
+
+    @FXML
     private Label barberLabel;
 
-    private ObservableList<Barber> barbers = FXCollections.observableArrayList();
+//    private ObservableList<Barber> barbers = FXCollections.observableArrayList();
+    private ObservableList<Barber> selectedStatus = FXCollections.observableArrayList();
     private boolean editMode;
 
     private final static Logger logger = Logger.getLogger(Loggerutil.class.getName());
@@ -91,7 +104,6 @@ public class BarberScreenController {
                     .filter(response -> response == ButtonType.OK)
                     .ifPresent(response -> {
                         deleteBarber(selectedBarber);
-//                        mainApp.showBarberScreen();
                         BarberCache.flush();
                     });
         } else {
@@ -109,6 +121,7 @@ public class BarberScreenController {
         Barber selectedBarber = BarberTable.getSelectionModel().getSelectedItem();
         if (selectedBarber != null) {
             mainApp.showBarberAddScreen(selectedBarber);
+
         } else {
             if (selectedBarber != null) {
 
@@ -119,6 +132,13 @@ public class BarberScreenController {
                 alert.showAndWait();
             }
         }
+
+    }
+
+    @FXML
+    private void initializeStatusCombo() {
+
+        filterStatus.getItems().addAll("All", "Active", "Inactive");
 
     }
 
@@ -133,9 +153,79 @@ public class BarberScreenController {
         this.mainApp = mainApp;
 //        this.currentUser = currentUser;
 
+        System.out.println("Edit mode in setMain " + editMode);
         initCol();
+        initializeStatusCombo();
+        loadTableView();
 
-        BarberTable.setItems(BarberCache.getAllBarbers());
+        filterStatus.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
+            // if the item of the list is changed
+            public void changed(ObservableValue ov, Number value, Number new_value) {
+
+                if (filterStatus.getSelectionModel().getSelectedIndex() == 0) {
+                    selectedStatus.clear();
+                    selectedStatus.addAll(BarberCache.getAllBarbers());
+
+                } else if (filterStatus.getSelectionModel().getSelectedIndex() == 1) {
+                    selectedStatus.clear();
+                    selectedStatus.addAll(BarberCache.getAllActiveBarbers());
+
+                } else if (filterStatus.getSelectionModel().getSelectedIndex() == 2) {
+                    selectedStatus.clear();
+                    selectedStatus.addAll(BarberCache.getAllInactiveBarbers());
+                }
+            }
+        });
+
+        filterStatus.getSelectionModel().selectFirst();
+
+        //Show status as either A or I
+        colStatus.setCellFactory(tc -> new TableCell<Barber, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null
+                        : item.booleanValue() ? "A" : "I");
+            }
+        });
+
+    }
+
+    private void loadTableView() {
+
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        FilteredList<Barber> filteredData = new FilteredList<>(selectedStatus, p -> true);
+
+        // 2. Set the filter Predicate whenever the filter changes.
+        filterBarber.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(b -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (b.getBarberName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                }
+//                } else if (customer.getLastName().toLowerCase().contains(lowerCaseFilter)) {
+//                    return true; // Filter matches last name.
+//                }
+                return false; // Does not match.
+            });
+        });
+
+        // 3. Wrap the FilteredList in a SortedList.
+        SortedList<Barber> sortedData = new SortedList<>(filteredData);
+
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(BarberTable.comparatorProperty());
+
+        // 5. Add sorted (and filtered) data to the table.
+        BarberTable.setItems(sortedData);
 
     }
 
@@ -164,8 +254,10 @@ public class BarberScreenController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-//        mainApp.refreshView();
+
         BarberCache.flush();
+        loadTableView();
+
     }
-//
+
 }

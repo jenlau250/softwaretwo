@@ -8,6 +8,7 @@ package jCalendar.model;
 import java.time.LocalDate;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,7 +25,7 @@ public class Barber {
     private final StringProperty barberPhone = new SimpleStringProperty();
     private final StringProperty barberEmail = new SimpleStringProperty();
     private final StringProperty notes = new SimpleStringProperty();
-    private final StringProperty active = new SimpleStringProperty();
+    private final SimpleBooleanProperty active = new SimpleBooleanProperty();
     private final ObjectProperty<LocalDate> hireDate = new SimpleObjectProperty();
 
     public Barber() {
@@ -32,7 +33,7 @@ public class Barber {
     }
 
     //FOR TABLEVIEW
-    public Barber(int id, String name, String phone, String email, String active, String notes, LocalDate date) {
+    public Barber(int id, String name, String phone, String email, Boolean active, String notes, LocalDate date) {
         this.barberId.setValue(id);
         this.barberName.set(name);
         this.barberPhone.set(name);
@@ -59,7 +60,15 @@ public class Barber {
         return notes;
     }
 
-    public StringProperty activeProperty() {
+    public Boolean getActive() {
+        return active.get();
+    }
+
+    public void setActive(Boolean active) {
+        this.active.set(active);
+    }
+
+    public SimpleBooleanProperty activeProperty() {
         return active;
     }
 
@@ -111,14 +120,6 @@ public class Barber {
 
     public void setNotes(String notes) {
         this.notes.set(notes);
-    }
-
-    public String getActive() {
-        return active.get();
-    }
-
-    public void setActive(String active) {
-        this.active.set(active);
     }
 
     public ObjectProperty hireDateProperty() {

@@ -17,8 +17,8 @@ import javafx.collections.ObservableList;
  * @author Jen
  */
 public class PetDaoImpl {
-    //USED FOR APPOINTMENT ADD
 
+    //USED FOR APPOINTMENT ADD
     public ObservableList<Pet> getPetsByCustomer(String customerId) {
 
         ObservableList<Pet> petList = FXCollections.observableArrayList();

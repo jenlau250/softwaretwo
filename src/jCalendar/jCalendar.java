@@ -21,6 +21,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -38,64 +39,23 @@ public class jCalendar extends Application {
 
     private Stage dialogStage;
     private User currUser;
-    private Appointment appt;
+//    private Appointment appt;
     private Customer customer;
     private DBConnection databasebHandler;
 
-//    private ObservableList<Appointment> appointmentData = FXCollections.observableArrayList();
-//    private ObservableList<Customer> customerData = FXCollections.observableArrayList();
-//    private ObservableList<Pet> customerPetData = FXCollections.observableArrayList();
-//    private ObservableList<Barber> barberData = FXCollections.observableArrayList();
-//    private ObservableList<Pet> petData = FXCollections.observableArrayList();
-//    public ObservableList<Appointment> getAppointmentData() {
-//        return appointmentData;
-//    }
-//    public ObservableList<Pet> getPetData() {
-//        return petData;
-//    }
-//
-//    public ObservableList<Pet> getCustomerPetData() {
-//        return customerPetData;
-//    }
-//    public ObservableList<Customer> getCustomerData() {
-//        return customerData;
-//    }
-//    public ObservableList<Barber> getBarberData() {
-//        return barberData;
-//    }
     @Override
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
-        this.mainStage.setTitle("Calendar App");
+        this.mainStage.setTitle("Posh Paws Appointment Scheduler");
+        this.mainStage.getIcons().add(new Image("/jCalendar/images/icon.png"));
 
         //order is important
         BarberCache.flush();
-        //PetDaoImpl().loadPetData()
         PetCache.flush();
-        // loadCustomerData()
         CustomerCache.flush();
         AppointmentCache.flush();
 
-//petcache flush
-//customercache flush
-//then appointment flush
-//keep same order when you update data
-//only one object of pet and barber is kept
-//if we had a huge list, we could use hash map
-//        appointmentData.addAll(new AppointmentDaoImpl().loadApptData());
-//        barberData.addAll(new BarberDaoImpl().loadBarberData());
-//        customerData.addAll(new CustomerDaoImpl().loadCustomerData());
-//        customerPetData.addAll(new PetDaoImpl().loadCustomerPetData());
-//        petData.addAll(new PetDaoImpl().loadPetsData());
-//        for (Appointment p : appointmentData) {
-//            System.out.println("printing" + p.toString());
-//        }
-//        showLoginScreen();
         showMain(currUser);
-//        showListScreen();
-//        showBarberScreen();
-//        showAppointmentListScreen(currUser);
-//        showCustomerScreen(currUser);
 
         Loggerutil.init();
     }
@@ -298,7 +258,7 @@ public class jCalendar extends Application {
         }
     }
 
-    public void showAppointmentAddScreen(User currentUser) {
+    public void showAppointmentAddScreen() {
 
         //TO PASS SELECTED APPT FOR EDITING
         try {
@@ -310,14 +270,14 @@ public class jCalendar extends Application {
             mainScreen.setLeft(screen);
 
             Appointment_AddController controller = loader.getController();
-            controller.setMainController(this, currentUser);
+            controller.setMainController(this, currUser);
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void showAppointmentAddScreen(User currentUser, Appointment selectedAppt) {
+    public void showAppointmentAddScreen(Appointment selectedAppt) {
 
         //TO PASS SELECTED APPT FOR EDITING
         try {
@@ -329,7 +289,7 @@ public class jCalendar extends Application {
             mainScreen.setLeft(screen);
 
             Appointment_AddController controller = loader.getController();
-            controller.setMainController(this, currentUser);
+            controller.setMainController(this, currUser);
             controller.setSelectedAppointment(selectedAppt);
         } catch (IOException ex) {
             ex.printStackTrace();

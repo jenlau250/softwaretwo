@@ -24,6 +24,28 @@ public class BarberCache {
         return returnList;
     }
 
+    public static ObservableList<Barber> getAllActiveBarbers() {
+        ObservableList<Barber> returnList = FXCollections.observableArrayList();
+        for (Barber b : barberList) {
+            if (b.getActive()) {
+                returnList.add(b);
+            }
+        }
+        return returnList;
+
+    }
+
+    public static ObservableList<Barber> getAllInactiveBarbers() {
+        ObservableList<Barber> returnList = FXCollections.observableArrayList();
+        for (Barber b : barberList) {
+            if (!b.getActive()) {
+                returnList.add(b);
+            }
+        }
+        return returnList;
+
+    }
+
     public static Barber getBarber(int barberId) {
         for (Barber b : barberList) {
             if (b.getBarberId() == barberId) {

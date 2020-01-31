@@ -24,6 +24,32 @@ public class CustomerCache {
         return returnList;
     }
 
+    public static ObservableList<Customer> getAllActiveCustomers() {
+        ObservableList<Customer> returnList = FXCollections.observableArrayList();
+        for (Customer c : customerList) {
+
+            if (c.getActive()) {
+                returnList.add(c);
+            }
+        }
+
+        return returnList;
+
+    }
+
+    public static ObservableList<Customer> getAllInactiveCustomers() {
+        ObservableList<Customer> returnList = FXCollections.observableArrayList();
+        for (Customer c : customerList) {
+
+            if (!c.getActive()) {
+                returnList.add(c);
+            }
+        }
+
+        return returnList;
+
+    }
+
     public static Customer getCustomer(String customerId) {
         for (Customer c : customerList) {
             if (c.getCustomerId().equals(customerId)) {

@@ -67,6 +67,19 @@ public class Appointment {
 
     }
 
+    //to save appointment
+    public Appointment(String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
+        this.title.set(title);
+        this.start.set(start);
+        this.end.set(end);
+        this.description.set(desc);
+        this.type.set(type);
+        this.barber.set(barber);
+        this.customer.set(customer);
+        this.pet.set(pet);
+
+    }
+
 //for schedule detail report
     public Appointment(String appointmentId, LocalDateTime start, LocalDateTime end, String title, String type, String customerName, String barberName) {
         this.appointmentId.set(appointmentId);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
@@ -45,9 +46,9 @@
             <JFXTextField fx:id="txtName" promptText="Name" />
             <JFXTextField fx:id="txtPhone" promptText="Phone" />
             <JFXTextField fx:id="txtEmail" promptText="Email" />
-            <JFXTextField fx:id="txtStatus" promptText="Status" />
             <JFXDatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="405.0" promptText="Date of Hire" />
             <AnchorPane />
+            <JFXCheckBox fx:id="checkboxActive" text="Active?" />
             <JFXTextField fx:id="txtNotes" alignment="TOP_LEFT" prefHeight="54.0" prefWidth="297.0" promptText="Notes (Optional)" />
          </children>
          <padding>
