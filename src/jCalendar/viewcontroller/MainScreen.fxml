@@ -9,15 +9,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.MainScreenController">
    <bottom>
       <TextArea fx:id="txtAreaReminders" prefHeight="91.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </bottom>
    <top>
-      <HBox alignment="CENTER" prefHeight="66.0" prefWidth="1000.0" spacing="80.0" style="-fx-background-color: -fx-secondary;" stylesheets="@../styles/styles.css" BorderPane.alignment="CENTER">
+      <HBox fx:id="menuBar" alignment="CENTER" prefHeight="66.0" prefWidth="1000.0" spacing="80.0" style="-fx-background-color: -fx-secondary;" stylesheets="@../styles/styles.css" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton fx:id="btnAppt" ripplerFill="WHITE" styleClass="myButton" stylesheets="@../styles/styles.css" text="Appointments">
+            <JFXButton fx:id="btnAppt" ripplerFill="WHITE" styleClass="myButton" stylesheets="@../styles/styles.css" text="Appointments" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -29,7 +28,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="btnCustomers" styleClass="myButton" text="Customers">
+            <JFXButton fx:id="btnCustomers" styleClass="myButton" text="Customers" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -41,7 +40,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="btnStaff" styleClass="myButton" text="Staff">
+            <JFXButton fx:id="btnStaff" styleClass="myButton" text="Staff" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -53,7 +52,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="btnReports" styleClass="myButton" text="Reports">
+            <JFXButton fx:id="btnReports" styleClass="myButton" text="Reports" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -65,7 +64,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="btnExit" styleClass="myButton" stylesheets="@../styles/styles.css" text="Log out">
+            <JFXButton fx:id="btnExit" styleClass="myButton" stylesheets="@../styles/styles.css" text="Log out" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>

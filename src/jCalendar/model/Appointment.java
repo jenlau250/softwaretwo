@@ -6,7 +6,13 @@
 package jCalendar.model;
 
 import jCalendar.utilities.DateTimeUtil;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -16,101 +22,187 @@ import javafx.collections.ObservableList;
  */
 public class Appointment {
 
-    private String appointmentId;
-    private Customer customer;
-    private String title;
-    private String type;
-    private String location;
+    private final StringProperty appointmentId = new SimpleStringProperty();
+    private final ObjectProperty<LocalDate> startDate = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDateTime> start = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDateTime> end = new SimpleObjectProperty();
+    private final StringProperty title = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
+    private final StringProperty type = new SimpleStringProperty(); //type
+    private ObjectProperty<Pet> pet = new SimpleObjectProperty<>();
+    private ObjectProperty<Customer> customer = new SimpleObjectProperty<>();
+    private ObjectProperty<Barber> barber = new SimpleObjectProperty<>();
+
+    private String customerName;
+    private String barberName;
+//    private Customer customer;
+//    private Pet pet;
+    private String user;
+//    private Barber barber;
+
     private String month;
     private String count;
-    private String start;
-    private String end;
-    private String user;
+
     private static final ObservableList<String> startTimes = FXCollections.observableArrayList();
     private static final ObservableList<String> endTimes = FXCollections.observableArrayList();
 
     //Default Appt Types
-    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Standard", "Extended");
+    private static ObservableList<String> apptTypes = FXCollections.observableArrayList("Bath & Haircut", "Bath & Brush", "Haircut ", "Bath", "Brush", "Daycare", "Other");
 
-    //Default Appt Start Times
     public Appointment() {
+    }
+
+    public Appointment(String appointmentId, String title, LocalDate startDate, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
+
+        this.appointmentId.set(appointmentId);
+        this.title.set(title);
+        this.startDate.set(startDate);
+        this.start.set(start);
+        this.end.set(end);
+        this.description.set(desc);
+        this.type.set(type);
+        this.barber.set(barber);
+        this.customer.set(customer);
+        this.pet.set(pet);
+
+    }
+
+    //to save appointment
+    public Appointment(String title, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
+        this.title.set(title);
+        this.start.set(start);
+        this.end.set(end);
+        this.description.set(desc);
+        this.type.set(type);
+        this.barber.set(barber);
+        this.customer.set(customer);
+        this.pet.set(pet);
+
+    }
+
+//for schedule detail report
+    public Appointment(String appointmentId, LocalDateTime start, LocalDateTime end, String title, String type, String customerName, String barberName) {
+        this.appointmentId.set(appointmentId);
+        this.start.set(start);
+        this.end.set(end);
+        this.title.set(title);
+        this.type.set(type);
+        this.customerName = customerName;
+        this.barberName = barberName;
+    }
+
+    public String getAppointmentId() {
+        return appointmentId.get();
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId.set(appointmentId);
+    }
+
+    public StringProperty appointmentIdProperty() {
+        return appointmentId;
+    }
+
+    public String getTitle() {
+        return title.get();
+    }
+
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
+
+    public StringProperty titleProperty() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+
+    public ObjectProperty startProperty() {
+        return start;
+    }
+
+    public LocalDateTime getStart() {
+        return start.get();
+    }
+
+    public ObjectProperty endProperty() {
+        return end;
+    }
+
+    public LocalDateTime getEnd() {
+        return end.get();
+    }
+
+    public ObjectProperty startDateProperty() {
+        return startDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate.get();
     }
 
     public Appointment(String month, String type, String count) {
         this.month = month;
-        this.type = type;
+        this.type.set(type);
         this.count = count;
     }
 
-    public Appointment(String appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public Appointment(String appointmentId, String start, String end, String title, String type, String location, Customer customer, String user) {
-        this.appointmentId = appointmentId;
-        this.start = start;
-        this.end = end;
-        this.title = title;
-        this.type = type;
-        this.location = location;
-        this.customer = customer;
-        this.user = user;
-    }
-
-    public String getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getType() {
-        return type;
+        return type.get();
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type.set(type);
     }
 
-    public String getStart() {
-        return start;
+    public StringProperty typeProperty() {
+        return type;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public ObjectProperty barberProperty() {
+        return barber;
     }
 
-    public String getEnd() {
-        return end;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
-    }
-
-    public Customer getCustomer() {
+    public ObjectProperty customerProperty() {
         return customer;
     }
 
+    public ObjectProperty petProperty() {
+        return pet;
+    }
+
+    public Customer getCustomer() {
+        return customer.get();
+    }
+
+    public Barber getBarber() {
+        return barber.get();
+    }
+
+    public void setBarber(Barber barber) {
+        this.barber.set(barber);
+    }
+
     public void setCustomer(Customer customer) {
-        this.customer = customer;
+        this.customer.set(customer);
+    }
+
+    public Pet getPet() {
+        return this.pet.get();
+    }
+
+    public void setPet(Pet pet) {
+        this.pet.set(pet);
     }
 
     public String getUser() {
@@ -143,7 +235,7 @@ public class Appointment {
 
     public static ObservableList<String> getDefaultStartTimes() {
         //Set time from 8AM to 5PM in 15 minute increments
-        LocalTime appointmentStartTime = LocalTime.of(8, 0);
+        LocalTime appointmentStartTime = LocalTime.of(7, 0);
         while (!appointmentStartTime.equals(LocalTime.of(17, 0))) {
             String startTime = DateTimeUtil.parseTimeToStringFormat(appointmentStartTime);
             startTimes.add(startTime);
@@ -154,8 +246,8 @@ public class Appointment {
     }
 
     public static ObservableList<String> getDefaultEndTimes() {
-        //Set time from 8AM to 5PM in 15 minute increments
-        LocalTime appointmentEndTime = LocalTime.of(8, 0);
+        //Set time from 7AM to 5PM in 15 minute increments
+        LocalTime appointmentEndTime = LocalTime.of(7, 15);
         while (!appointmentEndTime.equals(LocalTime.of(17, 15))) {
             String endTime = DateTimeUtil.parseTimeToStringFormat(appointmentEndTime);
             endTimes.add(endTime);
@@ -164,9 +256,20 @@ public class Appointment {
         }
         return endTimes;
     }
-    
 
-    
+    @Override
+    //public Appointment(String appointmentId, String title, String startDate, LocalDateTime start, LocalDateTime end, String desc, String type, Barber barber, Customer customer, Pet pet) {
 
+    public String toString() {
+        return "ID: " + getAppointmentId() + '\n'
+                + "Title: " + getTitle() + '\n'
+                + "Start Date: " + getStartDate() + '\n'
+                + "Time: " + getStart() + " to " + getEnd() + '\n'
+                + "Description: " + getDescription() + '\n'
+                + "Type: " + getType() + '\n'
+                + "Barber: " + getBarber().getBarberId() + " - " + getBarber().getBarberName() + '\n'
+                + "Customer: " + getCustomer().getCustomerId() + " - " + getCustomer().getCustomerName() + '\n'
+                + "Pet: " + getPet().getPetId() + " - " + getPet().getPetName() + '\n';
+    }
 
 }

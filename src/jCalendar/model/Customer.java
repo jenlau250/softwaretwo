@@ -5,124 +5,202 @@
  */
 package jCalendar.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  *
  * @author jlau2
  */
 public class Customer {
 
+    private final StringProperty customerId = new SimpleStringProperty();
+    private final StringProperty customerName = new SimpleStringProperty();
+    private final StringProperty customerPhone = new SimpleStringProperty();
+    private final StringProperty customerEmail = new SimpleStringProperty();
+//    private final StringProperty active = new SimpleStringProperty();
+    private final SimpleBooleanProperty active = new SimpleBooleanProperty();
+    private final StringProperty notes = new SimpleStringProperty();
+    private String count;
 
-    private int customerId;
-    private String customerName;
-    private String address;
-    private String address2;
-    private City city;
-    private String country;
-    private String zipCode;
-    private String phone;
-    private String citycount;
+    private ObservableList<Pet> pets = FXCollections.observableArrayList();
 
-    
-    
-   public Customer(){
-        
+    public ObservableList<Pet> getPets() {
+        return pets;
     }
 
-    public Customer(int customerId, String customerName, String address, String address2, City city, String country, String zipCode, String phone) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.address = address;
-        this.address2 = address2;
-        this.city = city;
-        this.country = country;
-        this.zipCode = zipCode;
-        this.phone = phone;
+    public Customer() {
+
     }
 
-
-    public Customer (int customerId, String customerName) {
-	this.customerId = customerId;
-	this.customerName = customerName;
+//    public Customer(String id, String name) {
+//
+//        setCustomerId(id);
+//        setCustomerName(name);
+//
+//    }
+    public StringProperty customerIdProperty() {
+        return this.customerId;
     }
 
-    public Customer(City city, String citycount) {
-	this.city = city;
-	this.citycount = citycount;
+    public StringProperty customerNameProperty() {
+        return this.customerName;
     }
-    
 
-    public int getCustomerId() {
-	return customerId;
+    public String getCustomerId() {
+        return this.customerId.get();
     }
+
+    public void setCustomerId(String customerId) {
+        this.customerId.set(customerId);
+    }
+
     public String getCustomerName() {
-	return customerName;
+        return this.customerName.get();
     }
 
     public void setCustomerName(String customerName) {
-	this.customerName = customerName;
+        this.customerName.set(customerName);
+    }
+//    private int customerId2;
+//    private String customerName2;
+//    private String phone;
+////    private String email;
+//    private String active;
+//    private String notes;
+//    private Pet pet;
+//    private Barber barber;
+
+    //All data
+    public Customer(String id, String name, String phone, String email, Boolean active, String notes) {
+        this.customerId.set(id);
+        this.customerName.set(name);
+        this.customerPhone.set(phone);
+        this.customerEmail.set(email);
+        this.active.set(active);
+        this.notes.set(notes);
+
     }
 
-    public String getAddress() {
-	return address;
+    //For Appt Table View
+    public Customer(String id, String name, String phone, String email) {
+        this.customerId.set(id);
+        this.customerName.set(name);
+        this.customerPhone.set(phone);
+        this.customerEmail.set(email);
+
     }
 
-    public void setAddress(String address) {
-	this.address = address;
+    public Customer(String name, String count) {
+        this.customerName.set(name);
+        this.count = count;
     }
 
-    public String getAddress2() {
-	return address2;
-    }
-    public void setAddress2(String address2) {
-	this.address2 = address2;
-    }
-
-    public City getCity() {
-	return city;
-    }
-
-    public void setCityName(City city) {
-	this.city = city;
-    }
-
-    public int getCityId() {
-	return city.getCityId();
-    }
-    public String getCountry() {
-	return country;
-    }
-
-    public void setCountry(String country) {
-	this.country = country;
-    }
-
-    public String getZipCode() {
-	return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-	this.zipCode = zipCode;
+//    public Customer(String id, String name, String phone, String email, String active, String notes, Pet pet) {
+//        this.customerId.set(id);
+//        this.customerName.set(name);
+//        this.customerPhone.set(phone);
+//        this.customerEmail.set(email);
+//        this.active.set(active);
+//        this.notes.set(notes);
+//        this.pet.set(pet);
+//
+//    }
+//
+//    //FOR TABLEVIEW
+//    public Customer(String id, String name, String phone, String email, Pet pet) {
+//        this.customerId.set(id);
+//        this.customerName.set(name);
+//        this.customerPhone.set(phone);
+//        this.customerEmail.set(email);
+////        this.active.set(active);
+////        this.notes.set(notes);
+//        this.pet.set(pet);
+//
+//    }
+    public StringProperty customerPhoneProperty() {
+        return this.customerPhone;
     }
 
     public String getPhone() {
-	return phone;
+        return customerPhone.get();
     }
 
     public void setPhone(String phone) {
-	this.phone = phone;
+        this.customerPhone.set(phone);
     }
 
-    public String getCitycount() {
-	return citycount;
+    public String getEmail() {
+        return customerEmail.get();
     }
 
-    public void setCitycount(String citycount) {
-	this.citycount = citycount;
+    public void setEmail(String email) {
+        this.customerEmail.set(email);
+
     }
-    
+
+    public StringProperty customerEmailProperty() {
+        return this.customerEmail;
+    }
+
+    public Boolean getActive() {
+        return active.get();
+    }
+
+    public void setActive(Boolean active) {
+        this.active.set(active);
+    }
+
+    public SimpleBooleanProperty activeProperty() {
+        return active;
+    }
+
+    public String getNotes() {
+        return notes.get();
+    }
+
+    public void setNotes(String notes) {
+        this.notes.set(notes);
+    }
+
+    public StringProperty noteProperty() {
+        return notes;
+    }
+
     @Override
     public String toString() {
-	return String.valueOf(customerName);
+        return "Customer id " + customerIdProperty().get()
+                + " name " + customerNameProperty()
+                + " phone " + customerPhoneProperty()
+                + " email " + customerEmailProperty()
+                + " status " + activeProperty()
+                + " notes " + noteProperty()
+                + " pets " + getPets();
     }
 
+//    @Override
+//    public String toString() {
+//        return String.valueOf(customerName);
+//    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        Customer that = (Customer) o;
+//        return Objects.equals(customerId.get(), that.customerId.get())
+//                && Objects.equals(customerName.get(), that.customerName.get());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(customerId.get(), customerName.get());
+//    }
 }

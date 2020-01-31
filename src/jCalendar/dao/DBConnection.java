@@ -1,4 +1,4 @@
-package jCalendar.DAO;
+package jCalendar.dao;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,7 +20,7 @@ import java.sql.Statement;
  */
 public class DBConnection {
 
-    private static DBConnection connection;
+    private static DBConnection handler = null;
 
     private static final String databaseName = "U05NQU";
     private static final String DB_URL = "jdbc:mysql://52.206.157.109/" + databaseName;
@@ -28,37 +28,40 @@ public class DBConnection {
     private static final String password = "53688552114";
     private static final String driver = "com.mysql.cj.jdbc.Driver";
 
-    static Connection conn;
+    private static Connection conn = null;
     private static Statement stmt = null;
 
     //Default terms
     private static String[] barbers = {"Sam", "Joe", "Elisa"};
-    
 
     private static boolean tablesExist = false;
 
+    static {
+        init();
+        //create tables if not exist
+    }
+
     //Constructor
-    public DBConnection() {
+    private DBConnection() {
 
-        getConn();
-
-//        if (tablesExist) {
-//            System.out.println("Connection created. Tables already exist.");
-//        } else {
-//            
-//           //create tables
-//           
-//           tablesExist = true;
-//           System.out.println("New tables created. tablesExist changed to true. ");
+//        getConn();
 //        }
     }
 
-    public static void init() throws ClassNotFoundException, SQLException, Exception {
-        {
-            Class.forName(driver);
+//    public static DBConnection getInstance() {
+//        if (handler == null) {
+//            handler = new DBConnection();
+//        }
+//        return handler;
+//    }
+    public static void init() {
+        try {
+            Class.forName(driver).newInstance();
             conn = (Connection) DriverManager.getConnection(DB_URL, username, password);
             System.out.println("Connection Successful");
 
+        } catch (Exception e) {
+            System.out.println("Can't load database");
         }
 
     }
@@ -79,10 +82,4 @@ public class DBConnection {
         }
     }
 
-    
-    
-    
-
 }
-
-

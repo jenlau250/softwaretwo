@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="350.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.LoginScreenController">
+<AnchorPane id="AnchorPane" prefHeight="334.0" prefWidth="493.0" style="-fx-background-color: #9baec8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jCalendar.viewcontroller.LoginScreenController">
    <children>
-      <Button fx:id="buttonLogin" layoutX="153.0" layoutY="225.0" mnemonicParsing="false" onAction="#handleActionLogin" prefHeight="32.0" prefWidth="59.0" text="Login" />
-      <Label fx:id="labelUserId" layoutX="107.0" layoutY="118.0" text="User Name" />
-      <Label fx:id="labelUserPw" layoutX="112.0" layoutY="167.0" text="Password" />
-      <TextField fx:id="textUserId" layoutX="176.0" layoutY="114.0" />
-      <TextField fx:id="textUserPw" layoutX="176.0" layoutY="163.0" />
-      <Button fx:id="buttonCancel" layoutX="279.0" layoutY="225.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="59.0" text="Cancel" />
+      <Pane layoutX="23.0" layoutY="24.0" prefHeight="291.0" prefWidth="453.0" style="-fx-background-color: #ffffff;">
+         <children>
+            <JFXTextField fx:id="textUserId" labelFloat="true" layoutX="117.0" layoutY="53.0" prefHeight="42.0" prefWidth="219.0" promptText="Username" />
+            <JFXPasswordField fx:id="textUserPw" labelFloat="true" layoutX="117.0" layoutY="125.0" prefHeight="42.0" prefWidth="219.0" promptText="Password" />
+            <JFXButton fx:id="buttonLogin" buttonType="RAISED" layoutX="117.0" layoutY="210.0" onAction="#handleActionLogin" prefHeight="28.0" prefWidth="77.0" ripplerFill="WHITE" style="-fx-background-color: #2b90d9;" text="Login" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="buttonCancel" buttonType="RAISED" layoutX="259.0" layoutY="210.0" prefHeight="29.0" prefWidth="77.0" style="-fx-background-color: #2b90d9;" text="Cancel" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </JFXButton>
+         </children>
+         <effect>
+            <DropShadow blurType="GAUSSIAN" />
+         </effect></Pane>
    </children>
 </AnchorPane>

@@ -111,7 +111,7 @@
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="589.0" prefWidth="688.0">
                <children>
-                  <TableView fx:id="ApptTable" layoutX="20.0" layoutY="105.0" prefHeight="337.0" prefWidth="655.0">
+                  <TableView fx:id="ApptTable" layoutX="20.0" layoutY="105.0" prefHeight="337.0" prefWidth="655.0" stylesheets="@../styles/jfx-table-view.css">
                     <columns>
                       <TableColumn fx:id="tCustomer" prefWidth="87.0" text="Customer" />
                       <TableColumn fx:id="tStartDate" prefWidth="119.0" text="Start Date" />
